@@ -40,7 +40,7 @@ Die Adressen für das lokale Setup sind im Git-Repository auf den folgenden Port
 
 Das SQL-Skript zur Erstellung der Datenbank finden Sie unter:
 
-ShoppingPlanner/src/main/resources/create_schema.sql
+ShoppingPlanner/backend/src/main/resources/create_schema.sql
 
 
 **Website starten:**
