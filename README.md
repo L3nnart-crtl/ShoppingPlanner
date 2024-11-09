@@ -26,8 +26,7 @@ nohup sudo java -jar ShoppingPlanner-0.0.1-SNAPSHOT.jar &
 
 Wechseln Sie in das Verzeichnis `/shoppingPlanner/Frontend/dist` und starten Sie das Frontend mit folgendem Befehl:
 
-sudo python3 -m http.server 80 --bind [2001:7c0:2320:1:f816:3eff:fe50:6f6d]
-
+sudo nohup python3 -m http.server 80 --bind 2001:7c0:2320:1:f816:3eff:fe50:6f6d &> /dev/null &
 
 ### 2. Lokale Ausführung
 
@@ -36,7 +35,7 @@ Die Adressen für das lokale Setup sind im Git-Repository auf den folgenden Port
 - **Backend:** `localhost:8080`
 - **Frontend:** `localhost:80`
 - **Datenbank:** `localhost:3306`
-
+URL: http://localhost:80
 **Datenbank-Schema erstellen:**
 
 Das SQL-Skript zur Erstellung der Datenbank finden Sie unter:
