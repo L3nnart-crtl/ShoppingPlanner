@@ -2,7 +2,7 @@
 
 ## Beschreibung
 
-Wir haben das Critical-Feature "Rezept mit Zutaten und Mengenangabe hinzufügen" implementiert. 
+Wir haben das Critical-Feature "Rezept mit Zutaten und Mengenangabe hinzufügen" implementiert.
 
 ## Installation und Ausführung
 
@@ -26,8 +26,7 @@ nohup sudo java -jar ShoppingPlanner-0.0.1-SNAPSHOT.jar &
 
 Wechseln Sie in das Verzeichnis `/shoppingPlanner/Frontend/dist` und starten Sie das Frontend mit folgendem Befehl:
 
-sudo python3 -m http.server 80 --bind [2001:7c0:2320:1:f816:3eff:fe50:6f6d]
-
+sudo nohup python3 -m http.server 80 --bind 2001:7c0:2320:1:f816:3eff:fe50:6f6d &> /dev/null &
 
 ### 2. Lokale Ausführung
 
@@ -46,4 +45,7 @@ ShoppingPlanner/src/main/resources/create_schema.sql
 
 **Website starten:**
 
-Die Website kann mit der RunConfiguration `Start_website_local` gestartet werden.
+1 Die Website kann mit der RunConfiguration `Start_website_local` gestartet werden.
+
+2.Oder mit start.bat oder start.sh im Wurzelverzeichnis
+URL: http://localhost:80
