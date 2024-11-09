@@ -1,51 +1,45 @@
-# Shopping Planner
+Description
 
-## Beschreibung
+We have implemented the critical feature "Add recipe with ingredients and quantities."
 
-Wir haben das Critical-Feature "Rezept mit Zutaten und Mengenangabe hinzufügen" implementiert.
+Installation and Execution
 
-## Installation und Ausführung
+    Website on Virtual Machine (VM)
 
-### 1. Website auf der virtuellen Maschine (VM)
-
-Die Website sollte auf der VM laufen, solange diese nicht neu startet. Die URL lautet:
+The website should run on the VM as long as it is not restarted. The URL is:
 
 http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]:80
 
+Starting on the VM:
 
-**Starten auf der VM:**
+    Start Backend:
 
-- **Backend starten:**
-
-   Wechseln Sie in das Verzeichnis `/shoppingPlanner/Backend` und starten Sie das Backend mit folgendem Befehl:
+    Change to the directory /shoppingPlanner/Backend and start the backend with the following command:
 
 nohup sudo java -jar ShoppingPlanner-0.0.1-SNAPSHOT.jar &
 
+Start Frontend:
 
-- **Frontend starten:**
+Change to the directory /shoppingPlanner/Frontend/dist and start the frontend with the following command:
 
-Wechseln Sie in das Verzeichnis `/shoppingPlanner/Frontend/dist` und starten Sie das Frontend mit folgendem Befehl:
+    sudo nohup python3 -m http.server 80 --bind 2001:7c0:2320:1:f816:3eff:fe50:6f6d &> /dev/null &
 
-sudo nohup python3 -m http.server 80 --bind 2001:7c0:2320:1:f816:3eff:fe50:6f6d &> /dev/null &
+    Local Execution
 
-### 2. Lokale Ausführung
+The addresses for the local setup are configured on the following ports in the Git repository:
 
-Die Adressen für das lokale Setup sind im Git-Repository auf den folgenden Ports konfiguriert:
+    Backend: localhost:8080
+    Frontend: localhost:80
+    Database: localhost:3306
 
-- **Backend:** `localhost:8080`
-- **Frontend:** `localhost:80`
-- **Datenbank:** `localhost:3306`
+Create Database Schema:
 
-**Datenbank-Schema erstellen:**
-
-Das SQL-Skript zur Erstellung der Datenbank finden Sie unter:
+The SQL script to create the database can be found at:
 
 ShoppingPlanner/backend/src/main/resources/create_schema.sql
 
+Start Website:
 
-**Website starten:**
+    The website can be started with the RunConfiguration Start_website_local.
 
-1 Die Website kann mit der RunConfiguration `Start_website_local` gestartet werden.
-
-2.Oder mit start.bat oder start.sh im Wurzelverzeichnis
-URL: http://localhost:80
+    Or with start.bat or start.sh in the root directory. URL: http://localhost:80
