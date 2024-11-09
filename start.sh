@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Starting the backend and frontend..."
+echo "Starting the backend, frontend"
 
 # Start backend (Spring Boot) - Gehe ins Backend-Verzeichnis
 (cd backend && ./gradlew bootRun) &

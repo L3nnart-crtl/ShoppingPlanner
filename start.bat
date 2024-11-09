@@ -1,5 +1,5 @@
 @echo off
-echo Starting the backend and frontend...
+echo Starting the backend, frontend
 
 :: Start backend (Spring Boot) - Gehe ins Backend-Verzeichnis
 start cmd /k "cd backend && gradlew bootRun"
