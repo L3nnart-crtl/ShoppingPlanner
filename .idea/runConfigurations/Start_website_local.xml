@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Start_website_local" type="CompoundRunConfigurationType">
-    <toRun name="Vue_jf_frontend" type="js.build_tools.npm" />
-    <toRun name="ShoppingPlannerApplication (1)" type="SpringBootApplicationConfigurationType" />
-    <method v="2" />
-  </configuration>
-</component>
