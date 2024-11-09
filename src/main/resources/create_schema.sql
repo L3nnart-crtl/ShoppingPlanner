@@ -1,0 +1,17 @@
+CREATE DATABASE IF NOT EXISTS shoppingPlanner;
+
+USE shoppingPlanner;
+
+CREATE TABLE IF NOT EXISTS Recipe (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Ingredient (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    quantity VARCHAR(255) NOT NULL,
+    recipe_id BIGINT,
+    FOREIGN KEY (recipe_id) REFERENCES Recipe(id)
+);
