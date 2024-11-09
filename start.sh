@@ -1,15 +1,8 @@
 #!/bin/bash
+echo "Starting the backend and frontend..."
 
-# Backend starten
-echo "Starting backend..."
-./gradlew bootRun &  # Backend im Hintergrund starten
+# Start backend (Spring Boot) - Wurzelverzeichnis
+./gradlew bootRun &
 
-# Warte kurz, um sicherzustellen, dass das Backend läuft
-sleep 5
-
-# Frontend starten
-echo "Starting frontend..."
-cd frontend  # Wechsel ins Frontend-Verzeichnis
-npm run serve  # Startet das Vue.js-Frontend
-
-wait  # Wartet, bis das Skript beendet wird
+# Start frontend (Vue.js mit Vite) - Nur ins Frontend-Verzeichnis wechseln
+(cd frontend && npm run dev) &
