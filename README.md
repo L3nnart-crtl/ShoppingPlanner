@@ -2,7 +2,7 @@
 
 ## Beschreibung
 
-Wir haben das Critical-Feature "Rezept mit Zutaten und Mengenangabe hinzufügen" implementiert. 
+Wir haben das Critical-Feature "Rezept mit Zutaten und Mengenangabe hinzufügen" implementiert.
 
 ## Installation und Ausführung
 
@@ -35,7 +35,7 @@ Die Adressen für das lokale Setup sind im Git-Repository auf den folgenden Port
 - **Backend:** `localhost:8080`
 - **Frontend:** `localhost:80`
 - **Datenbank:** `localhost:3306`
-URL: http://localhost:80
+
 **Datenbank-Schema erstellen:**
 
 Das SQL-Skript zur Erstellung der Datenbank finden Sie unter:
@@ -46,3 +46,4 @@ ShoppingPlanner/src/main/resources/create_schema.sql
 **Website starten:**
 
 Die Website kann mit der RunConfiguration `Start_website_local` gestartet werden.
+URL: http://localhost:80
