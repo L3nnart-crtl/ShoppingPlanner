@@ -2,7 +2,7 @@
 
 ## Beschreibung
 
-Wir haben das Critical-Feature "Rezept mit Zutaten und Mengenangabe hinzufügen" implementiert. Diese Funktion ermöglicht es Benutzern, Rezepte mit den entsprechenden Zutaten und Mengenangaben zu erstellen und zu verwalten.
+Wir haben das Critical-Feature "Rezept mit Zutaten und Mengenangabe hinzufügen" implementiert. 
 
 ## Installation und Ausführung
 
@@ -17,14 +17,14 @@ http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]:80
 
 - **Backend starten:**
 
-   Gehe in das Verzeichnis `/shoppingPlanner/Backend` und starte das Backend mit folgendem Befehl:
+   Wechseln Sie in das Verzeichnis `/shoppingPlanner/Backend` und starten Sie das Backend mit folgendem Befehl:
 
 nohup sudo java -jar ShoppingPlanner-0.0.1-SNAPSHOT.jar &
 
 
 - **Frontend starten:**
 
-Gehe in das Verzeichnis `/shoppingPlanner/Frontend/dist` und starte das Frontend mit folgendem Befehl:
+Wechseln Sie in das Verzeichnis `/shoppingPlanner/Frontend/dist` und starten Sie das Frontend mit folgendem Befehl:
 
 sudo python3 -m http.server 80 --bind [2001:7c0:2320:1:f816:3eff:fe50:6f6d]
 
@@ -39,7 +39,7 @@ Die Adressen für das lokale Setup sind im Git-Repository auf den folgenden Port
 
 **Datenbank-Schema erstellen:**
 
-Das SQL-Skript zur Erstellung der Datenbank findest du unter:
+Das SQL-Skript zur Erstellung der Datenbank finden Sie unter:
 
 ShoppingPlanner/src/main/resources/create_schema.sql
 
