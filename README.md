@@ -45,5 +45,6 @@ ShoppingPlanner/src/main/resources/create_schema.sql
 
 **Website starten:**
 
-Die Website kann mit der RunConfiguration `Start_website_local` gestartet werden.
+1 Die Website kann mit der RunConfiguration `Start_website_local` gestartet werden.
+2.Oder mit start.bat oder start.sh
 URL: http://localhost:80
