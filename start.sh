@@ -1,19 +1,15 @@
 #!/bin/bash
 
-# Backend (Spring Boot mit Gradle) starten
-echo "Starting the backend (Spring Boot with Gradle)..."
-./gradlew bootRun --stacktrace 2>&1  # Stacktrace anzeigen, um Fehler zu debuggen
-if [ $? -ne 0 ]; then
-    echo "Backend start failed. Check the error messages above."
-    read -p "Press any key to continue..."
-    exit 1
-fi
-echo "Backend started successfully."
+# Backend starten
+echo "Starting backend..."
+./gradlew bootRun &  # Backend im Hintergrund starten
 
-# Frontend (Vue.js) starten
-echo "Starting the frontend (Vue.js)..."
+# Warte kurz, um sicherzustellen, dass das Backend läuft
+sleep 5
+
+# Frontend starten
+echo "Starting frontend..."
 cd frontend  # Wechsel ins Frontend-Verzeichnis
-npm run serve  # Startet das Frontend
+npm run serve  # Startet das Vue.js-Frontend
 
-# Lässt das Terminal offen, damit du Fehler sehen kannst
-read -p "Press any key to exit..."
+wait  # Wartet, bis das Skript beendet wird

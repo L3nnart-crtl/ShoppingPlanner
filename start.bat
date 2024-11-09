@@ -1,18 +1,15 @@
 @echo off
 
-REM Backend (Spring Boot mit Gradle) starten
-echo Starting the backend (Spring Boot with Gradle)...
-gradlew bootRun --stacktrace 2>&1  REM Stacktrace anzeigen, um Fehler zu debuggen
-if %ERRORLEVEL% neq 0 (
-    echo Backend start failed. Check the error messages above.
-    pause
-    exit /b 1
-)
-echo Backend started successfully.
+REM Backend starten
+echo Starting backend...
+start gradlew bootRun  REM Das Backend in einem neuen Fenster starten
 
-REM Frontend (Vue.js) starten
-echo Starting the frontend (Vue.js)...
+REM Warte kurz, um sicherzustellen, dass das Backend läuft
+timeout /t 5
+
+REM Frontend starten
+echo Starting frontend...
 cd frontend  REM Wechsel ins Frontend-Verzeichnis
-npm run serve  REM Startet das Frontend
+npm run serve  REM Das Frontend starten
 
-pause  REM Lässt das Konsolenfenster offen
+pause  REM Hält das Fenster offen
