@@ -13,6 +13,7 @@ echo "Backend started successfully."
 # Frontend (Vue.js) starten
 echo "Starting the frontend (Vue.js)..."
 cd frontend  # Wechsel ins Frontend-Verzeichnis
-npm run serve 2>&1  # Startet das Frontend und zeigt Fehler an
+npm run serve  # Startet das Frontend
 
-read -p "Press any key to exit..."  # Lässt das Terminal offen
+# Lässt das Terminal offen, damit du Fehler sehen kannst
+read -p "Press any key to exit..."

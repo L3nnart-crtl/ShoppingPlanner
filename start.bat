@@ -13,11 +13,6 @@ echo Backend started successfully.
 REM Frontend (Vue.js) starten
 echo Starting the frontend (Vue.js)...
 cd frontend  REM Wechsel ins Frontend-Verzeichnis
-npm run serve 2>&1  REM Fehlerausgaben anzeigen
-if %ERRORLEVEL% neq 0 (
-    echo Frontend start failed. Check the error messages above.
-    pause
-    exit /b 1
-)
+npm run serve  REM Startet das Frontend
 
 pause  REM Lässt das Konsolenfenster offen
