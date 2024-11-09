@@ -2,7 +2,7 @@
 
 REM Backend (Spring Boot mit Gradle) starten
 echo Starting the backend (Spring Boot with Gradle)...
-gradlew bootRun 2>&1  REM Fehlerausgaben anzeigen
+gradlew bootRun --stacktrace 2>&1  REM Stacktrace anzeigen, um Fehler zu debuggen
 if %ERRORLEVEL% neq 0 (
     echo Backend start failed. Check the error messages above.
     pause
