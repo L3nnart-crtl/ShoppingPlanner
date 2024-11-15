@@ -1,11 +1,44 @@
 <template>
   <div class="homepage-container">
     <div class="content-container">
-      <!-- Eingabefeld für Rezept -->
+      <!-- Rezept hinzufügen -->
       <AddRecipeForm @recipe-added="addRecipe" />
 
       <!-- Rezeptliste -->
       <RecipeList :recipes="recipes" @recipe-removed="removeRecipe" />
+
+      <!-- MealPlan hinzufügen -->
+      <div class="mealplan-container">
+        <h2>MealPlan erstellen</h2>
+        <form @submit.prevent="createMealPlan" class="mealplan-form">
+          <div class="input-group">
+            <label for="mealDate">Datum:</label>
+            <input type="date" v-model="mealPlanDate" required />
+          </div>
+          <div class="input-group">
+            <label for="breakfast">Frühstück:</label>
+            <select v-model="mealPlan.breakfastId" required>
+              <option v-for="recipe in recipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="lunch">Mittagessen:</label>
+            <select v-model="mealPlan.lunchId" required>
+              <option v-for="recipe in recipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="dinner">Abendessen:</label>
+            <select v-model="mealPlan.dinnerId" required>
+              <option v-for="recipe in recipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
+            </select>
+          </div>
+          <button type="submit" class="submit-button">MealPlan erstellen</button>
+        </form>
+      </div>
+
+      <!-- Kalender-Komponente -->
+      <CalendarComponent :recipes="recipes" />
     </div>
   </div>
 </template>
@@ -13,15 +46,23 @@
 <script>
 import AddRecipeForm from '@/components/AddRecipeForm.vue';
 import RecipeList from '@/components/RecipeList.vue';
+import CalendarComponent from '@/components/CalendarComponent.vue';
 
 export default {
   components: {
     AddRecipeForm,
     RecipeList,
+    CalendarComponent,
   },
   data() {
     return {
       recipes: [],
+      mealPlanDate: '', // Für das Datum des MealPlans
+      mealPlan: {
+        breakfastId: null,
+        lunchId: null,
+        dinnerId: null,
+      },
     };
   },
   async created() {
@@ -37,14 +78,33 @@ export default {
       }
     },
 
-    // Rezept zur Liste hinzufügen, wenn es erfolgreich gespeichert wurde
+    // Rezept zur Liste hinzufügen
     addRecipe(newRecipe) {
-      this.recipes.push(newRecipe);  // Rezept direkt zur Liste hinzufügen
+      this.recipes.push(newRecipe);
     },
 
     // Rezept aus der Liste entfernen
     removeRecipe(recipeId) {
       this.recipes = this.recipes.filter(recipe => recipe.id !== recipeId);
+    },
+
+    // MealPlan für einen bestimmten Tag erstellen
+    async createMealPlan() {
+      try {
+        const response = await this.$axios.post('/api/mealplans', {
+          date: this.mealPlanDate,
+          breakfastRecipeId: this.mealPlan.breakfastId,
+          lunchRecipeId: this.mealPlan.lunchId,
+          dinnerRecipeId: this.mealPlan.dinnerId,
+        });
+
+        const newMealPlan = response.data;
+        this.$set(this.mealPlans, this.mealPlanDate, newMealPlan);
+        this.mealPlanDate = '';
+        this.mealPlan = { breakfastId: null, lunchId: null, dinnerId: null };
+      } catch (error) {
+        console.error('Fehler beim Erstellen des MealPlans:', error);
+      }
     },
   },
 };
