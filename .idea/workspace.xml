@@ -4,14 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Added Delete&#10;- Simplified and improved Backend&#10;- Page does not need to reload">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlan.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/repository/MealPlanRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/MealPlanService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/css/style.css" afterDir="false" />
+    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Style centralized">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlanRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/DataLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/service/MealPlanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/MealPlanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,9 +49,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="CSS File" />
         <option value="Class" />
         <option value="Vue Composition API Component" />
-        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -114,6 +116,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\assets" />
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src" />
       <recent name="C:\Users\leeis\IdeaProjects\team-6" />
       <recent name="C:\Users\leeis\IdeaProjects\FERTIG\backend" />
     </key>
@@ -176,7 +180,7 @@
       <workItem from="1731672207291" duration="192000" />
       <workItem from="1731672445041" duration="12279000" />
       <workItem from="1731684858652" duration="728000" />
-      <workItem from="1731693084407" duration="2651000" />
+      <workItem from="1731693084407" duration="14487000" />
     </task>
     <task id="LOCAL-00001" summary="Monorepo">
       <option name="closed" value="true" />
@@ -234,7 +238,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731684775865</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="- Style centralized">
+      <option name="closed" value="true" />
+      <created>1731700467443</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1731700467443</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,6 +270,7 @@
     <MESSAGE value="database creation" />
     <MESSAGE value="Delete Added" />
     <MESSAGE value="- Added Delete&#10;- Simplified and improved Backend&#10;- Page does not need to reload" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Added Delete&#10;- Simplified and improved Backend&#10;- Page does not need to reload" />
+    <MESSAGE value="- Style centralized" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Style centralized" />
   </component>
 </project>

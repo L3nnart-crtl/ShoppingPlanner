@@ -1,7 +1,8 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import axios from 'axios';
-import './assets/css/style.css';
+import './assets/style.css';
+
 
 
 const app = createApp(App);

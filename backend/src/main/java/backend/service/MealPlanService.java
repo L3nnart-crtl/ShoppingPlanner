@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class MealPlanService {
 
@@ -21,44 +22,37 @@ public class MealPlanService {
         this.recipeRepository = recipeRepository;
     }
 
-    // Mahlzeitenplan für einen bestimmten Tag erstellen
     public MealPlan saveMealPlan(LocalDate date, Long breakfastRecipeId, Long lunchRecipeId, Long dinnerRecipeId) {
-        // Überprüfen, ob bereits ein MealPlan für dieses Datum existiert
-        Optional<MealPlan> existingMealPlan = mealPlanRepository.findByDate(date);
-        if (existingMealPlan.isPresent()) {
+        if (mealPlanRepository.findByDate(date).isPresent()) {
             throw new IllegalArgumentException("Für das Datum " + date + " existiert bereits ein MealPlan.");
         }
 
-        // Rezepte für Frühstück, Mittagessen und Abendessen abrufen
-        Optional<Recipe> breakfastRecipe = recipeRepository.findById(breakfastRecipeId);
-        Optional<Recipe> lunchRecipe = recipeRepository.findById(lunchRecipeId);
-        Optional<Recipe> dinnerRecipe = recipeRepository.findById(dinnerRecipeId);
+        Recipe breakfastRecipe = recipeRepository.findById(breakfastRecipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Frühstücksrezept nicht gefunden: " + breakfastRecipeId));
+        Recipe lunchRecipe = recipeRepository.findById(lunchRecipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Mittagsrezept nicht gefunden: " + lunchRecipeId));
+        Recipe dinnerRecipe = recipeRepository.findById(dinnerRecipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Abendrezept nicht gefunden: " + dinnerRecipeId));
 
-        if (breakfastRecipe.isPresent() && lunchRecipe.isPresent() && dinnerRecipe.isPresent()) {
-            MealPlan mealPlan = new MealPlan(date, breakfastRecipe.get(), lunchRecipe.get(), dinnerRecipe.get());
-            return mealPlanRepository.save(mealPlan);
-        }
-        return null; // Rückgabe von null, wenn eines der Rezepte nicht gefunden wurde
+        MealPlan mealPlan = new MealPlan(date, breakfastRecipe, lunchRecipe, dinnerRecipe);
+        return mealPlanRepository.save(mealPlan);
     }
 
-    // Mahlzeitenplan für ein bestimmtes Datum abfragen
     public MealPlan getMealPlanByDate(LocalDate date) {
         return mealPlanRepository.findByDate(date).orElse(null);
     }
 
-    // Alle Mahlzeitenpläne abfragen
     public List<MealPlan> getAllMealPlans() {
         return mealPlanRepository.findAll();
     }
 
     public boolean deleteMealPlanByDate(String date) {
-        // Deine Logik hier, um den MealPlan anhand des Datums zu finden und zu löschen.
-        Optional<MealPlan> mealPlan = mealPlanRepository.findByDate(LocalDate.parse(date));
-        if (mealPlan.isPresent()) {
-            mealPlanRepository.delete(mealPlan.get());
-            return true;
+        try {
+            Optional<MealPlan> mealPlan = mealPlanRepository.findByDate(LocalDate.parse(date));
+            mealPlan.ifPresent(mealPlanRepository::delete);
+            return mealPlan.isPresent();
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
-
 }

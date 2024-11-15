@@ -1,12 +1,16 @@
 package backend.controller;
 
 import backend.model.MealPlan;
+import backend.model.MealPlanRequest;
 import backend.service.MealPlanService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/mealplans")
@@ -18,42 +22,42 @@ public class MealPlanController {
         this.mealPlanService = mealPlanService;
     }
 
-    // Alle Mahlzeitenpläne abfragen
     @GetMapping
     public List<MealPlan> getAllMealPlans() {
         return mealPlanService.getAllMealPlans();
     }
 
-    // Mahlzeitenplan für ein bestimmtes Datum hinzufügen
     @PostMapping
-    public ResponseEntity<MealPlan> addMealPlan(@RequestParam String date,
-                                                @RequestParam Long breakfastRecipeId,
-                                                @RequestParam Long lunchRecipeId,
-                                                @RequestParam Long dinnerRecipeId) {
+    public ResponseEntity<?> addMealPlan(@RequestBody MealPlanRequest mealPlan) {
         try {
-            LocalDate parsedDate = LocalDate.parse(date); // Das Datum im Format YYYY-MM-DD
-            MealPlan mealPlan = mealPlanService.saveMealPlan(parsedDate, breakfastRecipeId, lunchRecipeId, dinnerRecipeId);
-            return ResponseEntity.ok(mealPlan);
+            MealPlan mealPlanToAdd = mealPlanService.saveMealPlan(
+                    mealPlan.getDate(),
+                    mealPlan.getBreakfastRecipeId(),
+                    mealPlan.getLunchRecipeId(),
+                    mealPlan.getDinnerRecipeId()
+            );
+            URI location = URI.create("/api/mealplans/" + mealPlanToAdd.getId());
+            return ResponseEntity.created(location).body(mealPlanToAdd);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);  // Rückgabe einer schlechten Anfrage, wenn der Plan bereits existiert
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ein unerwarteter Fehler ist aufgetreten.");
         }
     }
 
-    // Mahlzeitenplan für einen bestimmten Tag abfragen
     @GetMapping("/{date}")
     public ResponseEntity<MealPlan> getMealPlanByDate(@PathVariable String date) {
         try {
-            LocalDate parsedDate = LocalDate.parse(date);  // Das Datum im Format YYYY-MM-DD
+            LocalDate parsedDate = LocalDate.parse(date);
             MealPlan mealPlan = mealPlanService.getMealPlanByDate(parsedDate);
             return mealPlan != null ? ResponseEntity.ok(mealPlan) : ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();  // Fehlerbehandlung bei ungültigem Datum
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping("/{date}")
     public ResponseEntity<Void> deleteMealPlan(@PathVariable String date) {
-        // Hier sollte eine Methode in deinem Service existieren, die den MealPlan nach Datum löscht.
         boolean isDeleted = mealPlanService.deleteMealPlanByDate(date);
         if (isDeleted) {
             return ResponseEntity.noContent().build();
