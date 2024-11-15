@@ -10,7 +10,7 @@
             {{ ingredient.name }} - {{ ingredient.quantity }} {{ ingredient.unit }}
           </li>
         </ul>
-        <button @click="removeRecipe(recipe.id)" class="delete-button">Rezept löschen</button>
+        <button @click="confirmRemoveRecipe(recipe.id)" class="delete-button">Rezept löschen</button>
       </div>
     </div>
     <p v-else class="no-recipes">Keine Rezepte verfügbar.</p>
@@ -23,21 +23,26 @@ export default {
     recipes: Array,
   },
   methods: {
+    confirmRemoveRecipe(recipeId) {
+      // Bestätigung mit einem einfachen Dialog
+      const confirmed = window.confirm("Bist du sicher, dass du dieses Rezept löschen möchtest?");
+      if (confirmed) {
+        this.removeRecipe(recipeId);
+      }
+    },
     async removeRecipe(recipeId) {
       try {
-        // Rezept löschen (DELETE-Anfrage an Backend-API)
-        await this.$axios.delete(`recipes/${recipeId}`);
-
-        // Erfolgreiches Löschen anzeigen (kann angepasst werden)
-        alert('Rezept erfolgreich entfernt');
-
-        // Rezept aus der angezeigten Liste entfernen
-        this.$emit('recipe-removed', recipeId);
+        const response = await this.$axios.delete(`/recipes/${recipeId}`);
+        if (response.status === 200) {
+          this.$emit('recipe-removed', recipeId);  // Event auslösen, um das Rezept zu entfernen
+        } else {
+          console.error('Fehler beim Löschen des Rezepts:', response);
+        }
       } catch (error) {
         console.error('Fehler beim Entfernen des Rezepts:', error);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -105,4 +110,19 @@ export default {
   font-size: 16px;
   color: #888;
 }
+
+.delete-button {
+  background-color: #e57373;
+  color: white;
+  padding: 8px 12px; /* Etwas kleinerer Button */
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
+
 </style>

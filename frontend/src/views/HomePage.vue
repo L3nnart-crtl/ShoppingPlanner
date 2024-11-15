@@ -2,14 +2,10 @@
   <div class="homepage-container">
     <div class="content-container">
       <!-- Eingabefeld für Rezept -->
-      <div class="form-container">
-        <AddRecipeForm @recipe-added="addRecipe" />
-      </div>
+      <AddRecipeForm @recipe-added="addRecipe" />
 
       <!-- Rezeptliste -->
-      <div class="recipe-list-container">
-        <RecipeList :recipes="recipes" />
-      </div>
+      <RecipeList :recipes="recipes" @recipe-removed="removeRecipe" />
     </div>
   </div>
 </template>
@@ -40,13 +36,20 @@ export default {
         console.error('Fehler beim Abrufen der Rezepte:', error);
       }
     },
+
+    // Rezept zur Liste hinzufügen, wenn es erfolgreich gespeichert wurde
     addRecipe(newRecipe) {
-      console.log('Neues Rezept hinzugefügt:', newRecipe); // Debugging
-      this.recipes.push(newRecipe); // Rezept zur Liste hinzufügen
+      this.recipes.push(newRecipe);  // Rezept direkt zur Liste hinzufügen
+    },
+
+    // Rezept aus der Liste entfernen
+    removeRecipe(recipeId) {
+      this.recipes = this.recipes.filter(recipe => recipe.id !== recipeId);
     },
   },
 };
 </script>
+
 
 <style scoped>
 .homepage-container {

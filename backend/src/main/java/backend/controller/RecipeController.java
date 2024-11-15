@@ -10,12 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
-
-@CrossOrigin(origins = {
-        "http://localhost",
- "http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]"
-})
-
 public class RecipeController {
 
     private final RecipeService recipeService;
@@ -24,27 +18,27 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
+    // POST: Rezept hinzufügen
     @PostMapping
-    public ResponseEntity<String> addRecipe(@RequestBody Recipe recipe) {
-        recipeService.saveRecipe(recipe);
-        return new ResponseEntity<>("Rezept hinzugefügt!", HttpStatus.CREATED);
+    public Recipe addRecipe(@RequestBody Recipe recipe) {
+        return recipeService.saveRecipe(recipe);
     }
 
-
+    // GET: Alle Rezepte abrufen
     @GetMapping
     public List<Recipe> getAllRecipes() {
         return recipeService.getAllRecipes();
     }
 
-
+    // DELETE: Rezept löschen
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteRecipe(@PathVariable Long id) {
-        boolean isDeleted = recipeService.deleteRecipe(id);
-        if (isDeleted) {
-            return new ResponseEntity<>("Rezept erfolgreich gelöscht!", HttpStatus.OK);
+        boolean deleted = recipeService.deleteRecipe(id);
+        if (deleted) {
+            return ResponseEntity.ok().build();  // Erfolgreiche Löschung
         } else {
-            return new ResponseEntity<>("Rezept nicht gefunden!", HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Rezept nicht gefunden!");  // Fehler, wenn Rezept nicht gefunden
         }
     }
-
 }

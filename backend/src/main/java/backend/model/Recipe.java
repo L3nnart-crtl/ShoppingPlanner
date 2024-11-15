@@ -1,5 +1,7 @@
 package backend.model;
 
+import backend.model.Ingredient;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -13,22 +15,23 @@ public class Recipe {
     private Long id;
 
     private String name;
-    private String description;  // Neue Eigenschaft für die Beschreibung
+    private String description;
 
-    @OneToMany(mappedBy = "recipeId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Ingredient> ingredients;
 
-
+    // Standard Constructor
     public Recipe() {}
 
-    // Constructor
+    // Constructor with parameters
     public Recipe(String name, String description, List<Ingredient> ingredients) {
         this.name = name;
         this.description = description;
         this.ingredients = ingredients;
     }
 
-    // Getters, Setters
+    // Getter and Setter methods
     public Long getId() {
         return id;
     }
@@ -45,11 +48,11 @@ public class Recipe {
         this.name = name;
     }
 
-    public String getDescription() {  // Getter für die Beschreibung
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {  // Setter für die Beschreibung
+    public void setDescription(String description) {
         this.description = description;
     }
 

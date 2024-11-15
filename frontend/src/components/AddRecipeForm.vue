@@ -27,9 +27,6 @@
       <button type="button" @click="addIngredient" class="add-button">Zutat hinzufügen</button>
       <button type="submit" class="submit-button">Rezept speichern</button>
     </form>
-
-    <!-- Button zum Entfernen des Rezepts -->
-    <button v-if="recipe.id" @click="removeRecipe" class="remove-recipe-button">Rezept entfernen</button>
   </div>
 </template>
 
@@ -38,11 +35,11 @@ export default {
   data() {
     return {
       recipe: {
-        id: null,  // ID des Rezepts, das entfernt werden soll
         name: '',
         description: '',
         ingredients: [{ name: '', quantity: '', unit: '' }],
       },
+      isSubmitting: false,
     };
   },
   methods: {
@@ -53,46 +50,28 @@ export default {
       this.recipe.ingredients.splice(index, 1);
     },
     async submitRecipe() {
-      try {
-        let response;
-        if (this.recipe.id) {
-          // Update des Rezepts (wenn eine ID vorhanden ist)
-          response = await this.$axios.put(`/recipes/${this.recipe.id}`, this.recipe);
-        } else {
-          // Neues Rezept erstellen
-          response = await this.$axios.post('/recipes', this.recipe);
-        }
+      if (this.isSubmitting) return;
+      this.isSubmitting = true;
 
-        // Rezept sofort in die Rezeptliste einfügen
+      try {
+        // Sende das Rezept an das Backend
+        const response = await this.$axios.post('/recipes', this.recipe);
+
+        // Nur das Rezept zur Liste der Elternkomponente hinzufügen, wenn es erfolgreich gespeichert wurde
         this.$emit('recipe-added', response.data);
-
-        // Seite neu laden
-        window.location.reload();
-
-        // Formular nach der Übertragung zurücksetzen
-        this.recipe = { name: '', description: '', ingredients: [{ name: '', quantity: '', unit: '' }] };
-      } catch (error) {
-        console.error('Fehler beim Hinzufügen des Rezepts:', error);
-      }
-    },
-    async removeRecipe() {
-      try {
-        // Rezept entfernen
-        await this.$axios.delete(`/recipes/${this.recipe.id}`);
-
-        // Erfolgreiches Löschen anzeigen (kann angepasst werden)
-        alert('Rezept erfolgreich entfernt');
 
         // Formular zurücksetzen
         this.recipe = { name: '', description: '', ingredients: [{ name: '', quantity: '', unit: '' }] };
-        this.$emit('recipe-removed');
       } catch (error) {
-        console.error('Fehler beim Entfernen des Rezepts:', error);
+        console.error('Fehler beim Hinzufügen des Rezepts:', error);
+      } finally {
+        this.isSubmitting = false;
       }
     },
   },
 };
 </script>
+
 
 // Design
 <style scoped>

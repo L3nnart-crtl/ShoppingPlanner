@@ -1,36 +1,35 @@
 package backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 
-@Entity // Markiert die Klasse als JPA-Entität
+@Entity
 @Table(name = "Ingredient")
 public class Ingredient {
 
-    @Id // Markiert das 'id'-Feld als Primärschlüssel
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Definiert die automatische Generierung des Schlüssels
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
     private String quantity;
 
-    // Beziehung zur Recipe-Tabelle (optional, wenn du die Beziehung modellieren möchtest)
-    private Long recipeId;
+    @ManyToOne // Each ingredient belongs to exactly one recipe
+    @JoinColumn(name = "recipe_id", nullable = false)
+    @JsonBackReference
+    private Recipe recipe;
 
     // Standard Constructor
     public Ingredient() {}
 
-    // Constructor mit Parametern
-    public Ingredient(String name, String quantity, Long recipeId) {
+    // Constructor with parameters
+    public Ingredient(String name, String quantity, Recipe recipe) {
         this.name = name;
         this.quantity = quantity;
-        this.recipeId = recipeId;
+        this.recipe = recipe;
     }
 
-    // Getter und Setter
+    // Getter and Setter methods
     public Long getId() {
         return id;
     }
@@ -55,11 +54,11 @@ public class Ingredient {
         this.quantity = quantity;
     }
 
-    public Long getRecipeId() {
-        return recipeId;
+    public Recipe getRecipe() {
+        return recipe;
     }
 
-    public void setRecipeId(Long recipeId) {
-        this.recipeId = recipeId;
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 }
