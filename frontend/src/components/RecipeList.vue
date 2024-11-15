@@ -10,6 +10,7 @@
             {{ ingredient.name }} - {{ ingredient.quantity }} {{ ingredient.unit }}
           </li>
         </ul>
+        <button @click="removeRecipe(recipe.id)" class="delete-button">Rezept löschen</button>
       </div>
     </div>
     <p v-else class="no-recipes">Keine Rezepte verfügbar.</p>
@@ -21,8 +22,25 @@ export default {
   props: {
     recipes: Array,
   },
+  methods: {
+    async removeRecipe(recipeId) {
+      try {
+        // Rezept löschen (DELETE-Anfrage an Backend-API)
+        await this.$axios.delete(`recipes/${recipeId}`);
+
+        // Erfolgreiches Löschen anzeigen (kann angepasst werden)
+        alert('Rezept erfolgreich entfernt');
+
+        // Rezept aus der angezeigten Liste entfernen
+        this.$emit('recipe-removed', recipeId);
+      } catch (error) {
+        console.error('Fehler beim Entfernen des Rezepts:', error);
+      }
+    },
+  },
 };
 </script>
+
 //Design
 <style scoped>
 .recipe-list-container {
