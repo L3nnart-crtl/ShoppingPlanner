@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,8 +24,16 @@ public class MealPlanController {
     }
 
     @GetMapping
-    public List<MealPlan> getAllMealPlans() {
-        return mealPlanService.getAllMealPlans();
+    public List<MealPlanResponse> getAllMealPlans() {
+
+        List<MealPlan> mealPlans = mealPlanService.getAllMealPlans();
+        List<MealPlanResponse> mealPlansResponseList = new ArrayList<>();
+        MealPlanResponse mealPlanResponse;
+        for (MealPlan mealPlan : mealPlans) {
+            mealPlanResponse = new MealPlanResponse(mealPlan.getBreakfastRecipe().getId(),mealPlan.getLunchRecipe().getId(),mealPlan.getDinnerRecipe().getId());
+            mealPlansResponseList.add(mealPlanResponse);
+        }
+        return mealPlansResponseList;
     }
 
     @PostMapping
@@ -46,11 +55,16 @@ public class MealPlanController {
     }
 
     @GetMapping("/{date}")
-    public ResponseEntity<MealPlan> getMealPlanByDate(@PathVariable String date) {
+    public ResponseEntity<MealPlanResponse> getMealPlanByDate(@PathVariable String date) {
         try {
             LocalDate parsedDate = LocalDate.parse(date);
             MealPlan mealPlan = mealPlanService.getMealPlanByDate(parsedDate);
-            return mealPlan != null ? ResponseEntity.ok(mealPlan) : ResponseEntity.notFound().build();
+            if (mealPlan != null) {
+                MealPlanResponse mealPlanResponse = new MealPlanResponse(mealPlan.getBreakfastRecipe().getId(),mealPlan.getLunchRecipe().getId(),mealPlan.getDinnerRecipe().getId());
+                return ResponseEntity.ok(mealPlanResponse);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
