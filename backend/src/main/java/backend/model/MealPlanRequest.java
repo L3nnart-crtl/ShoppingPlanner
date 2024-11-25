@@ -2,6 +2,7 @@ package backend.model;
 import java.time.LocalDate;
 
 public class MealPlanRequest {
+
     private LocalDate date;
     private Long breakfastRecipeId;
     private Long lunchRecipeId;

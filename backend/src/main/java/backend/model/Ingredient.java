@@ -13,8 +13,9 @@ public class Ingredient {
 
     private String name;
     private String quantity;
+    private String unit;  // Hinzugefügt für Einheit der Zutaten
 
-    @ManyToOne // Each ingredient belongs to exactly one recipe
+    @ManyToOne
     @JoinColumn(name = "recipe_id", nullable = false)
     @JsonBackReference
     private Recipe recipe;
@@ -23,42 +24,27 @@ public class Ingredient {
     public Ingredient() {}
 
     // Constructor with parameters
-    public Ingredient(String name, String quantity, Recipe recipe) {
+    public Ingredient(String name, String quantity, String unit, Recipe recipe) {
         this.name = name;
         this.quantity = quantity;
+        this.unit = unit;
         this.recipe = recipe;
     }
 
-    // Getter and Setter methods
-    public Long getId() {
-        return id;
+    // Getter und Setter
+    public String getUnit() {
+        return unit;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(String quantity) {
-        this.quantity = quantity;
-    }
-
-    public Recipe getRecipe() {
-        return recipe;
-    }
-
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
     }
 }

@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/mealplans")
@@ -25,28 +23,23 @@ public class MealPlanController {
 
     @GetMapping
     public List<MealPlanResponse> getAllMealPlans() {
-
         List<MealPlan> mealPlans = mealPlanService.getAllMealPlans();
-        List<MealPlanResponse> mealPlansResponseList = new ArrayList<>();
-        MealPlanResponse mealPlanResponse;
-        for (MealPlan mealPlan : mealPlans) {
-            mealPlanResponse = new MealPlanResponse(mealPlan.getBreakfastRecipe().getId(),mealPlan.getLunchRecipe().getId(),mealPlan.getDinnerRecipe().getId());
-            mealPlansResponseList.add(mealPlanResponse);
-        }
-        return mealPlansResponseList;
+        return mealPlans.stream()
+                .map(mealPlan -> new MealPlanResponse(mealPlan))
+                .toList();
     }
 
     @PostMapping
-    public ResponseEntity<?> addMealPlan(@RequestBody MealPlanRequest mealPlan) {
+    public ResponseEntity<?> addMealPlan(@RequestBody MealPlanRequest mealPlanRequest) {
         try {
             MealPlan mealPlanToAdd = mealPlanService.saveMealPlan(
-                    mealPlan.getDate(),
-                    mealPlan.getBreakfastRecipeId(),
-                    mealPlan.getLunchRecipeId(),
-                    mealPlan.getDinnerRecipeId()
+                    mealPlanRequest.getDate(),
+                    mealPlanRequest.getBreakfastRecipeId(),
+                    mealPlanRequest.getLunchRecipeId(),
+                    mealPlanRequest.getDinnerRecipeId()
             );
             URI location = URI.create("/api/mealplans/" + mealPlanToAdd.getId());
-            return ResponseEntity.created(location).body(mealPlanToAdd);
+            return ResponseEntity.created(location).body(new MealPlanResponse(mealPlanToAdd));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -55,13 +48,12 @@ public class MealPlanController {
     }
 
     @GetMapping("/{date}")
-    public ResponseEntity<MealPlanResponse> getMealPlanByDate(@PathVariable String date) {
+    public ResponseEntity<?> getMealPlanByDate(@PathVariable String date) {
         try {
             LocalDate parsedDate = LocalDate.parse(date);
             MealPlan mealPlan = mealPlanService.getMealPlanByDate(parsedDate);
             if (mealPlan != null) {
-                MealPlanResponse mealPlanResponse = new MealPlanResponse(mealPlan.getBreakfastRecipe().getId(),mealPlan.getLunchRecipe().getId(),mealPlan.getDinnerRecipe().getId());
-                return ResponseEntity.ok(mealPlanResponse);
+                return ResponseEntity.ok(new MealPlanResponse(mealPlan));
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -78,5 +70,4 @@ public class MealPlanController {
         }
         return ResponseEntity.notFound().build();
     }
-
 }

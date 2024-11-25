@@ -1,10 +1,9 @@
 package backend.model;
 
-import backend.model.Ingredient;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Recipe")
@@ -17,6 +16,10 @@ public class Recipe {
     private String name;
     private String description;
 
+    @ElementCollection
+    @Enumerated(EnumType.STRING)  // Speichert das Enum als String in der Datenbank
+    private Set<Tag> tags;  // Set von vordefinierten Tags
+
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Ingredient> ingredients;
@@ -25,13 +28,14 @@ public class Recipe {
     public Recipe() {}
 
     // Constructor with parameters
-    public Recipe(String name, String description, List<Ingredient> ingredients) {
+    public Recipe(String name, String description, List<Ingredient> ingredients, Set<Tag> tags) {
         this.name = name;
         this.description = description;
         this.ingredients = ingredients;
+        this.tags = tags;
     }
 
-    // Getter and Setter methods
+    // Getter und Setter
     public Long getId() {
         return id;
     }
@@ -54,6 +58,14 @@ public class Recipe {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     public List<Ingredient> getIngredients() {

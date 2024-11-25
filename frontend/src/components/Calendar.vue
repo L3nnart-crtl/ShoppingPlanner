@@ -1,30 +1,29 @@
 <template>
   <div class="calendar-container">
-    <h2>Kalender</h2>
+    <h2>Meal Plan Kalender</h2>
 
-    <!-- Navigation für die Woche -->
     <div class="week-navigation">
       <button @click="changeWeek(-1)">&#8592; Vorherige Woche</button>
-      <span>{{ currentWeekStartDate }} bis {{ currentWeekEndDate }}</span>
+      <span>{{ currentWeekRange }}</span>
       <button @click="changeWeek(1)">Nächste Woche &#8594;</button>
     </div>
 
-    <!-- Kalender: Eine Woche anzeigen -->
     <div class="calendar">
       <div class="calendar-week">
         <div v-for="day in currentWeekDays" :key="day.date" class="calendar-day">
           <div class="day-header">
-            <span>{{ day.shortWeekday }}</span> <!-- Nur Wochentagsabkürzung -->
+            <span>{{ day.shortWeekday }}</span>
+            <span>{{ day.date }}</span>
           </div>
           <div v-if="mealPlans[day.date]">
-            <p>Frühstück: {{ mealPlans[day.date].breakfastRecipe.name }}</p>
-            <p>Mittagessen: {{ mealPlans[day.date].lunchRecipe.name }}</p>
-            <p>Abendessen: {{ mealPlans[day.date].dinnerRecipe.name }}</p>
+            <p class="meal-field">Frühstück: {{ mealPlans[day.date].breakfastRecipeName }}</p>
+            <p class="meal-field">Mittagessen: {{ mealPlans[day.date].lunchRecipeName }}</p>
+            <p class="meal-field">Abendessen: {{ mealPlans[day.date].dinnerRecipeName }}</p>
             <button @click="removeMealPlan(day.date)" class="remove-button">Entfernen</button>
           </div>
           <div v-else>
             <p>Kein MealPlan vorhanden</p>
-            <button @click="openModal(day.date)">MealPlan hinzufügen</button>
+            <button @click="openModal(day.date)" class="remove-button">MealPlan hinzufügen</button>
           </div>
         </div>
       </div>
@@ -34,8 +33,6 @@
     <div v-if="isModalVisible" class="modal-overlay">
       <div class="modal-content">
         <h3>MealPlan für {{ selectedDate }}</h3>
-
-        <!-- Frühstück -->
         <div>
           <label>Frühstück:</label>
           <select v-model="mealPlan.breakfastId">
@@ -43,7 +40,6 @@
           </select>
         </div>
 
-        <!-- Mittagessen -->
         <div>
           <label>Mittagessen:</label>
           <select v-model="mealPlan.lunchId">
@@ -51,7 +47,6 @@
           </select>
         </div>
 
-        <!-- Abendessen -->
         <div>
           <label>Abendessen:</label>
           <select v-model="mealPlan.dinnerId">
@@ -59,7 +54,6 @@
           </select>
         </div>
 
-        <!-- Aktionen: Speichern / Schließen -->
         <div class="modal-actions">
           <button @click="saveMealPlan">Speichern</button>
           <button @click="closeModal">Abbrechen</button>
@@ -70,125 +64,159 @@
 </template>
 
 <script>
+import { ref, reactive, onMounted } from 'vue';
+
 export default {
   props: ['recipes'],
-  data() {
-    return {
-      mealPlans: {},
-      currentDate: new Date(),
-      currentWeekDays: [],
-      currentWeekStartDate: '',
-      currentWeekEndDate: '',
-      isModalVisible: false,
-      selectedDate: '',
-      mealPlan: {
-        breakfastId: null,
-        lunchId: null,
-        dinnerId: null,
-      },
-    };
-  },
-  async created() {
-    this.loadWeek();
-  },
-  methods: {
-    // Lädt die aktuellen 7 Tage (Woche)
-    async loadWeek() {
-      const startOfWeek = this.getStartOfWeek(this.currentDate);
-      this.currentWeekDays = this.getDaysOfWeek(startOfWeek);
-      this.loadMealPlansForWeek();
-    },
+  setup() {
+    const mealPlans = ref({});
+    const currentDate = ref(new Date());
+    const currentWeekDays = ref([]);
+    const currentWeekRange = ref('');
+    const isModalVisible = ref(false);
+    const selectedDate = ref('');
+    const mealPlan = reactive({
+      breakfastId: null,
+      lunchId: null,
+      dinnerId: null,
+    });
 
-    // Lädt die MealPlans für die gesamte Woche
-    async loadMealPlansForWeek() {
-      for (let day of this.currentWeekDays) {
-        try {
-          const response = await this.$axios.get(`/mealplans/${day.date}`);
-          if (response.data) {
-            this.$set(this.mealPlans, day.date, response.data);
-          }
-        } catch (error) {
-          console.error('Fehler beim Laden des MealPlans für den Tag:', error);
-        }
-      }
-      this.updateWeekRange();
-    },
+    onMounted(() => {
+      updateWeekDays();
+    });
 
-    // Öffnet das Modal zum Hinzufügen eines MealPlans
-    openModal(date) {
-      this.selectedDate = date;
-      this.isModalVisible = true;
-    },
-
-    // Schließt das Modal
-    closeModal() {
-      this.isModalVisible = false;
-      this.selectedDate = '';
-      this.mealPlan = { breakfastId: null, lunchId: null, dinnerId: null }; // Reset
-    },
-
-    // Speichert den MealPlan und schließt das Modal
-    async saveMealPlan() {
+    async function loadMealPlanByDate(date) {
       try {
-        const response = await this.$axios.post('/mealplans', {
-          date: this.selectedDate,
-          breakfastRecipeId: this.mealPlan.breakfastId,
-          lunchRecipeId: this.mealPlan.lunchId,
-          dinnerRecipeId: this.mealPlan.dinnerId,
-        });
-        this.$set(this.mealPlans, this.selectedDate, response.data);
-        this.closeModal();
-      } catch (error) {
-        console.error('Fehler beim Speichern des MealPlans:', error);
-      }
-    },
+        const response = await fetch(`/api/mealplans/${date}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
 
-    // Berechnet das Startdatum der aktuellen Woche (Montag)
-    getStartOfWeek(date) {
+        mealPlans.value[date] = {
+          breakfastRecipeName: data.breakfastRecipeName,
+          lunchRecipeName: data.lunchRecipeName,
+          dinnerRecipeName: data.dinnerRecipeName,
+        };
+      } catch (error) {
+        console.error(`Fehler beim Abrufen des MealPlans für ${date}:`, error);
+      }
+    }
+
+    function updateWeekDays() {
+      const startOfWeek = getStartOfWeek(currentDate.value);
+      currentWeekDays.value = getDaysOfWeek(startOfWeek);
+      currentWeekRange.value = `${startOfWeek.toLocaleDateString()} - ${getEndOfWeek(startOfWeek).toLocaleDateString()}`;
+      currentWeekDays.value.forEach(day => loadMealPlanByDate(day.date));
+    }
+
+    function getStartOfWeek(date) {
       const startOfWeek = new Date(date);
       const day = startOfWeek.getDay();
-      const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Montag als ersten Tag der Woche
+      const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
       startOfWeek.setDate(diff);
+      startOfWeek.setHours(0, 0, 0, 0);
       return startOfWeek;
-    },
+    }
 
-    // Gibt die 7 Tage der aktuellen Woche zurück
-    getDaysOfWeek(startOfWeek) {
+    function getEndOfWeek(startOfWeek) {
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      return endOfWeek;
+    }
+
+    function getDaysOfWeek(startOfWeek) {
       const days = [];
       for (let i = 0; i < 7; i++) {
         const day = new Date(startOfWeek);
         day.setDate(startOfWeek.getDate() + i);
-        const weekday = day.toLocaleDateString('de-DE', { weekday: 'short' }); // Wochentagsabkürzung
-        days.push({ date: day.toISOString().split('T')[0], shortWeekday: weekday });
+        const weekday = day.toLocaleDateString('de-DE', { weekday: 'short' });
+        days.push({
+          date: day.toISOString().split('T')[0],
+          shortWeekday: weekday,
+        });
       }
       return days;
-    },
+    }
 
-    // Wechsel zwischen den Wochen
-    changeWeek(direction) {
-      const currentDate = new Date(this.currentDate);
-      currentDate.setDate(currentDate.getDate() + (direction * 7));
-      this.currentDate = currentDate;
-      this.loadWeek();
-    },
+    function changeWeek(direction) {
+      currentDate.value.setDate(currentDate.value.getDate() + direction * 7);
+      updateWeekDays();
+    }
 
-    // Aktualisiert den angezeigten Wochenbereich
-    updateWeekRange() {
-      const startOfWeek = this.getStartOfWeek(this.currentDate);
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
-      this.currentWeekStartDate = startOfWeek.toLocaleDateString();
-      this.currentWeekEndDate = endOfWeek.toLocaleDateString();
-    },
+    function openModal(date) {
+      selectedDate.value = date;
+      isModalVisible.value = true;
+    }
+
+    function closeModal() {
+      isModalVisible.value = false;
+      selectedDate.value = '';
+      mealPlan.breakfastId = null;
+      mealPlan.lunchId = null;
+      mealPlan.dinnerId = null;
+    }
+
+    async function saveMealPlan() {
+      try {
+        const response = await fetch('/api/mealplans', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            date: selectedDate.value,
+            breakfastRecipeId: mealPlan.breakfastId,
+            lunchRecipeId: mealPlan.lunchId,
+            dinnerRecipeId: mealPlan.dinnerId,
+          }),
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        const newMealPlan = {
+          breakfastRecipeName: data.breakfastRecipeName,
+          lunchRecipeName: data.lunchRecipeName,
+          dinnerRecipeName: data.dinnerRecipeName,
+        };
+        mealPlans.value[selectedDate.value] = newMealPlan;
+        closeModal();
+      } catch (error) {
+        console.error('Fehler beim Speichern des MealPlans:', error);
+      }
+    }
+
+    async function removeMealPlan(date) {
+      try {
+        const response = await fetch(`/api/mealplans/${date}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        delete mealPlans.value[date];
+      } catch (error) {
+        console.error('Fehler beim Entfernen des MealPlans:', error);
+      }
+    }
+
+    return {
+      mealPlans,
+      currentWeekDays,
+      currentWeekRange,
+      isModalVisible,
+      selectedDate,
+      mealPlan,
+      changeWeek,
+      openModal,
+      closeModal,
+      saveMealPlan,
+      removeMealPlan,
+    };
   },
 };
 </script>
 
 <style scoped>
-/* Stil für die Kalender-Komponente */
+/* Styling for the calendar component */
 .calendar-container {
   padding: 20px;
-  margin-top: 20px;  /* Füge hier einen Abstand oben hinzu, um den Kalender weiter nach oben zu schieben */
+  margin-top: 20px;
 }
 
 .week-navigation {
@@ -204,7 +232,7 @@ export default {
 }
 
 .calendar-week {
-  display: flex;  /* Horizontaler Layout für die Woche */
+  display: flex; /* Horizontal layout for the week */
   gap: 10px;
 }
 
@@ -214,6 +242,10 @@ export default {
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   text-align: center;
+  width: 120px; /* Fixed width for each day cell */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensures that content is spaced out and buttons are at the bottom */
 }
 
 .day-header {
@@ -221,17 +253,29 @@ export default {
   font-weight: bold;
 }
 
-.remove-button {
-  background-color: #e57373;
-  color: white;
-  padding: 8px 12px;
+.meal-field {
   font-size: 14px;
-  border-radius: 6px;
+  word-wrap: break-word; /* Text kann in mehrere Zeilen umbrechen, falls nötig */
+  white-space: normal; /* Verhindert, dass der Text in einer einzigen Zeile bleibt */
+  line-height: 1.5; /* Bessere Lesbarkeit durch einen angenehmen Zeilenabstand */
+  margin-bottom: 10px; /* Abstand nach unten für bessere Übersicht */
+  padding: 5px; /* Etwas Innenabstand für bessere Sichtbarkeit */
+  background-color: #f8f8f8; /* Optional: Hellt den Hintergrund etwas auf */
+  border-radius: 5px; /* Runde Ecken für die Felder */
+}
+
+.remove-button {
+  margin-top: auto;
+  padding: 8px;
+  background-color: #d9534f;
+  color: white;
+  border: none;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 .remove-button:hover {
-  background-color: #d32f2f;
+  background-color: #c9302c;
 }
 
 .modal-overlay {
@@ -250,22 +294,13 @@ export default {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  width: 300px;
+  width: 400px;
+  text-align: center;
 }
 
 .modal-actions {
+  margin-top: 20px;
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
-}
-
-button {
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #ddd;
 }
 </style>

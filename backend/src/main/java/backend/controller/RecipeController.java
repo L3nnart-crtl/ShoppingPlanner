@@ -2,7 +2,7 @@ package backend.controller;
 
 import backend.model.Recipe;
 import backend.service.RecipeService;
-import org.springframework.http.HttpStatus;
+import backend.model.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,16 +18,23 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    // POST: Rezept hinzufügen
-    @PostMapping
-    public Recipe addRecipe(@RequestBody Recipe recipe) {
-        return recipeService.saveRecipe(recipe);
-    }
-
     // GET: Alle Rezepte abrufen
     @GetMapping
     public List<Recipe> getAllRecipes() {
         return recipeService.getAllRecipes();
+    }
+
+    // GET: Rezepte suchen basierend auf Name und Tags
+    @GetMapping("/search")
+    public List<Recipe> searchRecipes(@RequestParam(required = false) String name,
+                                      @RequestParam(required = false) List<String> tags) {
+        return recipeService.searchRecipes(name, tags);
+    }
+
+    // POST: Rezept hinzufügen
+    @PostMapping
+    public Recipe addRecipe(@RequestBody Recipe recipe) {
+        return recipeService.saveRecipe(recipe);
     }
 
     // DELETE: Rezept löschen
@@ -37,7 +44,7 @@ public class RecipeController {
         if (deleted) {
             return ResponseEntity.ok().build();  // Erfolgreiche Löschung
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(404)
                     .body("Rezept nicht gefunden!");  // Fehler, wenn Rezept nicht gefunden
         }
     }

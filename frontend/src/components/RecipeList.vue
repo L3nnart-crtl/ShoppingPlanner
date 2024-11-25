@@ -15,18 +15,30 @@
     <!-- Modal für Rezeptdetails -->
     <div v-if="isModalVisible" class="modal-overlay">
       <div class="modal-content">
-        <!-- Delete Button für das Rezept, nur sichtbar wenn das Rezept geöffnet ist -->
+        <!-- Löschen Button im Modal oben rechts -->
         <button v-if="selectedRecipe" @click="confirmDeleteRecipe(selectedRecipe)" class="delete-button">Rezept löschen</button>
 
         <h4>{{ selectedRecipe.name }}</h4>
         <p><strong>Beschreibung:</strong> {{ selectedRecipe.description || 'Keine Beschreibung verfügbar.' }}</p>
+
         <p><strong>Zutaten:</strong></p>
-        <ul>
+        <ul class="ingredient-list">
           <li v-for="(ingredient, index) in selectedRecipe.ingredients" :key="index">
             {{ ingredient.name }} - {{ ingredient.quantity }} {{ ingredient.unit }}
           </li>
         </ul>
-        <p><strong>Zubereitung:</strong> {{ selectedRecipe.instructions || 'Keine Zubereitungshinweise verfügbar.' }}</p>
+
+        <!-- Tags anzeigen -->
+        <p><strong>Tags:</strong></p>
+        <div class="tags-container">
+          <div
+              v-for="(tag, index) in selectedRecipe.tags"
+              :key="index"
+              class="tag-box"
+          >
+            {{ getTagLabel(tag) }}
+          </div>
+        </div>
 
         <!-- Modal Aktionen -->
         <div class="modal-actions">
@@ -50,6 +62,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   props: {
     recipes: Array,
@@ -84,12 +98,18 @@ export default {
     // Löscht das Rezept
     async deleteRecipe() {
       try {
-        // Hier könnte deine API-Anfrage stehen, um das Rezept zu löschen
-        this.$emit('recipe-removed', this.selectedRecipe.id); // Event auslösen, um das Rezept zu entfernen
-        this.isDeleteModalVisible = false; // Bestätigungs-Modal schließen
-        this.selectedRecipe = null; // Rezept zurücksetzen
+        // Sende eine DELETE-Anfrage an das Backend, um das Rezept zu löschen
+        await axios.delete(`/api/recipes/${this.selectedRecipe.id}`); // Ersetze den URL mit deinem Backend-Endpunkt
+
+        // Event auslösen, um das Rezept in der UI zu entfernen
+        this.$emit('recipe-removed', this.selectedRecipe.id);
+
+        // Bestätigungs-Modal schließen und Rezept zurücksetzen
+        this.isDeleteModalVisible = false;
+        this.selectedRecipe = null;
       } catch (error) {
         console.error('Fehler beim Löschen des Rezepts:', error);
+        // Hier kannst du auch eine Fehlerbehandlung einbauen, z.B. eine Benachrichtigung für den Benutzer
       }
     },
 
@@ -97,6 +117,67 @@ export default {
     closeDeleteModal() {
       this.isDeleteModalVisible = false;
       this.selectedRecipe = null; // Rezept zurücksetzen
+    },
+
+    // Hilfsmethode, um die deutsche Bezeichnung des Tags zu bekommen
+    getTagLabel(tag) {
+      const tagLabels = {
+        VEGETARIAN: "Vegetarisch",
+        VEGAN: "Vegan",
+        GLUTEN_FREE: "Glutenfrei",
+        LACTOSE_FREE: "Laktosefrei",
+        KETO: "Keto",
+        PALEO: "Paleo",
+        LOW_CARB: "Low Carb",
+        HIGH_PROTEIN: "High Protein",
+        DIABETIC_FRIENDLY: "Diabetikerfreundlich",
+        LOW_FAT: "Low Fat",
+        HALAL: "Halal",
+        KOSHER: "Koscher",
+        EXCLUSION_DIET: "Ausschlussdiät",
+        QUICK: "Schnell",
+        MEAL_PREP: "Meal Prep",
+        KIDS_MEAL: "Mahlzeit für Kinder",
+        SWEET: "Süß",
+        SAVORY: "Herzhaft",
+        SPICY: "Scharf",
+        MILD: "Mild",
+        EXOTIC: "Exotisch",
+        SEASONAL: "Saisonale Rezepte",
+        GRILL: "Grillrezepte",
+        BREAKFAST: "Frühstück",
+        LUNCH: "Mittagessen",
+        DINNER: "Abendessen",
+        SNACKS: "Snacks",
+        SOUPS: "Suppen",
+        SALADS: "Salate",
+        SUGAR_FREE: "Zuckerfrei",
+        FISH: "Fisch",
+        MEAT: "Fleisch",
+        NUTS: "Nüsse",
+        WHOLEGRAIN: "Vollkorn",
+        LEGUMES: "Hülsenfrüchte",
+        PASTA: "Nudeln",
+        RICE: "Reis",
+        BUDGET_FRIENDLY: "Budgetfreundlich",
+        FOR_2_PEOPLE: "Für 2 Personen",
+        FAMILY_FRIENDLY: "Familientauglich",
+        FOR_BEGGINERS: "Für Anfänger",
+        GOURMET: "Gourmet",
+        STORAGE: "Lagerung",
+        DESSERT: "Nachtisch",
+        QUICK_PREP: "Schnell",
+        SLOW_COOK: "Langsame Zubereitung",
+        ONE_POT: "Ein-Pfannen-Gerichte",
+        FRYING: "Frittieren",
+        BAKING: "Backen",
+        LOW_CALORIE: "Low Calorie",
+        ANTI_AGEING: "Anti-Aging",
+        DETOX: "Entgiftend",
+        HEART_HEALTH: "Herzgesund",
+      };
+
+      return tagLabels[tag] || tag; // Rückgabe der Bezeichnung, falls vorhanden, sonst das Tag selbst
     }
   }
 };
@@ -157,13 +238,13 @@ export default {
   font-weight: bold;
 }
 
-/* Button zum Löschen des Rezepts */
+/* Button zum Löschen des Rezepts im Modal */
 .delete-button {
   position: absolute;
   top: 10px;
   right: 10px;
   padding: 5px 10px;
-  background-color: #ff4d4d;
+  background-color: #e60000;
   color: white;
   border: none;
   border-radius: 5px;
@@ -171,17 +252,17 @@ export default {
 }
 
 .delete-button:hover {
-  background-color: #ff1a1a;
+  background-color: #cc0000;
 }
 
-/* Modal-Stile */
+/* Modal Overlay und Inhalt */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -190,32 +271,46 @@ export default {
 .modal-content {
   background-color: white;
   padding: 20px;
-  border-radius: 12px; /* Abgerundete Ecken des Modals */
-  max-width: 800px;  /* Hier stellen wir sicher, dass das Modal 3 Rezeptkarten nebeneinander entspricht */
+  border-radius: 8px;
+  max-width: 500px;
   width: 100%;
-  text-align: center;
-  position: relative; /* Damit der Delete-Button oben rechts positioniert werden kann */
+  position: relative; /* Relativ positioniert für den Löschen-Button */
 }
 
-.delete-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
-.delete-modal {
-  max-width: 33%;  /* Modal auf die Breite von 3 Rezepten begrenzen */
-}
-
-.modal-actions button {
-  padding: 10px 20px;
-  margin: 10px;
+button {
+  padding: 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
 }
 
-.modal-actions button:hover {
-  opacity: 0.8;
+button:hover {
+  background-color: #45a049;
+}
+
+.delete-modal {
+  background-color: #ffeded;
+  color: #ff4d4d;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag-box {
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.9em;
 }
 </style>

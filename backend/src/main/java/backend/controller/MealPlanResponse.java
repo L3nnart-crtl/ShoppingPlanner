@@ -1,39 +1,56 @@
 package backend.controller;
 
+import backend.model.MealPlan;
+
 public class MealPlanResponse {
 
-    private Long breackfastId;
-    private Long lunchId;
-    private Long dinnerId;
 
+    private String date;
+    private String breakfastRecipeName;
+    private String lunchRecipeName;
+    private String dinnerRecipeName;
 
-    public MealPlanResponse(final Long breackfastId, final Long lunchId, final Long dinnerId) {
-        this.breackfastId = breackfastId;
-        this.lunchId = lunchId;
-        this.dinnerId = dinnerId;
+    public MealPlanResponse(final MealPlan mealPlan) {
+
+        this.date = mealPlan.getDate().toString();
+        this.breakfastRecipeName = mealPlan.getBreakfastRecipe() != null ? mealPlan.getBreakfastRecipe().getName() : null;
+        this.lunchRecipeName = mealPlan.getLunchRecipe() != null ? mealPlan.getLunchRecipe().getName() : null;
+        this.dinnerRecipeName = mealPlan.getDinnerRecipe() != null ? mealPlan.getDinnerRecipe().getName() : null;
     }
 
-    public Long getBreackfastId() {
-        return breackfastId;
+
+
+
+
+    public String getDate() {
+        return date;
     }
 
-    public void setBreackfastId(final Long breackfastId) {
-        this.breackfastId = breackfastId;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public Long getLunchId() {
-        return lunchId;
+    public String getBreakfastRecipeName() {
+        return breakfastRecipeName;
     }
 
-    public void setLunchId(final Long lunchId) {
-        this.lunchId = lunchId;
+    public void setBreakfastRecipeName(String breakfastRecipeName) {
+        this.breakfastRecipeName = breakfastRecipeName;
     }
 
-    public Long getDinnerId() {
-        return dinnerId;
+    public String getLunchRecipeName() {
+        return lunchRecipeName;
     }
 
-    public void setDinnerId(final Long dinnerId) {
-        this.dinnerId = dinnerId;
+    public void setLunchRecipeName(String lunchRecipeName) {
+        this.lunchRecipeName = lunchRecipeName;
+    }
+
+    public String getDinnerRecipeName() {
+        return dinnerRecipeName;
+    }
+
+    public void setDinnerRecipeName(String dinnerRecipeName) {
+        this.dinnerRecipeName = dinnerRecipeName;
     }
 }
