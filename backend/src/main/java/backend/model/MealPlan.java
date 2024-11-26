@@ -78,4 +78,5 @@ public class MealPlan {
     public void setDinnerRecipe(Recipe dinnerRecipe) {
         this.dinnerRecipe = dinnerRecipe;
     }
+
 }

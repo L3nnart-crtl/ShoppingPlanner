@@ -10,4 +10,5 @@ public interface MealPlanRepository extends JpaRepository<MealPlan, Long> {
 
     // Suche nach MealPlan für ein bestimmtes Datum
     Optional<MealPlan> findByDate(LocalDate date);
+    boolean existsByDate(LocalDate date);
 }

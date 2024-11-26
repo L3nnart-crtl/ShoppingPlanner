@@ -1,62 +1,67 @@
 package backend.service;
 
-import backend.model.Ingredient;
 import backend.model.Recipe;
-import backend.model.Tag;
 import backend.repository.RecipeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class RecipeService {
 
+    private static final Logger logger = LoggerFactory.getLogger(RecipeService.class);
     private final RecipeRepository recipeRepository;
 
     public RecipeService(RecipeRepository recipeRepository) {
         this.recipeRepository = recipeRepository;
     }
 
-    public Recipe saveRecipe(Recipe recipeBody) {
-        Recipe recipe = new Recipe();
-        recipe.setName(recipeBody.getName());
-        recipe.setDescription(recipeBody.getDescription());
-        recipe.setTags(recipeBody.getTags());  // Tags setzen
-        recipe.setIngredients(recipeBody.getIngredients().stream()
-                .map(ingredient -> new Ingredient(
-                        ingredient.getName(),
-                        ingredient.getQuantity(),
-                        ingredient.getUnit(),
-                        recipe))
-                .collect(Collectors.toList()));
-        return recipeRepository.save(recipe);  // Rezept speichern
-    }
-
-    // Alle Rezepte abrufen
     public List<Recipe> getAllRecipes() {
         return recipeRepository.findAll();
     }
 
-    // Rezepte suchen basierend auf Name und Tags
     public List<Recipe> searchRecipes(String name, List<String> tags) {
-        if (name != null && !name.isEmpty() && (tags == null || tags.isEmpty())) {
+        logger.info("Suche nach Rezepten mit Name: {} und Tags: {}", name, tags);
+
+        // Name und Tags zusammen
+        if (name != null && tags != null && !tags.isEmpty()) {
+            logger.info("Suche nach Name und Tags");
+            return recipeRepository.findByNameAndTagsIn(name, tags);
+        }
+        // Nur Name
+        else if (name != null) {
+            logger.info("Suche nur nach Name");
             return recipeRepository.findByNameContainingIgnoreCase(name);
-        } else if (tags != null && !tags.isEmpty() && (name == null || name.isEmpty())) {
+        }
+        // Nur Tags
+        else if (tags != null && !tags.isEmpty()) {
+            logger.info("Suche nur nach Tags");
             return recipeRepository.findByTagsIn(tags);
-        } else if (name != null && !name.isEmpty() && tags != null && !tags.isEmpty()) {
-            return recipeRepository.findByNameContainingIgnoreCaseAndTagsIn(name, tags);
-        } else {
+        }
+        // Keine Suchkriterien, alle Rezepte zurückgeben
+        else {
+            logger.info("Keine Suchkriterien angegeben, alle Rezepte werden zurückgegeben");
             return recipeRepository.findAll();
         }
     }
 
-    // Rezept löschen
+    public Recipe saveRecipe(Recipe recipe) {
+        logger.info("Speichere Rezept: {}", recipe);
+        return recipeRepository.save(recipe);
+    }
+
     public boolean deleteRecipe(Long id) {
-        if (recipeRepository.existsById(id)) {
-            recipeRepository.deleteById(id);
+        logger.info("Lösche Rezept mit ID: {}", id);
+        Optional<Recipe> recipe = recipeRepository.findById(id);
+        if (recipe.isPresent()) {
+            recipeRepository.delete(recipe.get());
+            logger.info("Rezept gelöscht");
             return true;
         }
+        logger.warn("Rezept mit ID {} nicht gefunden", id);
         return false;
     }
 }

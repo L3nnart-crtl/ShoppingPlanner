@@ -4,28 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Get Mealplan updated">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Tag.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/RecipeSearch.vue" afterDir="false" />
+    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Added Searching for recipes&#10;- Added calendar for recipes">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/config/DataLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/RecipeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/RecipeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Ingredient.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Ingredient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlanRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlanRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlan.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlan.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Tag.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Tag.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/repository/MealPlanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/repository/MealPlanRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/repository/RecipeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/repository/RecipeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/service/DataLoader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/service/MealPlanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/MealPlanService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/service/RecipeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/RecipeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeSearch.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/RecipeSearch.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,8 +53,8 @@
       <list>
         <option value="CSS File" />
         <option value="JavaScript File" />
-        <option value="Class" />
         <option value="Vue Composition API Component" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -214,7 +205,10 @@
       <workItem from="1732372764106" duration="8017000" />
       <workItem from="1732382525454" duration="1167000" />
       <workItem from="1732539720481" duration="723000" />
-      <workItem from="1732540462141" duration="10929000" />
+      <workItem from="1732540462141" duration="11829000" />
+      <workItem from="1732608174417" duration="24000" />
+      <workItem from="1732608240271" duration="15000" />
+      <workItem from="1732628631766" duration="7782000" />
     </task>
     <task id="LOCAL-00001" summary="Monorepo">
       <option name="closed" value="true" />
@@ -296,7 +290,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732096037348</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="- Added Searching for recipes&#10;- Added calendar for recipes">
+      <option name="closed" value="true" />
+      <created>1732551651195</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1732551651195</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -323,6 +325,7 @@
     <MESSAGE value="- Style centralized" />
     <MESSAGE value="- First Version of Calendar &#10;- RecipeList updated" />
     <MESSAGE value="- Get Mealplan updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Get Mealplan updated" />
+    <MESSAGE value="- Added Searching for recipes&#10;- Added calendar for recipes" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Added Searching for recipes&#10;- Added calendar for recipes" />
   </component>
 </project>

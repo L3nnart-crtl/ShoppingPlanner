@@ -31,14 +31,13 @@
 import AddRecipeForm from '@/components/AddRecipeForm.vue';
 import RecipeList from '@/components/RecipeList.vue';
 import CalendarComponent from '@/components/Calendar.vue';
-import RecipeSearch from '@/components/RecipeSearch.vue'; // Importiere die Rezept-Suche
+
 
 export default {
   components: {
     AddRecipeForm,
     RecipeList,
     CalendarComponent,
-    RecipeSearch,  // Füge sie hier hinzu
   },
   data() {
     return {

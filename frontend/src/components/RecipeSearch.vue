@@ -13,180 +13,229 @@
 
       <div class="tags-filter">
         <label for="tags">Tags:</label>
-        <select v-model="searchQuery.tags" multiple>
-          <option v-for="tag in availableTags" :key="tag" :value="tag">
-            {{ getTagLabel(tag) }}
-          </option>
-        </select>
+        <multiselect
+            v-model="searchQuery.tags"
+            :options="availableTags"
+            :multiple="true"
+            :close-on-select="false"
+            placeholder="Tags auswählen"
+            label="name"
+            track-by="value"
+            class="tag-dropdown"
+        />
       </div>
 
       <button @click="searchRecipes" class="search-button">Suchen</button>
     </div>
 
     <!-- Anzeige der Suchergebnisse -->
-    <div v-if="recipes.length" class="recipe-list">
-      <div v-for="recipe in recipes" :key="recipe.id" class="recipe-card">
-        <h3>{{ recipe.name }}</h3>
-        <p>{{ recipe.description || 'Keine Beschreibung verfügbar' }}</p>
-        <div class="tags">
-          <span v-for="tag in recipe.tags" :key="tag" class="tag">{{ getTagLabel(tag) }}</span>
+    <div class="recipe-list" v-if="recipes.length">
+      <div
+          v-for="recipe in recipes"
+          :key="recipe.id"
+          class="recipe-card"
+          @click="openRecipeDetails(recipe)"
+      >
+        <h3 class="recipe-name">{{ recipe.name }}</h3>
+      </div>
+    </div>
+    <p v-else class="no-results">Keine Rezepte gefunden.</p>
+
+    <!-- Modal für Rezeptdetails -->
+    <div v-if="isModalVisible" class="modal-overlay">
+      <div class="modal-content">
+        <!-- Löschen Button im Modal oben rechts -->
+        <button v-if="selectedRecipe" @click="confirmDeleteRecipe(selectedRecipe)" class="delete-button">Rezept löschen</button>
+
+        <h4>{{ selectedRecipe.name }}</h4>
+        <p><strong>Beschreibung:</strong> {{ selectedRecipe.description || 'Keine Beschreibung verfügbar.' }}</p>
+
+        <p><strong>Zutaten:</strong></p>
+        <ul class="ingredient-list">
+          <li v-for="(ingredient, index) in selectedRecipe.ingredients" :key="index">
+            {{ ingredient.name }} - {{ ingredient.quantity }} {{ ingredient.unit }}
+          </li>
+        </ul>
+
+        <!-- Tags anzeigen -->
+        <p><strong>Tags:</strong></p>
+        <div class="tags-container">
+          <div
+              v-for="(tag, index) in selectedRecipe.tags"
+              :key="index"
+              class="tag-box"
+          >
+            {{ getTagLabel(tag) }}
+          </div>
+        </div>
+
+        <!-- Modal Aktionen -->
+        <div class="modal-actions">
+          <button @click="closeModal">Schließen</button>
         </div>
       </div>
     </div>
 
-    <p v-else v-if="recipes.length === 0" class="no-results">Keine Rezepte gefunden.</p>
+    <!-- Modal für Bestätigung des Löschens -->
+    <div v-if="isDeleteModalVisible" class="modal-overlay">
+      <div class="modal-content delete-modal">
+        <h4>Bestätigung</h4>
+        <p>Bist du sicher, dass du das Rezept "{{ selectedRecipe.name }}" löschen möchtest?</p>
+        <div class="modal-actions">
+          <button @click="deleteRecipe">Ja, löschen</button>
+          <button @click="closeDeleteModal">Abbrechen</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import Multiselect from "vue-multiselect";
+import "vue-multiselect/dist/vue-multiselect.min.css";
+import axios from "axios";
+
 export default {
+  components: { Multiselect },
   data() {
     return {
       searchQuery: {
-        name: '',
+        name: "",
         tags: [],
       },
       recipes: [],
       availableTags: [
-        "VEGETARIAN",
-        "VEGAN",
-        "GLUTEN_FREE",
-        "LACTOSE_FREE",
-        "KETO",
-        "PALEO",
-        "LOW_CARB",
-        "HIGH_PROTEIN",
-        "DIABETIC_FRIENDLY",
-        "LOW_FAT",
-        "HALAL",
-        "KOSHER",
-        "EXCLUSION_DIET",
-        "QUICK",
-        "MEAL_PREP",
-        "KIDS_MEAL",
-        "SWEET",
-        "SAVORY",
-        "SPICY",
-        "MILD",
-        "EXOTIC",
-        "SEASONAL",
-        "GRILL",
-        "BREAKFAST",
-        "LUNCH",
-        "DINNER",
-        "SNACKS",
-        "SOUPS",
-        "SALADS",
-        "SUGAR_FREE",
-        "FISH",
-        "MEAT",
-        "NUTS",
-        "WHOLEGRAIN",
-        "LEGUMES",
-        "PASTA",
-        "RICE",
-        "BUDGET_FRIENDLY",
-        "FOR_2_PEOPLE",
-        "FAMILY_FRIENDLY",
-        "FOR_BEGGINERS",
-        "GOURMET",
-        "STORAGE",
-        "DESSERT",
-        "QUICK_PREP",
-        "SLOW_COOK",
-        "ONE_POT",
-        "FRYING",
-        "BAKING",
-        "LOW_CALORIE",
-        "ANTI_AGEING",
-        "DETOX",
-        "HEART_HEALTH",
-      ], // Vordefinierte Tags
+        { name: "Vegetarisch", value: "VEGETARIAN" },
+        { name: "Vegan", value: "VEGAN" },
+        { name: "Glutenfrei", value: "GLUTEN_FREE" },
+        { name: "Laktosefrei", value: "LACTOSE_FREE" },
+        { name: "Keto", value: "KETO" },
+        { name: "Paleo", value: "PALEO" },
+        { name: "Low Carb", value: "LOW_CARB" },
+        { name: "High Protein", value: "HIGH_PROTEIN" },
+        { name: "Diabetikerfreundlich", value: "DIABETIC_FRIENDLY" },
+        { name: "Low Fat", value: "LOW_FAT" },
+        { name: "Halal", value: "HALAL" },
+        { name: "Koscher", value: "KOSHER" },
+        { name: "Ausschlussdiät", value: "EXCLUSION_DIET" },
+        { name: "Schnell", value: "QUICK" },
+        { name: "Meal Prep", value: "MEAL_PREP" },
+        { name: "Mahlzeit für Kinder", value: "KIDS_MEAL" },
+        { name: "Süß", value: "SWEET" },
+        { name: "Herzhaft", value: "SAVORY" },
+        { name: "Scharf", value: "SPICY" },
+        { name: "Mild", value: "MILD" },
+        { name: "Exotisch", value: "EXOTIC" },
+        { name: "Saisonale Rezepte", value: "SEASONAL" },
+        { name: "Grillrezepte", value: "GRILL" },
+        { name: "Frühstück", value: "BREAKFAST" },
+        { name: "Mittagessen", value: "LUNCH" },
+        { name: "Abendessen", value: "DINNER" },
+        { name: "Snacks", value: "SNACKS" },
+        { name: "Suppen", value: "SOUPS" },
+        { name: "Salate", value: "SALADS" },
+        { name: "Zuckerfrei", value: "SUGAR_FREE" },
+        { name: "Fisch", value: "FISH" },
+        { name: "Fleisch", value: "MEAT" },
+        { name: "Nüsse", value: "NUTS" },
+        { name: "Vollkorn", value: "WHOLEGRAIN" },
+        { name: "Hülsenfrüchte", value: "LEGUMES" },
+        { name: "Nudeln", value: "PASTA" },
+        { name: "Reis", value: "RICE" },
+        { name: "Budgetfreundlich", value: "BUDGET_FRIENDLY" },
+        { name: "Für 2 Personen", value: "FOR_2_PEOPLE" },
+        { name: "Familientauglich", value: "FAMILY_FRIENDLY" },
+        { name: "Für Anfänger", value: "FOR_BEGGINERS" },
+        { name: "Gourmet", value: "GOURMET" },
+        { name: "Lagerung", value: "STORAGE" },
+        { name: "Nachtisch", value: "DESSERT" },
+        { name: "Langsame Zubereitung", value: "SLOW_COOK" },
+        { name: "Ein-Pfannen-Gerichte", value: "ONE_POT" },
+        { name: "Frittieren", value: "FRYING" },
+        { name: "Backen", value: "BAKING" },
+        { name: "Low Calorie", value: "LOW_CALORIE" },
+        { name: "Anti-Aging", value: "ANTI_AGEING" },
+        { name: "Entgiftend", value: "DETOX" },
+        { name: "Herzgesund", value: "HEART_HEALTH" },
+      ],
+      isModalVisible: false,
+      isDeleteModalVisible: false,
+      selectedRecipe: null,
     };
   },
   methods: {
-    // Holen der deutschen Bezeichnung des Tags
-    getTagLabel(tag) {
-      const tagLabels = {
-        VEGETARIAN: "Vegetarisch",
-        VEGAN: "Vegan",
-        GLUTEN_FREE: "Glutenfrei",
-        LACTOSE_FREE: "Laktosefrei",
-        KETO: "Keto",
-        PALEO: "Paleo",
-        LOW_CARB: "Low Carb",
-        HIGH_PROTEIN: "High Protein",
-        DIABETIC_FRIENDLY: "Diabetikerfreundlich",
-        LOW_FAT: "Low Fat",
-        HALAL: "Halal",
-        KOSHER: "Koscher",
-        EXCLUSION_DIET: "Ausschlussdiät",
-        QUICK: "Schnell",
-        MEAL_PREP: "Meal Prep",
-        KIDS_MEAL: "Mahlzeit für Kinder",
-        SWEET: "Süß",
-        SAVORY: "Herzhaft",
-        SPICY: "Scharf",
-        MILD: "Mild",
-        EXOTIC: "Exotisch",
-        SEASONAL: "Saisonale Rezepte",
-        GRILL: "Grillrezepte",
-        BREAKFAST: "Frühstück",
-        LUNCH: "Mittagessen",
-        DINNER: "Abendessen",
-        SNACKS: "Snacks",
-        SOUPS: "Suppen",
-        SALADS: "Salate",
-        SUGAR_FREE: "Zuckerfrei",
-        FISH: "Fisch",
-        MEAT: "Fleisch",
-        NUTS: "Nüsse",
-        WHOLEGRAIN: "Vollkorn",
-        LEGUMES: "Hülsenfrüchte",
-        PASTA: "Nudeln",
-        RICE: "Reis",
-        BUDGET_FRIENDLY: "Budgetfreundlich",
-        FOR_2_PEOPLE: "Für 2 Personen",
-        FAMILY_FRIENDLY: "Familientauglich",
-        FOR_BEGGINERS: "Für Anfänger",
-        GOURMET: "Gourmet",
-        STORAGE: "Lagerung",
-        DESSERT: "Nachtisch",
-        QUICK_PREP: "Schnell",
-        SLOW_COOK: "Langsame Zubereitung",
-        ONE_POT: "Ein-Pfannen-Gerichte",
-        FRYING: "Frittieren",
-        BAKING: "Backen",
-        LOW_CALORIE: "Low Calorie",
-        ANTI_AGEING: "Anti-Aging",
-        DETOX: "Entgiftend",
-        HEART_HEALTH: "Herzgesund",
-      };
-
-      return tagLabels[tag] || tag; // Rückgabe der Bezeichnung, falls vorhanden, sonst das Tag selbst
-    },
-
-    // Sucht Rezepte anhand des Namens und der Tags
     async searchRecipes() {
       try {
-        const response = await this.$axios.get("/recipes", {
-          params: {
-            name: this.searchQuery.name,
-            tags: this.searchQuery.tags.join(','),
-          },
-        });
+        const params = {};
+
+        if (this.searchQuery.name) {
+          params.name = this.searchQuery.name;
+        }
+
+        if (this.searchQuery.tags.length > 0) {
+          params.tags = this.searchQuery.tags.map(tag => tag.value).join(",");
+        }
+
+        const response = await axios.get("/api/recipes/search", {params});
         this.recipes = response.data;
       } catch (error) {
         console.error("Fehler bei der Rezeptsuche:", error);
       }
     },
+
+    // Öffnet das Modal mit den Details des Rezepts
+    openRecipeDetails(recipe) {
+      this.selectedRecipe = recipe;
+      this.isModalVisible = true;
+    },
+
+    // Schließt das Rezeptmodal
+    closeModal() {
+      this.isModalVisible = false;
+      this.selectedRecipe = null;
+    },
+
+    // Zeigt das Bestätigungs-Modal zum Löschen an
+    confirmDeleteRecipe(recipe) {
+      this.isModalVisible = false; // Rezept-Modal schließen
+      this.selectedRecipe = recipe;
+      this.isDeleteModalVisible = true; // Bestätigungs-Modal öffnen
+    },
+
+    // Löscht das Rezept
+    async deleteRecipe() {
+      try {
+        // Sende eine DELETE-Anfrage an das Backend, um das Rezept zu löschen
+        await axios.delete(`/api/recipes/${this.selectedRecipe.id}`);
+
+        // Nach dem Löschen die Liste aktualisieren
+        this.recipes = this.recipes.filter(r => r.id !== this.selectedRecipe.id);
+
+        // Modal schließen
+        this.closeDeleteModal();
+      } catch (error) {
+        console.error("Fehler beim Löschen des Rezepts:", error);
+      }
+    },
+
+    // Schließt das Bestätigungs-Modal ohne Löschen
+    closeDeleteModal() {
+      this.isDeleteModalVisible = false;
+      this.selectedRecipe = null;
+    },
+
+    // Holt den Tag-Label basierend auf dem Wert
+    getTagLabel(tagValue) {
+      const tag = this.availableTags.find(t => t.value === tagValue);
+      return tag ? tag.name : tagValue;
+    }
   },
 };
 </script>
 
 <style scoped>
 .recipe-search-container {
-  padding: 20px;
+  margin: 20px;
 }
 
 .search-fields {
@@ -195,53 +244,97 @@ export default {
   gap: 10px;
 }
 
-.search-input,
-.search-button {
-  padding: 10px;
-  font-size: 1rem;
+.search-input {
+  padding: 8px;
+  font-size: 14px;
+}
+
+.tag-dropdown {
+  width: 100%;
+  font-size: 14px;
 }
 
 .search-button {
-  background-color: #4CAF50;
+  padding: 10px;
+  background-color: #4caf50;
   color: white;
   border: none;
   cursor: pointer;
 }
 
-.search-button:hover {
-  background-color: #45a049;
-}
-
-.tags-filter select {
-  padding: 8px;
-  font-size: 1rem;
-}
-
 .recipe-list {
-  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
 }
 
 .recipe-card {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  cursor: pointer;
+  text-align: center;
 }
 
-.tags {
-  margin-top: 10px;
-}
-
-.tag {
-  display: inline-block;
-  background-color: #f0f0f0;
-  padding: 5px 10px;
-  margin-right: 5px;
-  border-radius: 20px;
-  font-size: 0.9rem;
+.recipe-name {
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .no-results {
-  color: red;
-  font-weight: bold;
+  font-size: 16px;
+  color: gray;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  max-width: 600px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag-box {
+  background-color: #f1f1f1;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.delete-modal {
+  width: 400px;
+}
+
+.delete-modal .modal-actions {
+  gap: 10px;
 }
 </style>

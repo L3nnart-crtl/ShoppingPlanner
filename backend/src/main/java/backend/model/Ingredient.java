@@ -31,20 +31,43 @@ public class Ingredient {
         this.recipe = recipe;
     }
 
-    // Getter und Setter
-    public String getUnit() {
-        return unit;
+    public Long getId() {
+        return id;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setId(final Long id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(final String name) {
+        this.name = name;
+    }
+
     public String getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(final String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(final String unit) {
+        this.unit = unit;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(final Recipe recipe) {
+        this.recipe = recipe;
     }
 }
