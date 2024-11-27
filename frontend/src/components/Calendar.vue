@@ -60,20 +60,13 @@
         </div>
       </div>
     </div>
-
-    <!-- Einkaufsliste anzeigen -->
-    <ShoppingList :mealPlans="mealPlans" :recipes="recipes" />
   </div>
 </template>
 
 <script>
 import { ref, reactive, onMounted } from 'vue';
-import ShoppingList from './ShoppingList.vue'; // Import der neuen Komponente
 
 export default {
-  components: {
-    ShoppingList,
-  },
   props: ['recipes'],
   setup() {
     const mealPlans = ref({});
@@ -136,9 +129,17 @@ export default {
         const day = new Date(startOfWeek);
         day.setDate(startOfWeek.getDate() + i);
         const weekday = day.toLocaleDateString('de-DE', { weekday: 'short' });
-        days.push({ date: day.toISOString().split('T')[0], shortWeekday: weekday });
+        days.push({
+          date: day.toISOString().split('T')[0],
+          shortWeekday: weekday,
+        });
       }
       return days;
+    }
+
+    function changeWeek(direction) {
+      currentDate.value.setDate(currentDate.value.getDate() + direction * 7);
+      updateWeekDays();
     }
 
     function openModal(date) {
@@ -148,26 +149,50 @@ export default {
 
     function closeModal() {
       isModalVisible.value = false;
+      selectedDate.value = '';
+      mealPlan.breakfastId = null;
+      mealPlan.lunchId = null;
+      mealPlan.dinnerId = null;
     }
 
-    function saveMealPlan() {
-      mealPlans.value[selectedDate.value] = {
-        breakfastRecipeName: mealPlan.breakfastId,
-        lunchRecipeName: mealPlan.lunchId,
-        dinnerRecipeName: mealPlan.dinnerId,
-      };
-      closeModal();
+    async function saveMealPlan() {
+      try {
+        const response = await fetch('/api/mealplans', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            date: selectedDate.value,
+            breakfastRecipeId: mealPlan.breakfastId,
+            lunchRecipeId: mealPlan.lunchId,
+            dinnerRecipeId: mealPlan.dinnerId,
+          }),
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        const newMealPlan = {
+          breakfastRecipeName: data.breakfastRecipeName,
+          lunchRecipeName: data.lunchRecipeName,
+          dinnerRecipeName: data.dinnerRecipeName,
+        };
+        mealPlans.value[selectedDate.value] = newMealPlan;
+        closeModal();
+      } catch (error) {
+        console.error('Fehler beim Speichern des MealPlans:', error);
+      }
     }
 
-    function removeMealPlan(date) {
-      delete mealPlans.value[date];
-    }
-
-    function changeWeek(direction) {
-      const newDate = new Date(currentDate.value);
-      newDate.setDate(currentDate.value.getDate() + direction * 7);
-      currentDate.value = newDate;
-      updateWeekDays();
+    async function removeMealPlan(date) {
+      try {
+        const response = await fetch(`/api/mealplans/${date}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        delete mealPlans.value[date];
+      } catch (error) {
+        console.error('Fehler beim Entfernen des MealPlans:', error);
+      }
     }
 
     return {
@@ -177,11 +202,11 @@ export default {
       isModalVisible,
       selectedDate,
       mealPlan,
+      changeWeek,
       openModal,
       closeModal,
       saveMealPlan,
       removeMealPlan,
-      changeWeek,
     };
   },
 };
