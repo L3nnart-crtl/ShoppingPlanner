@@ -21,7 +21,9 @@ public class MealPlanService {
         this.recipeRepository = recipeRepository;
     }
 
-    public MealPlan saveMealPlan(LocalDate date, Long breakfastRecipeId, Long lunchRecipeId, Long dinnerRecipeId) {
+    public MealPlan saveMealPlan(LocalDate date, Long breakfastRecipeId, int breakfastPortionSize,
+                                 Long lunchRecipeId, int lunchPortionSize,
+                                 Long dinnerRecipeId, int dinnerPortionSize) {
         if (mealPlanRepository.findByDate(date).isPresent()) {
             throw new IllegalArgumentException("Für das Datum " + date + " existiert bereits ein MealPlan.");
         }
@@ -33,7 +35,8 @@ public class MealPlanService {
         Recipe dinnerRecipe = recipeRepository.findById(dinnerRecipeId)
                 .orElseThrow(() -> new IllegalArgumentException("Abendrezept nicht gefunden: " + dinnerRecipeId));
 
-        MealPlan mealPlan = new MealPlan(date, breakfastRecipe, lunchRecipe, dinnerRecipe);
+        MealPlan mealPlan = new MealPlan(date, breakfastRecipe, breakfastPortionSize,
+                lunchRecipe, lunchPortionSize, dinnerRecipe, dinnerPortionSize);
         return mealPlanRepository.save(mealPlan);
     }
 

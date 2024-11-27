@@ -16,9 +16,9 @@
             <span>{{ day.date }}</span>
           </div>
           <div v-if="mealPlans[day.date]">
-            <p class="meal-field">Frühstück: {{ mealPlans[day.date].breakfastRecipeName }}</p>
-            <p class="meal-field">Mittagessen: {{ mealPlans[day.date].lunchRecipeName }}</p>
-            <p class="meal-field">Abendessen: {{ mealPlans[day.date].dinnerRecipeName }}</p>
+            <p class="meal-field">Frühstück: {{ mealPlans[day.date].breakfastRecipeName }} ({{ mealPlans[day.date].breakfastPortionSize }} Portionen)</p>
+            <p class="meal-field">Mittagessen: {{ mealPlans[day.date].lunchRecipeName }} ({{ mealPlans[day.date].lunchPortionSize }} Portionen)</p>
+            <p class="meal-field">Abendessen: {{ mealPlans[day.date].dinnerRecipeName }} ({{ mealPlans[day.date].dinnerPortionSize }} Portionen)</p>
             <button @click="removeMealPlan(day.date)" class="remove-button">Entfernen</button>
           </div>
           <div v-else>
@@ -38,6 +38,8 @@
           <select v-model="mealPlan.breakfastId">
             <option v-for="recipe in recipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
           </select>
+          <label>Portionen:</label>
+          <input type="number" v-model="mealPlan.breakfastPortionSize" min="1" />
         </div>
 
         <div>
@@ -45,6 +47,8 @@
           <select v-model="mealPlan.lunchId">
             <option v-for="recipe in recipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
           </select>
+          <label>Portionen:</label>
+          <input type="number" v-model="mealPlan.lunchPortionSize" min="1" />
         </div>
 
         <div>
@@ -52,6 +56,8 @@
           <select v-model="mealPlan.dinnerId">
             <option v-for="recipe in recipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
           </select>
+          <label>Portionen:</label>
+          <input type="number" v-model="mealPlan.dinnerPortionSize" min="1" />
         </div>
 
         <div class="modal-actions">
@@ -77,8 +83,11 @@ export default {
     const selectedDate = ref('');
     const mealPlan = reactive({
       breakfastId: null,
+      breakfastPortionSize: 1,  // Default auf 1 Portion gesetzt
       lunchId: null,
+      lunchPortionSize: 1,       // Default auf 1 Portion gesetzt
       dinnerId: null,
+      dinnerPortionSize: 1,      // Default auf 1 Portion gesetzt
     });
 
     onMounted(() => {
@@ -93,8 +102,11 @@ export default {
 
         mealPlans.value[date] = {
           breakfastRecipeName: data.breakfastRecipeName,
+          breakfastPortionSize: data.breakfastPortionSize,
           lunchRecipeName: data.lunchRecipeName,
+          lunchPortionSize: data.lunchPortionSize,
           dinnerRecipeName: data.dinnerRecipeName,
+          dinnerPortionSize: data.dinnerPortionSize,
         };
       } catch (error) {
         console.error(`Fehler beim Abrufen des MealPlans für ${date}:`, error);
@@ -151,8 +163,11 @@ export default {
       isModalVisible.value = false;
       selectedDate.value = '';
       mealPlan.breakfastId = null;
+      mealPlan.breakfastPortionSize = 1;
       mealPlan.lunchId = null;
+      mealPlan.lunchPortionSize = 1;
       mealPlan.dinnerId = null;
+      mealPlan.dinnerPortionSize = 1;
     }
 
     async function saveMealPlan() {
@@ -165,16 +180,22 @@ export default {
           body: JSON.stringify({
             date: selectedDate.value,
             breakfastRecipeId: mealPlan.breakfastId,
+            breakfastPortionSize: mealPlan.breakfastPortionSize,
             lunchRecipeId: mealPlan.lunchId,
+            lunchPortionSize: mealPlan.lunchPortionSize,
             dinnerRecipeId: mealPlan.dinnerId,
+            dinnerPortionSize: mealPlan.dinnerPortionSize,
           }),
         });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         const newMealPlan = {
           breakfastRecipeName: data.breakfastRecipeName,
+          breakfastPortionSize: data.breakfastPortionSize,
           lunchRecipeName: data.lunchRecipeName,
+          lunchPortionSize: data.lunchPortionSize,
           dinnerRecipeName: data.dinnerRecipeName,
+          dinnerPortionSize: data.dinnerPortionSize,
         };
         mealPlans.value[selectedDate.value] = newMealPlan;
         closeModal();
@@ -211,7 +232,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 /* Styling for the calendar component */
 .calendar-container {

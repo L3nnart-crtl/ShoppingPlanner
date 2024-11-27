@@ -1,118 +1,103 @@
 <template>
-  <div class="shopping-list-container">
-    <h2>Einkaufsliste</h2>
+  <div>
+    <h1>Einkaufsliste für die nächsten Tage</h1>
 
-    <!-- Anzahl der Portionen -->
-    <div class="portion-scale">
-      <label for="portion-count">Anzahl der Portionen:</label>
-      <input
-          v-model.number="portionCount"
-          type="number"
-          min="1"
-          placeholder="Anzahl der Portionen"
-      />
-    </div>
+    <!-- Formular zur Auswahl von Start- und Enddatum -->
+    <form @submit.prevent="generateShoppingList">
+      <label for="startDate">Start Date:</label>
+      <input type="date" v-model="startDate" required><br><br>
 
-    <!-- Einkaufsliste -->
-    <div v-if="shoppingList.length">
-      <h3>Zu kaufende Zutaten:</h3>
-      <ul>
-        <li
-            v-for="(ingredient, index) in shoppingList"
-            :key="index"
-            class="ingredient-item"
-        >
-          {{ ingredient.name }}: {{ ingredient.scaledQuantity }} {{ ingredient.unit }}
-        </li>
-      </ul>
-    </div>
-    <div v-else>
-      <p>Keine Zutaten zum Einkaufen gefunden.</p>
-    </div>
+      <label for="endDate">End Date:</label>
+      <input type="date" v-model="endDate" required><br><br>
 
-    <button @click="downloadShoppingList">Einkaufsliste herunterladen</button>
+      <button type="submit">Einkaufsliste generieren</button>
+    </form>
+
+    <h2>Generierte Einkaufsliste</h2>
+    <!-- Anzeige der generierten Einkaufsliste -->
+    <ul v-if="shoppingList.length">
+      <li v-for="item in shoppingList" :key="item.ingredientName">
+        {{ item.ingredientName }}: {{ item.amount }} Einheiten
+      </li>
+    </ul>
+
+    <!-- Anzeige einer Nachricht, falls keine Einkaufsliste vorhanden ist -->
+    <p v-else v-if="isListGenerated">Keine Zutaten für diesen Zeitraum gefunden.</p>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    mealPlans: Array,
-    recipes: Array,
-  },
   data() {
     return {
-      portionCount: 1,
-      shoppingList: [],
+      startDate: '',  // Startdatum
+      endDate: '',    // Enddatum
+      shoppingList: [], // Die generierte Einkaufsliste
+      isListGenerated: false, // Flag, ob die Einkaufsliste erfolgreich generiert wurde
     };
   },
-  computed: {
-    // Berechnen der Zutaten für die gesamte Woche
-    aggregatedIngredients() {
-      const ingredients = {};
-
-      this.mealPlans.forEach((mealPlan) => {
-        ['breakfast', 'lunch', 'dinner'].forEach((mealType) => {
-          const recipe = this.recipes.find(
-              (recipe) => recipe.id === mealPlan[`${mealType}Id`]
-          );
-
-          if (recipe) {
-            recipe.ingredients.forEach((ingredient) => {
-              if (ingredients[ingredient.name]) {
-                ingredients[ingredient.name].quantity += ingredient.quantity;
-              } else {
-                ingredients[ingredient.name] = { ...ingredient };
-              }
-            });
-          }
-        });
-      });
-
-      return ingredients;
-    },
-    // Zutaten nach Skalierung berechnen
-    scaledIngredients() {
-      return Object.values(this.aggregatedIngredients).map((ingredient) => {
-        const scaledQuantity = ingredient.quantity * this.portionCount;
-        return {
-          ...ingredient,
-          scaledQuantity,
-        };
-      });
-    },
-  },
-  watch: {
-    scaledIngredients(newVal) {
-      this.shoppingList = newVal;
-    },
-  },
   methods: {
-    downloadShoppingList() {
-      const listContent = this.shoppingList
-          .map(
-              (ingredient) =>
-                  `${ingredient.name}: ${ingredient.scaledQuantity} ${ingredient.unit}`
-          )
-          .join('\n');
+    async generateShoppingList() {
+      // Überprüfe, ob beide Daten gesetzt sind
+      if (!this.startDate || !this.endDate) {
+        alert('Bitte wähle sowohl Start- als auch Enddatum.');
+        return;
+      }
 
-      const blob = new Blob([listContent], { type: 'text/plain' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'einkaufsliste.txt';
-      link.click();
+      try {
+        // Sende eine POST-Anfrage an den Server mit den angegebenen Daten
+        const response = await fetch('/api/shopping-list/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            startDate: this.startDate,
+            endDate: this.endDate,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Fehler bei der Generierung der Einkaufsliste');
+        }
+
+        // Die Antwort vom Server (die Einkaufsliste) wird hier verarbeitet
+        const data = await response.json();
+        this.shoppingList = data;
+        this.isListGenerated = true; // Erfolg: Liste wurde generiert
+      } catch (error) {
+        console.error('Fehler:', error);
+        alert('Fehler beim Abrufen der Einkaufsliste.');
+      }
     },
   },
 };
 </script>
 
 <style scoped>
-.shopping-list-container {
-  padding: 1rem;
-  border: 1px solid #ccc;
-  margin-top: 2rem;
+form {
+  margin-bottom: 20px;
 }
-.portion-scale {
-  margin-bottom: 1rem;
+
+button {
+  margin-top: 10px;
+  padding: 8px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  margin: 5px 0;
 }
 </style>

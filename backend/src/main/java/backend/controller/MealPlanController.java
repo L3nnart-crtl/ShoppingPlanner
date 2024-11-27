@@ -35,8 +35,11 @@ public class MealPlanController {
             MealPlan mealPlanToAdd = mealPlanService.saveMealPlan(
                     mealPlanRequest.getDate(),
                     mealPlanRequest.getBreakfastRecipeId(),
+                    mealPlanRequest.getBreakfastPortionSize(),
                     mealPlanRequest.getLunchRecipeId(),
-                    mealPlanRequest.getDinnerRecipeId()
+                    mealPlanRequest.getLunchPortionSize(),
+                    mealPlanRequest.getDinnerRecipeId(),
+                    mealPlanRequest.getDinnerPortionSize()
             );
             URI location = URI.create("/api/mealplans/" + mealPlanToAdd.getId());
             return ResponseEntity.created(location).body(new MealPlanResponse(mealPlanToAdd));

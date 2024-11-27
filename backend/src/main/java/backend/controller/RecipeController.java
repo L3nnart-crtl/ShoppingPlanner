@@ -40,8 +40,12 @@ public class RecipeController {
 
     // DELETE: Rezept löschen
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
+    public ResponseEntity<String> deleteRecipe(@PathVariable Long id) {
         boolean isDeleted = recipeService.deleteRecipe(id);
-        return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        if (isDeleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(409).body("Das Rezept kann nicht gelöscht werden, da es noch einem MealPlan zugeordnet ist.");
+        }
     }
 }

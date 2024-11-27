@@ -4,22 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Combined RecipeList and search">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/QuantityUnit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/assets/TagsAndUnits.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" afterDir="false" />
+    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Added Unit enum and fixed bugs">
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/ShoppingListController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/ShoppingItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/ShoppingList.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/config/DataLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/config/DataLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/RecipeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/RecipeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Ingredient.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Ingredient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/repository/RecipeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/repository/RecipeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlan.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlan.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlanRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlanRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/service/MealPlanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/MealPlanService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/service/RecipeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/RecipeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeSearch.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,6 +37,9 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$/backend">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
@@ -56,17 +58,17 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="Class" />
         <option value="Enum" />
         <option value="JavaScript File" />
         <option value="Vue Composition API Component" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="production_Branch_Function_ShoppingList" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -86,6 +88,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Batch.start.executor": "Debug",
     "Downloaded.Files.Path.Enabled": "false",
     "Gradle.Build backend.executor": "Run",
     "Gradle.backend [dependencies].executor": "Run",
@@ -98,6 +101,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Shell Script.start.sh.executor": "Run",
     "Spring Boot.ShoppingPlannerApplication.executor": "Debug",
     "git-widget-placeholder": "production__Branch",
     "kotlin-language-version-configured": "true",
@@ -132,6 +136,17 @@
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.ShoppingPlannerApplication">
+    <configuration name="start" type="BatchConfigurationType" factoryName="Batch" temporary="true">
+      <module name="team-6" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\leeis\IdeaProjects\team-6" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SCRIPT_NAME" value="start.bat" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="backend [dependencies]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -178,6 +193,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Batch.start" />
         <item itemvalue="Shell Script.start.sh" />
         <item itemvalue="Gradle.backend [dependencies]" />
       </list>
@@ -215,7 +231,7 @@
       <workItem from="1732608174417" duration="24000" />
       <workItem from="1732608240271" duration="15000" />
       <workItem from="1732628631766" duration="8732000" />
-      <workItem from="1732692840197" duration="7257000" />
+      <workItem from="1732692840197" duration="11732000" />
     </task>
     <task id="LOCAL-00001" summary="Monorepo">
       <option name="closed" value="true" />
@@ -313,7 +329,23 @@
       <option name="project" value="LOCAL" />
       <updated>1732636783483</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="- Added Unit enum and fixed bugs">
+      <option name="closed" value="true" />
+      <created>1732700211543</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1732700211543</updated>
+    </task>
+    <task id="LOCAL-00014" summary="- Added Unit enum and fixed bugs">
+      <option name="closed" value="true" />
+      <created>1732700413049</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1732700413049</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -342,6 +374,7 @@
     <MESSAGE value="- Get Mealplan updated" />
     <MESSAGE value="- Added Searching for recipes&#10;- Added calendar for recipes" />
     <MESSAGE value="- Combined RecipeList and search" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Combined RecipeList and search" />
+    <MESSAGE value="- Added Unit enum and fixed bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Added Unit enum and fixed bugs" />
   </component>
 </project>

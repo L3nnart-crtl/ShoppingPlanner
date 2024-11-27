@@ -96,7 +96,7 @@ public class DataLoader implements CommandLineRunner {
                 Recipe dinner = allRecipes.get(random.nextInt(allRecipes.size()));
 
                 // Erstelle einen MealPlan und setze die Rezepte zu
-                MealPlan mealPlan = new MealPlan(date, breakfast, lunch, dinner);
+                MealPlan mealPlan = new MealPlan(date, breakfast,3, lunch,4, dinner,5);
 
                 // Überprüfe, ob bereits ein MealPlan für das Datum existiert
                 if (!mealPlanRepository.existsByDate(date)) {

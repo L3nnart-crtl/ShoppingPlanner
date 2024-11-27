@@ -17,23 +17,27 @@
         <div class="calendar-container">
           <CalendarComponent :recipes="recipes" />
         </div>
+
+        <!-- ShoppingList Formular -->
+        <div class="shopping-list-container">
+          <ShoppingList />
+        </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import AddRecipeForm from '@/components/AddRecipeForm.vue';
 import RecipeList from '@/components/RecipeList.vue';
 import CalendarComponent from '@/components/Calendar.vue';
-
+import ShoppingList from '@/components/ShoppingList.vue'; // Neue Komponente
 
 export default {
   components: {
     AddRecipeForm,
     RecipeList,
     CalendarComponent,
-
+    ShoppingList, // Registriere die neue Komponente
   },
   data() {
     return {

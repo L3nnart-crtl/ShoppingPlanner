@@ -19,23 +19,33 @@ public class MealPlan {
     @JoinColumn(name = "breakfast_recipe_id")
     private Recipe breakfastRecipe; // Frühstücks-Rezept
 
+    private int breakfastPortionSize; // Portionenanzahl für das Frühstück
+
     @ManyToOne
     @JoinColumn(name = "lunch_recipe_id")
     private Recipe lunchRecipe; // Mittagessen-Rezept
+
+    private int lunchPortionSize; // Portionenanzahl für das Mittagessen
 
     @ManyToOne
     @JoinColumn(name = "dinner_recipe_id")
     private Recipe dinnerRecipe; // Abendessen-Rezept
 
+    private int dinnerPortionSize; // Portionenanzahl für das Abendessen
+
     // Standard Constructor
     public MealPlan() {}
 
     // Constructor mit Parametern
-    public MealPlan(LocalDate date, Recipe breakfastRecipe, Recipe lunchRecipe, Recipe dinnerRecipe) {
+    public MealPlan(LocalDate date, Recipe breakfastRecipe, int breakfastPortionSize,
+                    Recipe lunchRecipe, int lunchPortionSize, Recipe dinnerRecipe, int dinnerPortionSize) {
         this.date = date;
         this.breakfastRecipe = breakfastRecipe;
+        this.breakfastPortionSize = breakfastPortionSize;
         this.lunchRecipe = lunchRecipe;
+        this.lunchPortionSize = lunchPortionSize;
         this.dinnerRecipe = dinnerRecipe;
+        this.dinnerPortionSize = dinnerPortionSize;
     }
 
     // Getter und Setter
@@ -63,12 +73,28 @@ public class MealPlan {
         this.breakfastRecipe = breakfastRecipe;
     }
 
+    public int getBreakfastPortionSize() {
+        return breakfastPortionSize;
+    }
+
+    public void setBreakfastPortionSize(int breakfastPortionSize) {
+        this.breakfastPortionSize = breakfastPortionSize;
+    }
+
     public Recipe getLunchRecipe() {
         return lunchRecipe;
     }
 
     public void setLunchRecipe(Recipe lunchRecipe) {
         this.lunchRecipe = lunchRecipe;
+    }
+
+    public int getLunchPortionSize() {
+        return lunchPortionSize;
+    }
+
+    public void setLunchPortionSize(int lunchPortionSize) {
+        this.lunchPortionSize = lunchPortionSize;
     }
 
     public Recipe getDinnerRecipe() {
@@ -79,4 +105,11 @@ public class MealPlan {
         this.dinnerRecipe = dinnerRecipe;
     }
 
+    public int getDinnerPortionSize() {
+        return dinnerPortionSize;
+    }
+
+    public void setDinnerPortionSize(int dinnerPortionSize) {
+        this.dinnerPortionSize = dinnerPortionSize;
+    }
 }
