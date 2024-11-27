@@ -16,7 +16,7 @@ public class Recipe {
     private String name;
     private String description;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)  // Speichert das Enum als String in der Datenbank
     private Set<Tag> tags;  // Set von vordefinierten Tags
 

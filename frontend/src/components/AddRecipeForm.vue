@@ -20,7 +20,17 @@
           <label>Zutat {{ index + 1 }}:</label>
           <input type="text" v-model="ingredient.name" placeholder="Zutat" required />
           <input type="text" v-model="ingredient.quantity" placeholder="Menge" required />
-          <input type="text" v-model="ingredient.unit" placeholder="Einheit" required />
+
+          <!-- Einheit auswählen mit Label -->
+          <div class="unit-selection">
+            <label for="unit">Einheit:</label>
+            <select v-model="ingredient.unit" required>
+              <option v-for="unit in quantityUnits" :key="unit.value" :value="unit.value">
+                {{ unit.label }}
+              </option>
+            </select>
+          </div>
+
           <button type="button" @click="removeIngredient(index)" class="remove-button">Entfernen</button>
         </div>
       </div>
@@ -49,9 +59,12 @@
   </div>
 </template>
 
+
 <script>
 import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
+// In deiner Vue-Komponente
+import { tags, quantityUnits, tagMapping } from '@/assets/TagsAndUnits.js';
 
 export default {
   components: {
@@ -65,148 +78,32 @@ export default {
         ingredients: [{ name: '', quantity: '', unit: '' }],
         tags: [],
       },
-      selectedTags: [],  // Array für die ausgewählten Tags
-      allTags: [
-        {name: 'Vegetarisch'},
-        {name: 'Vegan'},
-        {name: 'Glutenfrei'},
-        {name: 'Laktosefrei'},
-        {name: 'Keto'},
-        {name: 'Paleo'},
-        {name: 'Low Carb'},
-        {name: 'High Protein'},
-        {name: 'Diabetikerfreundlich'},
-        {name: 'Low Fat'},
-        {name: 'Halal'},
-        {name: 'Koscher'},
-        {name: 'Ausschlussdiät'},
-        {name: 'Schnell'},
-        {name: 'Meal Prep'},
-        {name: 'Mahlzeit für Kinder'},
-        {name: 'Süß'},
-        {name: 'Herzhaft'},
-        {name: 'Scharf'},
-        {name: 'Mild'},
-        {name: 'Exotisch'},
-        {name: 'Saisonale Rezepte'},
-        {name: 'Grillrezepte'},
-        {name: 'Frühstück'},
-        {name: 'Mittagessen'},
-        {name: 'Abendessen'},
-        {name: 'Snacks'},
-        {name: 'Suppen'},
-        {name: 'Salate'},
-        {name: 'Zuckerfrei'},
-        {name: 'Fisch'},
-        {name: 'Fleisch'},
-        {name: 'Nüsse'},
-        {name: 'Vollkorn'},
-        {name: 'Hülsenfrüchte'},
-        {name: 'Nudeln'},
-        {name: 'Reis'},
-        {name: 'Budgetfreundlich'},
-        {name: 'Für 2 Personen'},
-        {name: 'Familientauglich'},
-        {name: 'Für Anfänger'},
-        {name: 'Gourmet'},
-        {name: 'Lagerung'},
-        {name: 'Nachtisch'},
-        {name: 'Langsame Zubereitung'},
-        {name: 'Ein-Pfannen-Gerichte'},
-        {name: 'Frittieren'},
-        {name: 'Backen'},
-        {name: 'Low Calorie'},
-        {name: 'Anti-Aging'},
-        {name: 'Entgiftend'},
-        {name: 'Herzgesund'}
-      ],  // Alle verfügbaren Tags
+      selectedTags: [],
+      allTags: tags, // Hier verwendest du die Tags aus der importierten Datei
+      quantityUnits: quantityUnits, // Ebenso für die Mengenangaben
       isSubmitting: false,
     };
   },
   methods: {
     addIngredient() {
-      this.recipe.ingredients.push({name: '', quantity: '', unit: ''});
+      this.recipe.ingredients.push({ name: '', quantity: '', unit: '' });
     },
     removeIngredient(index) {
       this.recipe.ingredients.splice(index, 1);
     },
-    // Methode zur Übersetzung von Tags in Enum-Werte
     translateTags(tags) {
-      const tagMapping = {
-        'Vegetarisch': 'VEGETARIAN',
-        'Vegan': 'VEGAN',
-        'Glutenfrei': 'GLUTEN_FREE',
-        'Laktosefrei': 'LACTOSE_FREE',
-        'Keto': 'KETO',
-        'Paleo': 'PALEO',
-        'Low Carb': 'LOW_CARB',
-        'High Protein': 'HIGH_PROTEIN',
-        'Diabetikerfreundlich': 'DIABETIC_FRIENDLY',
-        'Low Fat': 'LOW_FAT',
-        'Halal': 'HALAL',
-        'Koscher': 'KOSHER',
-        'Ausschlussdiät': 'EXCLUSION_DIET',
-        'Schnell': 'QUICK',
-        'Meal Prep': 'MEAL_PREP',
-        'Mahlzeit für Kinder': 'KIDS_MEAL',
-        'Süß': 'SWEET',
-        'Herzhaft': 'SAVORY',
-        'Scharf': 'SPICY',
-        'Mild': 'MILD',
-        'Exotisch': 'EXOTIC',
-        'Saisonale Rezepte': 'SEASONAL',
-        'Grillrezepte': 'GRILL',
-        'Frühstück': 'BREAKFAST',
-        'Mittagessen': 'LUNCH',
-        'Abendessen': 'DINNER',
-        'Snacks': 'SNACKS',
-        'Suppen': 'SOUPS',
-        'Salate': 'SALADS',
-        'Zuckerfrei': 'SUGAR_FREE',
-        'Fisch': 'FISH',
-        'Fleisch': 'MEAT',
-        'Nüsse': 'NUTS',
-        'Vollkorn': 'WHOLEGRAIN',
-        'Hülsenfrüchte': 'LEGUMES',
-        'Nudeln': 'PASTA',
-        'Reis': 'RICE',
-        'Budgetfreundlich': 'BUDGET_FRIENDLY',
-        'Für 2 Personen': 'FOR_2_PEOPLE',
-        'Familientauglich': 'FAMILY_FRIENDLY',
-        'Für Anfänger': 'FOR_BEGGINERS',
-        'Gourmet': 'GOURMET',
-        'Lagerung': 'STORAGE',
-        'Nachtisch': 'DESSERT',
-        'Langsame Zubereitung': 'SLOW_COOK',
-        'Ein-Pfannen-Gerichte': 'ONE_POT',
-        'Frittieren': 'FRYING',
-        'Backen': 'BAKING',
-        'Low Calorie': 'LOW_CALORIE',
-        'Anti-Aging': 'ANTI_AGEING',
-        'Entgiftend': 'DETOX',
-        'Herzgesund': 'HEART_HEALTH'
-      };
-
       return tags.map(tag => tagMapping[tag] || tag);
     },
-
     async submitRecipe() {
       if (this.isSubmitting) return;
       this.isSubmitting = true;
 
       try {
-        // Tags übersetzen
         this.recipe.tags = this.translateTags(this.selectedTags.map(tag => tag.name));
-
-        // Sende das Rezept an das Backend
         const response = await this.$axios.post('/recipes', this.recipe);
-
-        // Nur das Rezept zur Liste der Elternkomponente hinzufügen, wenn es erfolgreich gespeichert wurde
         this.$emit('recipe-added', response.data);
-
-        // Formular zurücksetzen
-        this.recipe = {name: '', description: '', ingredients: [{name: '', quantity: '', unit: ''}], tags: []};
-        this.selectedTags = [];  // Zurücksetzen der ausgewählten Tags
+        this.recipe = { name: '', description: '', ingredients: [{ name: '', quantity: '', unit: '' }], tags: [] };
+        this.selectedTags = [];
       } catch (error) {
         console.error('Fehler beim Hinzufügen des Rezepts:', error);
       } finally {
@@ -216,7 +113,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .form-container {
   max-width: 600px;
@@ -227,29 +123,29 @@ export default {
 }
 
 .input-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px; /* Etwas mehr Abstand zwischen den Feldern */
 }
 
 .input-group label {
   display: block;
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 6px; /* Mehr Abstand zwischen Label und Eingabefeld */
 }
 
 .input-group input, .input-group textarea {
   width: 100%;
-  padding: 8px;
+  padding: 10px; /* Größeres Padding für mehr Platz im Eingabefeld */
   font-size: 16px;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
 
 .tag-selection {
-  margin-bottom: 16px;
+  margin-bottom: 20px; /* Mehr Abstand für die Tag-Auswahl */
 }
 
 .submit-button, .add-button, .remove-button {
-  padding: 10px;
+  padding: 12px; /* Etwas mehr Padding für die Buttons */
   font-size: 16px;
   background-color: #4CAF50;
   color: white;
@@ -272,6 +168,38 @@ export default {
 
 .submit-button {
   width: 100%;
-  margin-top: 16px;
+  margin-top: 20px; /* Mehr Abstand zwischen dem letzten Button und anderen Feldern */
+}
+
+/* Einheit Dropdown anpassen */
+.unit-selection {
+  margin-top: 12px; /* Abstand zwischen den Feldern und der Einheit-Auswahl */
+}
+
+.unit-selection label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.unit-selection select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+/* Dropdown für die Einheiten */
+.unit-dropdown {
+  width: 100%;
+  max-width: 150px;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-height: 120px;
+  overflow-y: auto;
 }
 </style>

@@ -2,6 +2,7 @@ package backend.config;
 
 import backend.model.Ingredient;
 import backend.model.MealPlan;
+import backend.model.QuantityUnit;
 import backend.model.Recipe;
 import backend.model.Tag;
 import backend.repository.IngredientRepository;
@@ -66,6 +67,11 @@ public class DataLoader implements CommandLineRunner {
             for (int j = 0; j < numberOfIngredients; j++) {
                 Ingredient ingredient = new Ingredient();
                 ingredient.setName(ingredientNames.get(random.nextInt(ingredientNames.size())));
+
+                // Zufällige Einheit für die Zutat auswählen
+                QuantityUnit randomUnit = QuantityUnit.values()[random.nextInt(QuantityUnit.values().length)];
+                ingredient.setUnit(randomUnit);
+
                 ingredient.setRecipe(recipe);  // Verknüpfe das Rezept mit der Zutat
                 ingredientRepository.save(ingredient);
             }

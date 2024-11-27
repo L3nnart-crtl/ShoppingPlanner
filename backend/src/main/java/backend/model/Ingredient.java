@@ -6,14 +6,14 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Ingredient")
 public class Ingredient {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String quantity;
-    private String unit;  // Hinzugefügt für Einheit der Zutaten
+
+    @Enumerated(EnumType.STRING)
+    private QuantityUnit unit;  // Geändert zu QuantityUnit
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", nullable = false)
@@ -24,7 +24,7 @@ public class Ingredient {
     public Ingredient() {}
 
     // Constructor with parameters
-    public Ingredient(String name, String quantity, String unit, Recipe recipe) {
+    public Ingredient(String name, String quantity, QuantityUnit unit, Recipe recipe) {
         this.name = name;
         this.quantity = quantity;
         this.unit = unit;
@@ -55,11 +55,11 @@ public class Ingredient {
         this.quantity = quantity;
     }
 
-    public String getUnit() {
+    public QuantityUnit getUnit() {
         return unit;
     }
 
-    public void setUnit(final String unit) {
+    public void setUnit(final QuantityUnit unit) {
         this.unit = unit;
     }
 

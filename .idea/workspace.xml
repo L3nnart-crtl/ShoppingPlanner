@@ -4,18 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Added Searching for recipes&#10;- Added calendar for recipes">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/config/DataLoader.java" afterDir="false" />
+    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Combined RecipeList and search">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/QuantityUnit.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/assets/TagsAndUnits.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/config/DataLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/config/DataLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/RecipeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/RecipeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Ingredient.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Ingredient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlan.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/MealPlan.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Tag.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Tag.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/repository/MealPlanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/repository/MealPlanRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/repository/RecipeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/repository/RecipeRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/service/RecipeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/RecipeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeSearch.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/RecipeSearch.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeSearch.vue" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,9 +56,10 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
+        <option value="Class" />
+        <option value="Enum" />
         <option value="JavaScript File" />
         <option value="Vue Composition API Component" />
-        <option value="Class" />
       </list>
     </option>
   </component>
@@ -79,44 +84,45 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;Gradle.Build backend.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [dependencies].executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;Spring Boot.ShoppingPlannerApplication.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;production__Branch&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.LLMConfigurable&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;E:\\IntelliJ IDEA 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "Gradle.Build backend.executor": "Run",
+    "Gradle.backend [dependencies].executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.ShoppingPlannerApplication.executor": "Debug",
+    "git-widget-placeholder": "production__Branch",
+    "kotlin-language-version-configured": "true",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "ml.llm.LLMConfigurable",
+    "ts.external.directory.path": "E:\\IntelliJ IDEA 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mariadb&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mariadb"
     ],
-    &quot;vue.recent.templates&quot;: [
-      &quot;Vue Composition API Component&quot;
+    "vue.recent.templates": [
+      "Vue Composition API Component"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\assets" />
@@ -208,7 +214,8 @@
       <workItem from="1732540462141" duration="11829000" />
       <workItem from="1732608174417" duration="24000" />
       <workItem from="1732608240271" duration="15000" />
-      <workItem from="1732628631766" duration="7782000" />
+      <workItem from="1732628631766" duration="8732000" />
+      <workItem from="1732692840197" duration="7257000" />
     </task>
     <task id="LOCAL-00001" summary="Monorepo">
       <option name="closed" value="true" />
@@ -298,7 +305,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732551651195</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="- Combined RecipeList and search">
+      <option name="closed" value="true" />
+      <created>1732636783483</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1732636783483</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -326,6 +341,7 @@
     <MESSAGE value="- First Version of Calendar &#10;- RecipeList updated" />
     <MESSAGE value="- Get Mealplan updated" />
     <MESSAGE value="- Added Searching for recipes&#10;- Added calendar for recipes" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Added Searching for recipes&#10;- Added calendar for recipes" />
+    <MESSAGE value="- Combined RecipeList and search" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Combined RecipeList and search" />
   </component>
 </project>

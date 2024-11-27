@@ -54,7 +54,7 @@
         <p><strong>Zutaten:</strong></p>
         <ul class="ingredient-list">
           <li v-for="(ingredient, index) in selectedRecipe.ingredients" :key="index">
-            {{ ingredient.name }} - {{ ingredient.quantity }} {{ ingredient.unit }}
+            {{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}
           </li>
         </ul>
 
@@ -89,6 +89,9 @@
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.min.css";
 import axios from "axios";
+// In deiner Vue-Komponente
+import {quantityUnits, tagsForList} from '@/assets/TagsAndUnits.js';
+
 
 export default {
   components: { Multiselect },
@@ -99,66 +102,19 @@ export default {
         tags: [],
       },
       recipes: [],
-      availableTags: [
-        { name: "Vegetarisch", value: "VEGETARIAN" },
-        { name: "Vegan", value: "VEGAN" },
-        { name: "Glutenfrei", value: "GLUTEN_FREE" },
-        { name: "Laktosefrei", value: "LACTOSE_FREE" },
-        { name: "Keto", value: "KETO" },
-        { name: "Paleo", value: "PALEO" },
-        { name: "Low Carb", value: "LOW_CARB" },
-        { name: "High Protein", value: "HIGH_PROTEIN" },
-        { name: "Diabetikerfreundlich", value: "DIABETIC_FRIENDLY" },
-        { name: "Low Fat", value: "LOW_FAT" },
-        { name: "Halal", value: "HALAL" },
-        { name: "Koscher", value: "KOSHER" },
-        { name: "Ausschlussdiät", value: "EXCLUSION_DIET" },
-        { name: "Schnell", value: "QUICK" },
-        { name: "Meal Prep", value: "MEAL_PREP" },
-        { name: "Mahlzeit für Kinder", value: "KIDS_MEAL" },
-        { name: "Süß", value: "SWEET" },
-        { name: "Herzhaft", value: "SAVORY" },
-        { name: "Scharf", value: "SPICY" },
-        { name: "Mild", value: "MILD" },
-        { name: "Exotisch", value: "EXOTIC" },
-        { name: "Saisonale Rezepte", value: "SEASONAL" },
-        { name: "Grillrezepte", value: "GRILL" },
-        { name: "Frühstück", value: "BREAKFAST" },
-        { name: "Mittagessen", value: "LUNCH" },
-        { name: "Abendessen", value: "DINNER" },
-        { name: "Snacks", value: "SNACKS" },
-        { name: "Suppen", value: "SOUPS" },
-        { name: "Salate", value: "SALADS" },
-        { name: "Zuckerfrei", value: "SUGAR_FREE" },
-        { name: "Fisch", value: "FISH" },
-        { name: "Fleisch", value: "MEAT" },
-        { name: "Nüsse", value: "NUTS" },
-        { name: "Vollkorn", value: "WHOLEGRAIN" },
-        { name: "Hülsenfrüchte", value: "LEGUMES" },
-        { name: "Nudeln", value: "PASTA" },
-        { name: "Reis", value: "RICE" },
-        { name: "Budgetfreundlich", value: "BUDGET_FRIENDLY" },
-        { name: "Für 2 Personen", value: "FOR_2_PEOPLE" },
-        { name: "Familientauglich", value: "FAMILY_FRIENDLY" },
-        { name: "Für Anfänger", value: "FOR_BEGGINERS" },
-        { name: "Gourmet", value: "GOURMET" },
-        { name: "Lagerung", value: "STORAGE" },
-        { name: "Nachtisch", value: "DESSERT" },
-        { name: "Langsame Zubereitung", value: "SLOW_COOK" },
-        { name: "Ein-Pfannen-Gerichte", value: "ONE_POT" },
-        { name: "Frittieren", value: "FRYING" },
-        { name: "Backen", value: "BAKING" },
-        { name: "Low Calorie", value: "LOW_CALORIE" },
-        { name: "Anti-Aging", value: "ANTI_AGEING" },
-        { name: "Entgiftend", value: "DETOX" },
-        { name: "Herzgesund", value: "HEART_HEALTH" },
-      ],
+      availableTags: tagsForList,
+      quantityUnits: quantityUnits,
       isModalVisible: false,
       isDeleteModalVisible: false,
       selectedRecipe: null,
     };
   },
+  mounted() {
+    // Beim Laden der Seite nach allen Rezepten suchen
+    this.searchRecipes();
+  },
   methods: {
+
     async searchRecipes() {
       try {
         const params = {};
@@ -178,6 +134,12 @@ export default {
       }
     },
 
+    recipesUpdated(newRecipes) {
+      this.recipes = newRecipes;
+    },
+    removeRecipe(recipeId) {
+      this.$emit('recipe-removed', recipeId);
+    },
     openRecipeDetails(recipe) {
       this.selectedRecipe = recipe;
       this.isModalVisible = true;
@@ -185,88 +147,90 @@ export default {
 
     closeModal() {
       this.isModalVisible = false;
-      this.selectedRecipe = null;
     },
 
     confirmDeleteRecipe(recipe) {
-      this.isModalVisible = false;
       this.selectedRecipe = recipe;
       this.isDeleteModalVisible = true;
     },
 
+    closeDeleteModal() {
+      this.isDeleteModalVisible = false;
+    },
+
     async deleteRecipe() {
-      try {
-        await axios.delete(`/api/recipes/${this.selectedRecipe.id}`);
-        this.recipes = this.recipes.filter(r => r.id !== this.selectedRecipe.id);
-        this.closeDeleteModal();
-      } catch (error) {
-        console.error("Fehler beim Löschen des Rezepts:", error);
+      if (this.selectedRecipe) {
+        try {
+          await axios.delete(`/api/recipes/${this.selectedRecipe.id}`);
+          this.closeDeleteModal();
+          this.closeModal();
+          this.removeRecipe(this.selectedRecipe.id);
+        } catch (error) {
+          console.error("Fehler beim Löschen des Rezepts:", error);
+        }
       }
     },
 
-    closeDeleteModal() {
-      this.isDeleteModalVisible = false;
-      this.selectedRecipe = null;
+    getUnitLabel(unit) {
+      const unitObj = this.quantityUnits.find(u => u.value === unit);
+      return unitObj ? unitObj.label : unit; // Falls keine Übersetzung gefunden wird, den Wert direkt verwenden
     },
 
-    getTagLabel(tagValue) {
-      const tag = this.availableTags.find(t => t.value === tagValue);
-      return tag ? tag.name : tagValue;
+    getTagLabel(tag) {
+      const tagObj = this.availableTags.find(t => t.value === tag);
+      return tagObj ? tagObj.name : tag; // Falls keine Übersetzung gefunden wird, den Wert direkt verwenden
     }
-  },
-  created() {
-    // Initiales Laden von Rezepten ohne Filter
-    this.searchRecipes();
-  },
+  }
 };
 </script>
 
 <style scoped>
 /* Stil für die Rezeptkarte */
 .recipe-container {
-  margin: 20px;
+  margin: 15px;
 }
 
 .search-fields {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .search-input {
-  padding: 8px;
-  font-size: 14px;
+  padding: 6px;
+  font-size: 12px;
 }
 
 .tag-dropdown {
   width: 100%;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .search-button {
-  padding: 10px;
+  padding: 8px;
   background-color: #4caf50;
   color: white;
   border: none;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .recipe-cards-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  max-height: 500px;
+  gap: 12px;
+  max-height: 400px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #888 #ddd;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 8px;
 }
 
 .recipe-card {
   flex: 1 0 30%;
-  padding: 15px;
+  padding: 12px;
   background-color: #f4f4f4;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -280,12 +244,12 @@ export default {
 }
 
 .recipe-name {
-  font-size: 1.2em;
+  font-size: 1em;
   font-weight: bold;
 }
 
 .no-recipes {
-  font-size: 16px;
+  font-size: 14px;
   color: gray;
 }
 
@@ -302,11 +266,14 @@ export default {
   align-items: center;
 }
 
+/* Größere Modal-Größe für mehr Inhalt */
 .modal-content {
   background-color: white;
-  padding: 20px;
-  max-width: 600px;
+  padding: 16px;
+  max-width: 700px;   /* Reduzierte Breite */
   width: 100%;
+  max-height: 80vh;   /* Maximale Höhe des Modals */
+  overflow-y: auto;   /* Ermöglicht Scrollen innerhalb des Modals */
   border-radius: 8px;
 }
 
@@ -314,7 +281,7 @@ export default {
   background-color: red;
   color: white;
   border: none;
-  padding: 5px;
+  padding: 4px;
   cursor: pointer;
 }
 
@@ -324,22 +291,38 @@ export default {
 }
 
 .delete-modal {
-  width: 400px;
+  width: 350px;
 }
 
 .delete-modal .modal-actions {
-  gap: 10px;
+  gap: 8px;
 }
 
 .tags-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
+  margin-top: 16px; /* Reduzierter Abstand */
 }
 
 .tag-box {
   background-color: #f1f1f1;
-  padding: 5px;
+  padding: 4px;
   border-radius: 5px;
+}
+
+/* Stil für die Zutatenliste im Modal */
+.ingredient-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  font-size: 18px; /* Kleinere Schriftgröße */
+  line-height: 1.3; /* Reduzierter Zeilenabstand */
+  max-height: 400px; /* Höhere Liste, wenn nötig */
+  overflow-y: auto;  /* Aktiviert das Scrollen bei vielen Zutaten */
+}
+
+.ingredient-list li {
+  margin-bottom: 6px; /* Weniger Abstand zwischen den Listeneinträgen */
 }
 </style>

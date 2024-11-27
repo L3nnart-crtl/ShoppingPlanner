@@ -1,6 +1,7 @@
 package backend.controller;
 
 import backend.model.Recipe;
+import backend.model.Tag;
 import backend.service.RecipeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class RecipeController {
     @GetMapping("/search")
     public List<Recipe> searchRecipes(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) List<String> tags) {
+            @RequestParam(required = false) List<Tag> tags) {
         return recipeService.searchRecipes(name, tags);
     }
 

@@ -1,6 +1,7 @@
 package backend.service;
 
 import backend.model.Recipe;
+import backend.model.Tag;
 import backend.repository.RecipeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,30 +24,36 @@ public class RecipeService {
         return recipeRepository.findAll();
     }
 
-    public List<Recipe> searchRecipes(String name, List<String> tags) {
+    public List<Recipe> searchRecipes(String name, List<Tag> tags) {
         logger.info("Suche nach Rezepten mit Name: {} und Tags: {}", name, tags);
 
-        // Name und Tags zusammen
         if (name != null && tags != null && !tags.isEmpty()) {
             logger.info("Suche nach Name und Tags");
-            return recipeRepository.findByNameAndTagsIn(name, tags);
-        }
-        // Nur Name
-        else if (name != null) {
+
+            // Hole alle Rezepte, die den Namen und Tags matchen
+            List<Recipe> recipes = recipeRepository.findByNameAndTagsIn(name, tags);
+
+            // Filtere nur die Rezepte, die alle Tags enthalten
+            return recipes.stream()
+                    .filter(recipe -> recipe.getTags().containsAll(tags))
+                    .toList();
+        } else if (name != null) {
             logger.info("Suche nur nach Name");
             return recipeRepository.findByNameContainingIgnoreCase(name);
-        }
-        // Nur Tags
-        else if (tags != null && !tags.isEmpty()) {
+        } else if (tags != null && !tags.isEmpty()) {
             logger.info("Suche nur nach Tags");
-            return recipeRepository.findByTagsIn(tags);
-        }
-        // Keine Suchkriterien, alle Rezepte zurückgeben
-        else {
+
+            // Suche Rezepte basierend auf Tags und filtere für vollständige Übereinstimmung
+            List<Recipe> recipes = recipeRepository.findByTagsIn(tags);
+            return recipes.stream()
+                    .filter(recipe -> recipe.getTags().containsAll(tags))
+                    .toList();
+        } else {
             logger.info("Keine Suchkriterien angegeben, alle Rezepte werden zurückgegeben");
             return recipeRepository.findAll();
         }
     }
+
 
     public Recipe saveRecipe(Recipe recipe) {
         logger.info("Speichere Rezept: {}", recipe);
