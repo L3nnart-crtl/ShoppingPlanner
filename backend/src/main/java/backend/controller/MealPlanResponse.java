@@ -1,6 +1,6 @@
 package backend.controller;
 
-import backend.model.MealPlan;
+import backend.model.MealPlan.MealPlan;
 
 public class MealPlanResponse {
 

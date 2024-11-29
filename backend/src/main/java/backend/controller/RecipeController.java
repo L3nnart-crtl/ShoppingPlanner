@@ -1,7 +1,7 @@
 package backend.controller;
 
-import backend.model.Recipe;
-import backend.model.Tag;
+import backend.model.Recipe.Recipe;
+import backend.model.Recipe.Tag;
 import backend.service.RecipeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

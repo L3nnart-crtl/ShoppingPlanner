@@ -1,7 +1,7 @@
 package backend.service;
 
-import backend.model.MealPlan;
-import backend.model.Recipe;
+import backend.model.MealPlan.MealPlan;
+import backend.model.Recipe.Recipe;
 import backend.repository.MealPlanRepository;
 import backend.repository.RecipeRepository;
 import org.springframework.stereotype.Service;

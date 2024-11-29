@@ -1,7 +1,7 @@
 package backend.repository;
 
-import backend.model.Recipe;
-import backend.model.Tag;
+import backend.model.Recipe.Recipe;
+import backend.model.Recipe.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +27,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
         WHERE t IN :tags
     """)
     List<Recipe> findByTagsIn(@Param("tags") List<Tag> tags);
+
+    boolean existsByName(String recipeName);
 }

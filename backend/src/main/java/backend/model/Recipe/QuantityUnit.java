@@ -1,8 +1,4 @@
-package backend.model;
-
-/**
- * Enum representing units of quantity.
- */
+package backend.model.Recipe;
 public enum QuantityUnit {
     GRAM("Gramm", "GRAM"),
     KILOGRAM("Kilogramm", "KILOGRAM"),
@@ -33,6 +29,18 @@ public enum QuantityUnit {
 
     @Override
     public String toString() {
-        return name; // Gibt den deutschen Namen zurück
+        switch (this) {
+            case GRAM: return "g";
+            case KILOGRAM: return "kg";
+            case MILLIGRAM: return "mg";
+            case MILLILITER: return "ml";
+            case LITER: return "l";
+            case CUP: return "Tasse(n)";
+            case TABLESPOON: return "EL";
+            case TEASPOON: return "TL";
+            case PIECE: return "Stück";
+            case DOZEN: return "Dutzend";
+            default: return name; // Fallback
+        }
     }
 }

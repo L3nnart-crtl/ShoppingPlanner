@@ -1,5 +1,6 @@
-package backend.model;
+package backend.model.MealPlan;
 
+import backend.model.Recipe.Recipe;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 

@@ -1,4 +1,4 @@
-package backend.model;
+package backend.model.MealPlan;
 
 import java.time.LocalDate;
 

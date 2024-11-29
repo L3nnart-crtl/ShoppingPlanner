@@ -1,4 +1,4 @@
-package backend.model;
+package backend.model.Recipe;
 
 public enum Tag {
     VEGETARIAN,

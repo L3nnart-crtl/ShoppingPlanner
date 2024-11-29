@@ -1,8 +1,9 @@
 package backend.controller;
 
-import backend.model.MealPlan;
-import backend.model.ShoppingItem;
-import backend.model.ShoppingList;
+import backend.model.MealPlan.MealPlan;
+
+import backend.model.ShoppingList.ShoppingItem;
+import backend.model.ShoppingList.ShoppingList;
 import backend.repository.MealPlanRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;

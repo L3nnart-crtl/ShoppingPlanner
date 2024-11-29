@@ -1,7 +1,7 @@
 package backend.service;
 
-import backend.model.Recipe;
-import backend.model.Tag;
+import backend.model.Recipe.Recipe;
+import backend.model.Recipe.Tag;
 import backend.repository.RecipeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

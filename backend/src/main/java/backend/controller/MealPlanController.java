@@ -1,7 +1,7 @@
 package backend.controller;
 
-import backend.model.MealPlan;
-import backend.model.MealPlanRequest;
+import backend.model.MealPlan.MealPlan;
+import backend.model.MealPlan.MealPlanRequest;
 import backend.service.MealPlanService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

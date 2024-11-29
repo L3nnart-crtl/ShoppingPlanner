@@ -1,6 +1,6 @@
 package backend.repository;
 
-import backend.model.Ingredient;
+import backend.model.Recipe.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

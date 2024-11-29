@@ -1,28 +1,40 @@
 <template>
-  <div>
+  <div class="shopping-list">
     <h1>Einkaufsliste für die nächsten Tage</h1>
 
     <!-- Formular zur Auswahl von Start- und Enddatum -->
-    <form @submit.prevent="generateShoppingList">
-      <label for="startDate">Start Date:</label>
-      <input type="date" v-model="startDate" required><br><br>
+    <form @submit.prevent="generateShoppingList" class="date-form">
+      <div class="form-group">
+        <label for="startDate">Startdatum:</label>
+        <input type="date" id="startDate" v-model="startDate" required>
+      </div>
 
-      <label for="endDate">End Date:</label>
-      <input type="date" v-model="endDate" required><br><br>
+      <div class="form-group">
+        <label for="endDate">Enddatum:</label>
+        <input type="date" id="endDate" v-model="endDate" required>
+      </div>
 
-      <button type="submit">Einkaufsliste generieren</button>
+      <button type="submit" :disabled="loading">
+        <span v-if="loading">Generieren...</span>
+        <span v-else>Einkaufsliste generieren</span>
+      </button>
     </form>
 
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
     <h2>Generierte Einkaufsliste</h2>
-    <!-- Anzeige der generierten Einkaufsliste -->
-    <ul v-if="shoppingList.length">
+    <ul v-if="shoppingList.length" class="shopping-list-items">
       <li v-for="item in shoppingList" :key="item.ingredientName">
-        {{ item.ingredientName }}: {{ item.amount }} Einheiten
+        {{ item.ingredientName }}: {{ item.unit }}
       </li>
     </ul>
 
-    <!-- Anzeige einer Nachricht, falls keine Einkaufsliste vorhanden ist -->
-    <p v-else v-if="isListGenerated">Keine Zutaten für diesen Zeitraum gefunden.</p>
+    <!-- Nachricht, falls keine Zutaten gefunden wurden -->
+    <p v-else-if="isListGenerated" class="no-items">
+      Keine Zutaten für diesen Zeitraum gefunden.
+    </p>
   </div>
 </template>
 
@@ -30,44 +42,49 @@
 export default {
   data() {
     return {
-      startDate: '',  // Startdatum
-      endDate: '',    // Enddatum
-      shoppingList: [], // Die generierte Einkaufsliste
-      isListGenerated: false, // Flag, ob die Einkaufsliste erfolgreich generiert wurde
+      startDate: '', // Startdatum
+      endDate: '', // Enddatum
+      shoppingList: [], // Generierte Einkaufsliste
+      isListGenerated: false, // Flag für generierte Liste
+      loading: false, // Ladezustand
+      errorMessage: '', // Fehlernachricht
     };
   },
   methods: {
     async generateShoppingList() {
-      // Überprüfe, ob beide Daten gesetzt sind
+      // Überprüfen, ob beide Daten gesetzt sind
       if (!this.startDate || !this.endDate) {
-        alert('Bitte wähle sowohl Start- als auch Enddatum.');
+        this.errorMessage = 'Bitte wähle sowohl ein Startdatum als auch ein Enddatum.';
         return;
       }
 
+      // Ladezustand und Fehler zurücksetzen
+      this.loading = true;
+      this.errorMessage = '';
+      this.isListGenerated = false;
+
       try {
-        // Sende eine POST-Anfrage an den Server mit den angegebenen Daten
-        const response = await fetch('/api/shopping-list/generate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            startDate: this.startDate,
-            endDate: this.endDate,
-          }),
-        });
+        // Sende eine POST-Anfrage an den Server
+        const response = await fetch(
+            `/api/shopping-list/generate?startDate=${this.startDate}&endDate=${this.endDate}`,
+            {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+            }
+        );
 
         if (!response.ok) {
-          throw new Error('Fehler bei der Generierung der Einkaufsliste');
+          throw new Error('Serverfehler: Die Einkaufsliste konnte nicht generiert werden.');
         }
 
-        // Die Antwort vom Server (die Einkaufsliste) wird hier verarbeitet
+        // JSON-Antwort verarbeiten
         const data = await response.json();
         this.shoppingList = data;
-        this.isListGenerated = true; // Erfolg: Liste wurde generiert
+        this.isListGenerated = true;
       } catch (error) {
-        console.error('Fehler:', error);
-        alert('Fehler beim Abrufen der Einkaufsliste.');
+        this.errorMessage = error.message || 'Fehler beim Abrufen der Einkaufsliste.';
+      } finally {
+        this.loading = false;
       }
     },
   },
@@ -75,29 +92,73 @@ export default {
 </script>
 
 <style scoped>
-form {
+.shopping-list {
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.date-form {
   margin-bottom: 20px;
 }
 
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+}
+
 button {
-  margin-top: 10px;
-  padding: 8px 15px;
-  background-color: #4CAF50;
+  padding: 10px 20px;
+  font-size: 16px;
   color: white;
+  background-color: #4caf50;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-button:hover {
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
   background-color: #45a049;
 }
 
-ul {
+ul.shopping-list-items {
   list-style-type: none;
   padding-left: 0;
 }
 
-li {
+ul.shopping-list-items li {
   margin: 5px 0;
+  padding: 8px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.no-items {
+  color: gray;
+  font-style: italic;
+  margin-top: 10px;
 }
 </style>
