@@ -23,11 +23,9 @@ public interface MealPlanRepository extends JpaRepository<MealPlan, Long> {
             "JOIN Recipe r ON (mp.breakfastRecipe = r OR mp.lunchRecipe = r OR mp.dinnerRecipe = r)")
     Long calculateAverageCookingTime();
 
-    @Query("SELECT t, COUNT(t) FROM MealPlan mp " +
-            "JOIN Recipe r ON (mp.breakfastRecipe = r OR mp.lunchRecipe = r OR mp.dinnerRecipe = r) " +
-            "JOIN r.tags t " +
-            "GROUP BY t ORDER BY COUNT(t) DESC")
+    @Query("SELECT tag, COUNT(tag) FROM MealPlan mp JOIN mp.breakfastRecipe.tags tag GROUP BY tag ORDER BY COUNT(tag) DESC")
     Map<Tag, Long> calculateTagUsage();
+
 
     @Query("SELECT r, COUNT(r) FROM MealPlan mp " +
             "JOIN Recipe r ON (mp.breakfastRecipe = r OR mp.lunchRecipe = r OR mp.dinnerRecipe = r) " +

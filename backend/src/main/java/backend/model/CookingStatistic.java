@@ -1,7 +1,5 @@
 package backend.model;
 
-import backend.model.Recipe.Ingredient;
-import backend.model.Recipe.Recipe;
 import backend.model.Recipe.Tag;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,7 +22,7 @@ public class CookingStatistic {
 
     @Setter
     @Getter
-    private Integer averagePortions;
+    private Long averagePortions;
     private Double cookingTime;
 
     @Setter
@@ -43,13 +41,13 @@ public class CookingStatistic {
     @ElementCollection
     @MapKeyColumn(name = "recipe")
     @Column(name = "amount")
-    private Map<Recipe, Long> favouriteRecipes = new HashMap<>();
+    private Map<String, Long> favouriteRecipes = new HashMap<>();
 
     @Getter
     @Setter
     @ElementCollection
     @MapKeyColumn(name = "ingredient")
     @Column(name = "amount")
-    private Map<String, Integer> favouriteIngredients = new HashMap<>();
+    private Map<String, Double> favouriteIngredients = new HashMap<>();
 
 }

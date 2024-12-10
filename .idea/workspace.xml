@@ -4,26 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- ShoppingList v2">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/CookingStatisticController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/CookingStatistic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/CookingStatisticService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/store.js" afterDir="false" />
+    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Backend statistic added&#10;- Frontend edditing of Recipes&#10;- cookingTime added as param for recipes">
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/BarChart.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/config/DataLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/config/DataLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/MealPlanController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/controller/RecipeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/controller/RecipeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe/Ingredient.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe/Ingredient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe/Recipe.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/Recipe/Recipe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/model/CookingStatistic.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/model/CookingStatistic.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/repository/MealPlanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/repository/MealPlanRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/service/RecipeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/RecipeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/App.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/backend/service/CookingStatisticService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/backend/service/CookingStatisticService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,9 +54,9 @@
       <list>
         <option value="CSS File" />
         <option value="Enum" />
-        <option value="Vue Composition API Component" />
         <option value="Class" />
         <option value="JavaScript File" />
+        <option value="Vue Composition API Component" />
       </list>
     </option>
   </component>
@@ -247,7 +237,7 @@
       <workItem from="1733143672664" duration="9000" />
       <workItem from="1733229025833" duration="8000" />
       <workItem from="1733229710575" duration="6000" />
-      <workItem from="1733817180588" duration="14221000" />
+      <workItem from="1733817180588" duration="22882000" />
     </task>
     <task id="LOCAL-00001" summary="Monorepo">
       <option name="closed" value="true" />
@@ -377,7 +367,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732873156055</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="- Backend statistic added&#10;- Frontend edditing of Recipes&#10;- cookingTime added as param for recipes">
+      <option name="closed" value="true" />
+      <created>1733831655432</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1733831655432</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -409,6 +407,7 @@
     <MESSAGE value="- Added Unit enum and fixed bugs" />
     <MESSAGE value="- First Version of ShoppingList" />
     <MESSAGE value="- ShoppingList v2" />
-    <option name="LAST_COMMIT_MESSAGE" value="- ShoppingList v2" />
+    <MESSAGE value="- Backend statistic added&#10;- Frontend edditing of Recipes&#10;- cookingTime added as param for recipes" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Backend statistic added&#10;- Frontend edditing of Recipes&#10;- cookingTime added as param for recipes" />
   </component>
 </project>
