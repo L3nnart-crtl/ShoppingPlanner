@@ -1,7 +1,9 @@
 package backend.model.Recipe;
 
+import backend.repository.IngredientRepository;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
 import java.util.List;
 import java.util.Set;
 
@@ -15,10 +17,11 @@ public class Recipe {
 
     private String name;
     private String description;
+    private Integer cookingTime; // Kochzeit in Minuten
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)  // Speichert das Enum als String in der Datenbank
-    private Set<Tag> tags;  // Set von vordefinierten Tags
+    @Enumerated(EnumType.STRING)
+    private Set<Tag> tags;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -28,9 +31,10 @@ public class Recipe {
     public Recipe() {}
 
     // Constructor with parameters
-    public Recipe(String name, String description, List<Ingredient> ingredients, Set<Tag> tags) {
+    public Recipe(String name, String description, Integer cookingTime, List<Ingredient> ingredients, Set<Tag> tags) {
         this.name = name;
         this.description = description;
+        this.cookingTime = cookingTime;
         this.ingredients = ingredients;
         this.tags = tags;
     }
@@ -58,6 +62,14 @@ public class Recipe {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getCookingTime() {
+        return cookingTime;
+    }
+
+    public void setCookingTime(Integer cookingTime) {
+        this.cookingTime = cookingTime;
     }
 
     public Set<Tag> getTags() {

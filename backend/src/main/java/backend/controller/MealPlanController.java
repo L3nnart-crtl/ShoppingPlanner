@@ -6,7 +6,8 @@ import backend.service.MealPlanService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -65,12 +66,28 @@ public class MealPlanController {
         }
     }
 
+
     @DeleteMapping("/{date}")
     public ResponseEntity<Void> deleteMealPlan(@PathVariable String date) {
-        boolean isDeleted = mealPlanService.deleteMealPlanByDate(date);
-        if (isDeleted) {
-            return ResponseEntity.noContent().build();
+        try {
+            LocalDate providedDate = LocalDate.parse(date);
+            LocalDate today = LocalDate.now();
+
+            if (providedDate.isBefore(today)) {
+                // Datum liegt in der Vergangenheit, Löschung nicht erlaubt
+                return ResponseEntity.badRequest().build();
+            }
+
+            boolean isDeleted = mealPlanService.deleteMealPlanByDate(date);
+            if (isDeleted) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.notFound().build();
+
+        } catch (DateTimeParseException e) {
+            // Ungültiges Datumsformat
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.notFound().build();
     }
+
 }

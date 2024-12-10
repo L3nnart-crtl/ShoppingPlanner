@@ -14,6 +14,12 @@
         <textarea v-model="recipe.description" placeholder="Beschreibung eingeben" required></textarea>
       </div>
 
+      <!-- Kochzeit -->
+      <div class="input-group">
+        <label for="cookingTime">Kochzeit (in Minuten):</label>
+        <input type="number" v-model="recipe.cookingTime" placeholder="Kochzeit in Minuten" min="1" required />
+      </div>
+
       <!-- Zutaten hinzufügen -->
       <div v-for="(ingredient, index) in recipe.ingredients" :key="index" class="ingredient-group">
         <div class="ingredient-item">
@@ -41,6 +47,7 @@
       <div class="tag-selection">
         <label for="tags">Wähle Tags:</label>
         <multiselect
+            ref="multiselect"
             v-model="selectedTags"
             :options="allTags"
             :multiple="true"
@@ -59,12 +66,11 @@
   </div>
 </template>
 
-
 <script>
 import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
-// In deiner Vue-Komponente
 import { tags, quantityUnits, tagMapping } from '@/assets/TagsAndUnits.js';
+import axios from "axios";
 
 export default {
   components: {
@@ -75,12 +81,13 @@ export default {
       recipe: {
         name: '',
         description: '',
+        cookingTime: null,
         ingredients: [{ name: '', quantity: '', unit: '' }],
         tags: [],
       },
       selectedTags: [],
-      allTags: tags, // Hier verwendest du die Tags aus der importierten Datei
-      quantityUnits: quantityUnits, // Ebenso für die Mengenangaben
+      allTags: tags,
+      quantityUnits: quantityUnits,
       isSubmitting: false,
     };
   },
@@ -99,20 +106,44 @@ export default {
       this.isSubmitting = true;
 
       try {
+        // Tags übersetzen
         this.recipe.tags = this.translateTags(this.selectedTags.map(tag => tag.name));
+
+        // Rezept an die API senden
         const response = await this.$axios.post('/recipes', this.recipe);
+
         this.$emit('recipe-added', response.data);
-        this.recipe = { name: '', description: '', ingredients: [{ name: '', quantity: '', unit: '' }], tags: [] };
+
+        // Formular und Tags zurücksetzen
+        this.recipe = {
+          name: '',
+          description: '',
+          cookingTime: null,
+          ingredients: [{ name: '', quantity: '', unit: '' }],
+          tags: []
+        };
+
+        // Tags zurücksetzen
         this.selectedTags = [];
+
+        // Sicherstellen, dass Multiselect zurückgesetzt wird
+        await this.$nextTick(() => {
+          if (this.$refs.multiselect) {
+            this.$refs.multiselect.clearSelection();
+          }
+        });
+        // Rezept wurde hinzugefügt
+
       } catch (error) {
         console.error('Fehler beim Hinzufügen des Rezepts:', error);
       } finally {
         this.isSubmitting = false;
       }
-    },
+    }
   },
 };
 </script>
+
 <style scoped>
 .form-container {
   max-width: 600px;
@@ -123,29 +154,29 @@ export default {
 }
 
 .input-group {
-  margin-bottom: 20px; /* Etwas mehr Abstand zwischen den Feldern */
+  margin-bottom: 20px;
 }
 
 .input-group label {
   display: block;
   font-weight: bold;
-  margin-bottom: 6px; /* Mehr Abstand zwischen Label und Eingabefeld */
+  margin-bottom: 6px;
 }
 
 .input-group input, .input-group textarea {
   width: 100%;
-  padding: 10px; /* Größeres Padding für mehr Platz im Eingabefeld */
+  padding: 10px;
   font-size: 16px;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
 
 .tag-selection {
-  margin-bottom: 20px; /* Mehr Abstand für die Tag-Auswahl */
+  margin-bottom: 20px;
 }
 
 .submit-button, .add-button, .remove-button {
-  padding: 12px; /* Etwas mehr Padding für die Buttons */
+  padding: 12px;
   font-size: 16px;
   background-color: #4CAF50;
   color: white;
@@ -168,12 +199,11 @@ export default {
 
 .submit-button {
   width: 100%;
-  margin-top: 20px; /* Mehr Abstand zwischen dem letzten Button und anderen Feldern */
+  margin-top: 20px;
 }
 
-/* Einheit Dropdown anpassen */
 .unit-selection {
-  margin-top: 12px; /* Abstand zwischen den Feldern und der Einheit-Auswahl */
+  margin-top: 12px;
 }
 
 .unit-selection label {
@@ -191,7 +221,6 @@ export default {
   margin-top: 5px;
 }
 
-/* Dropdown für die Einheiten */
 .unit-dropdown {
   width: 100%;
   max-width: 150px;

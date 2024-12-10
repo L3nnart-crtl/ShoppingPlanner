@@ -25,6 +25,17 @@
         />
       </div>
 
+      <!-- Filter für Kochzeit -->
+      <div class="cooking-time-filter">
+        <label for="cookingtime">Kochzeit (Minuten):</label>
+        <input
+            v-model="searchQuery.cookingTime"
+            type="number"
+            placeholder="Kochzeit eingeben"
+            class="search-input"
+        />
+      </div>
+
       <button @click="searchRecipes" class="search-button">Suchen</button>
     </div>
 
@@ -47,6 +58,7 @@
     <div v-if="isModalVisible" class="modal-overlay">
       <div class="modal-content">
         <button v-if="selectedRecipe" @click="confirmDeleteRecipe(selectedRecipe)" class="delete-button">Rezept löschen</button>
+        <button v-if="selectedRecipe" @click="openEditRecipe(selectedRecipe)" class="edit-button">Rezept bearbeiten</button>
 
         <h4>{{ selectedRecipe.name }}</h4>
         <p><strong>Beschreibung:</strong> {{ selectedRecipe.description || 'Keine Beschreibung verfügbar.' }}</p>
@@ -65,6 +77,9 @@
           </div>
         </div>
 
+        <!-- Anzeige der Kochzeit -->
+        <p><strong>Kochzeit:</strong> {{ selectedRecipe.cookingTime|| 'Keine Kochzeit angegeben' }} Minuten</p>
+
         <div class="modal-actions">
           <button @click="closeModal">Schließen</button>
         </div>
@@ -82,6 +97,74 @@
         </div>
       </div>
     </div>
+
+    <!-- Formular für Rezeptbearbeitung -->
+    <div v-if="isEditModalVisible" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Rezept bearbeiten</h2>
+        <form @submit.prevent="submitEditRecipe" class="recipe-form">
+          <!-- Rezeptname -->
+          <div class="input-group">
+            <label for="name">Rezeptname:</label>
+            <input type="text" v-model="selectedRecipe.name" placeholder="Rezeptname eingeben" required />
+          </div>
+
+          <!-- Beschreibung -->
+          <div class="input-group">
+            <label for="description">Beschreibung:</label>
+            <textarea v-model="selectedRecipe.description" placeholder="Beschreibung eingeben" required></textarea>
+          </div>
+
+          <!-- Kochzeit -->
+          <div class="input-group">
+            <label for="cookingTime">Kochzeit (in Minuten):</label>
+            <input type="number" v-model="selectedRecipe.cookingTime" placeholder="Kochzeit in Minuten" min="1" required />
+          </div>
+
+          <!-- Zutaten hinzufügen -->
+          <div v-for="(ingredient, index) in selectedRecipe.ingredients" :key="index" class="ingredient-group">
+            <div class="ingredient-item">
+              <label>Zutat {{ index + 1 }}:</label>
+              <input type="text" v-model="ingredient.name" placeholder="Zutat" required />
+              <input type="text" v-model="ingredient.quantity" placeholder="Menge" required />
+
+              <!-- Einheit auswählen mit Label -->
+              <div class="unit-selection">
+                <label for="unit">Einheit:</label>
+                <select v-model="ingredient.unit" required>
+                  <option v-for="unit in quantityUnits" :key="unit.value" :value="unit.value">
+                    {{ unit.label }}
+                  </option>
+                </select>
+              </div>
+
+              <button type="button" @click="removeIngredient(index)" class="remove-button">Entfernen</button>
+            </div>
+          </div>
+
+          <button type="button" @click="addIngredient" class="add-button">Zutat hinzufügen</button>
+
+          <!-- Tag-Auswahl mit vue-multiselect -->
+          <div class="tag-selection">
+            <label for="tags">Wähle Tags:</label>
+            <multiselect
+                v-model="selectedTags"
+                :options="availableTags"
+                :multiple="true"
+                :close-on-select="false"
+                placeholder="Tags auswählen"
+                label="name"
+                track-by="name"
+                :tag-placeholder="'Tag hinzufügen'"
+                class="tag-dropdown"
+            >
+            </multiselect>
+          </div>
+
+          <button type="submit" class="submit-button">Rezept speichern</button>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -89,9 +172,7 @@
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.min.css";
 import axios from "axios";
-// In deiner Vue-Komponente
-import {quantityUnits, tagsForList} from '@/assets/TagsAndUnits.js';
-
+import {quantityUnits, tagMapping, tagsForList} from "@/assets/TagsAndUnits.js";
 
 export default {
   components: { Multiselect },
@@ -100,31 +181,36 @@ export default {
       searchQuery: {
         name: "",
         tags: [],
+        cookingTime: "",
       },
       recipes: [],
       availableTags: tagsForList,
       quantityUnits: quantityUnits,
       isModalVisible: false,
       isDeleteModalVisible: false,
+      isEditModalVisible: false,
       selectedRecipe: null,
+      selectedTags: [],
     };
   },
   mounted() {
-    // Beim Laden der Seite nach allen Rezepten suchen
     this.searchRecipes();
   },
   methods: {
-
+    recipesUpdated(updatedRecipes) {
+      this.recipes = updatedRecipes;
+    },
     async searchRecipes() {
       try {
         const params = {};
-
         if (this.searchQuery.name) {
           params.name = this.searchQuery.name;
         }
-
         if (this.searchQuery.tags.length > 0) {
           params.tags = this.searchQuery.tags.map(tag => tag.value).join(",");
+        }
+        if (this.searchQuery.cookingTime) {
+          params.cookingtime = this.searchQuery.cookingTime;
         }
 
         const response = await axios.get("/api/recipes/search", { params });
@@ -133,59 +219,69 @@ export default {
         console.error("Fehler bei der Rezeptsuche:", error);
       }
     },
-
-    recipesUpdated(newRecipes) {
-      this.recipes = newRecipes;
-    },
-    removeRecipe(recipeId) {
-      this.$emit('recipe-removed', recipeId);
-    },
     openRecipeDetails(recipe) {
       this.selectedRecipe = recipe;
       this.isModalVisible = true;
     },
-
     closeModal() {
       this.isModalVisible = false;
     },
-
     confirmDeleteRecipe(recipe) {
       this.selectedRecipe = recipe;
       this.isDeleteModalVisible = true;
     },
-
     closeDeleteModal() {
       this.isDeleteModalVisible = false;
     },
-
     async deleteRecipe() {
       if (this.selectedRecipe) {
         try {
           await axios.delete(`/api/recipes/${this.selectedRecipe.id}`);
           this.closeDeleteModal();
           this.closeModal();
-          this.removeRecipe(this.selectedRecipe.id);
+          this.recipes = this.recipes.filter(r => r.id !== this.selectedRecipe.id);
         } catch (error) {
           console.error("Fehler beim Löschen des Rezepts:", error);
         }
       }
     },
-
+    translateTags(tags) {
+      return tags.map(tag => tagMapping[tag] || tag);
+    },
+    openEditRecipe(recipe) {
+      this.selectedRecipe = JSON.parse(JSON.stringify(recipe)); // Deep clone
+      this.selectedTags = recipe.tags.map(tag => ({ name: tag }));
+      this.isEditModalVisible = true;
+    },
+    async submitEditRecipe() {
+      try {
+        const updatedRecipe = { ...this.selectedRecipe, tags: this.translateTags(this.selectedTags.map(tag => tag.name)) };
+        await axios.put(`/api/recipes/${this.selectedRecipe.id}`, updatedRecipe);
+        this.isEditModalVisible = false;
+        await this.searchRecipes();
+      } catch (error) {
+        console.error("Fehler beim Aktualisieren des Rezepts:", error);
+      }
+    },
+    addIngredient() {
+      this.selectedRecipe.ingredients.push({ name: '', quantity: '', unit: '' });
+    },
+    removeIngredient(index) {
+      this.selectedRecipe.ingredients.splice(index, 1);
+    },
     getUnitLabel(unit) {
       const unitObj = this.quantityUnits.find(u => u.value === unit);
-      return unitObj ? unitObj.label : unit; // Falls keine Übersetzung gefunden wird, den Wert direkt verwenden
+      return unitObj ? unitObj.label : unit;
     },
-
     getTagLabel(tag) {
       const tagObj = this.availableTags.find(t => t.value === tag);
-      return tagObj ? tagObj.name : tag; // Falls keine Übersetzung gefunden wird, den Wert direkt verwenden
-    }
-  }
+      return tagObj ? tagObj.name : tag;
+    },
+  },
 };
 </script>
 
 <style scoped>
-/* Stil für die Rezeptkarte */
 .recipe-container {
   margin: 15px;
 }
@@ -236,93 +332,85 @@ export default {
   border-radius: 8px;
   cursor: pointer;
   box-sizing: border-box;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease;
 }
 
 .recipe-card:hover {
   transform: scale(1.05);
 }
 
-.recipe-name {
-  font-size: 1em;
-  font-weight: bold;
-}
-
 .no-recipes {
-  font-size: 14px;
-  color: gray;
+  font-size: 16px;
+  color: #777;
 }
 
-/* Modal Overlay und Inhalt */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* Größere Modal-Größe für mehr Inhalt */
 .modal-content {
   background-color: white;
-  padding: 16px;
-  max-width: 700px;   /* Reduzierte Breite */
-  width: 100%;
-  max-height: 80vh;   /* Maximale Höhe des Modals */
-  overflow-y: auto;   /* Ermöglicht Scrollen innerhalb des Modals */
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  position: relative;
 }
 
-.delete-button {
-  background-color: red;
+.delete-button, .edit-button, .submit-button {
+  background-color: #f44336;
   color: white;
+  padding: 10px;
   border: none;
-  padding: 4px;
   cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.submit-button {
+  background-color: #4caf50;
 }
 
 .modal-actions {
   display: flex;
   justify-content: space-between;
+  margin-top: 15px;
 }
 
-.delete-modal {
-  width: 350px;
+.input-group {
+  margin-bottom: 12px;
 }
 
-.delete-modal .modal-actions {
-  gap: 8px;
+.ingredient-group {
+  margin-bottom: 10px;
 }
 
-.tags-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px; /* Reduzierter Abstand */
+.remove-button {
+  background-color: #f44336;
+  color: white;
+  padding: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
 }
 
-.tag-box {
-  background-color: #f1f1f1;
-  padding: 4px;
-  border-radius: 5px;
+.add-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
 }
 
-/* Stil für die Zutatenliste im Modal */
-.ingredient-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  font-size: 18px; /* Kleinere Schriftgröße */
-  line-height: 1.3; /* Reduzierter Zeilenabstand */
-  max-height: 400px; /* Höhere Liste, wenn nötig */
-  overflow-y: auto;  /* Aktiviert das Scrollen bei vielen Zutaten */
-}
-
-.ingredient-list li {
-  margin-bottom: 6px; /* Weniger Abstand zwischen den Listeneinträgen */
+.tag-selection {
+  margin-bottom: 15px;
 }
 </style>

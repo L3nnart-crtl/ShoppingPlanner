@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.*;
+
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -25,7 +26,6 @@ public class DataLoader implements CommandLineRunner {
         this.ingredientRepository = ingredientRepository;
         this.mealPlanRepository = mealPlanRepository;
     }
-
 
     @Override
     public void run(String... args) throws Exception {
@@ -54,6 +54,10 @@ public class DataLoader implements CommandLineRunner {
             if (!recipeRepository.existsByName(recipeName)) {
                 Recipe recipe = new Recipe();
                 recipe.setName(recipeName);
+
+                // Setze eine zufällige Kochzeit zwischen 15 und 120 Minuten
+                int cookingTime = random.nextInt(106) + 15; // 15 bis 120 Minuten
+                recipe.setCookingTime(cookingTime);
 
                 Set<Tag> tags = getRandomTags(random);
                 recipe.setTags(tags);
@@ -100,7 +104,6 @@ public class DataLoader implements CommandLineRunner {
             }
         }
     }
-
 
     private Set<Tag> getRandomTags(Random random) {
         Set<Tag> tags = new HashSet<>();

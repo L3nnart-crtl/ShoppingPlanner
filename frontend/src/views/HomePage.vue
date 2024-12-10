@@ -26,23 +26,23 @@
     </div>
   </div>
 </template>
+
 <script>
 import AddRecipeForm from '@/components/AddRecipeForm.vue';
 import RecipeList from '@/components/RecipeList.vue';
 import CalendarComponent from '@/components/Calendar.vue';
-import ShoppingList from '@/components/ShoppingList.vue'; // Neue Komponente
+import ShoppingList from '@/components/ShoppingList.vue';
 
 export default {
   components: {
     AddRecipeForm,
     RecipeList,
     CalendarComponent,
-    ShoppingList, // Registriere die neue Komponente
+    ShoppingList,
   },
   data() {
     return {
-      recipes: [],           // Array der Rezepte
-      mealPlans: {},         // MealPlans für die Woche
+      recipes: [],
     };
   },
   async created() {
@@ -51,23 +51,17 @@ export default {
   methods: {
     async reloadRecipes() {
       try {
-        const response = await this.$axios.get('/recipes');  // Holt alle Rezepte von der API
+        const response = await this.$axios.get('/recipes');
         this.recipes = response.data;
       } catch (error) {
         console.error('Fehler beim Abrufen der Rezepte:', error);
       }
     },
 
-    // Rezepte nach der Suche aktualisieren
-    updateRecipes(filteredRecipes) {
-      this.recipes = filteredRecipes;
-      this.updateRecipeList();
-    },
-
     // Rezept zur Liste hinzufügen
-    addRecipe(newRecipe) {
-      this.recipes.push(newRecipe);
-      this.updateRecipeList();
+    async addRecipe(newRecipe) {
+      this.recipes.push(newRecipe);  // Rezept zur Liste hinzufügen
+      this.updateRecipeList();       // Rezeptliste in RecipeList-Komponente aktualisieren
     },
 
     // Rezept aus der Liste entfernen
