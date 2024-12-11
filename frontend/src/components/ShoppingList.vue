@@ -58,15 +58,13 @@ export default {
         return;
       }
 
-
       this.loading = true;
       this.errorMessage = '';
       this.isListGenerated = false;
 
       try {
-
         const response = await this.$axios.post(
-            `/shopping-list/generate`,
+            '/shopping-list/generate',
             null, // Kein Body erforderlich in deinem Beispiel
             {
               params: {
@@ -79,13 +77,11 @@ export default {
             }
         );
 
-        if (!response.ok) {
+        if (!response) {
           throw new Error('Serverfehler: Die Einkaufsliste konnte nicht generiert werden.');
         }
 
-
-        const data = await response.json();
-        this.shoppingList = data;
+        this.shoppingList = response.data; // Zugriff auf response.data statt response.json()
         this.isListGenerated = true;
       } catch (error) {
         this.errorMessage = error.message || 'Fehler beim Abrufen der Einkaufsliste.';
