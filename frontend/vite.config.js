@@ -16,10 +16,10 @@ export default defineConfig({
     port: 80,  // Frontend läuft auf Port 80
     proxy: {
       '/api': {
-        target: 'http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]:8080',  // Deine Backend-IPv6-Adresse
+        target: 'http://localhost:8080',
         changeOrigin: true,
-        secure: false,  // Deaktiviert die SSL/TLS-Prüfung
-        rewrite: (path) => path.replace(/^\/api/, ''),  // Entfernt "/api" aus dem Pfad
+        secure: false,
+        rewrite: (path) => path,  // Entfernt das Ersetzen des Pfads
       },
     },
   },

@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="start.bat and start.sh fixed" />
+    <list default="true" id="f209e014-e76d-48a7-b513-f502325adbcc" name="Changes" comment="- Milestone 2 finished">
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/start.bat - Verknüpfung.lnk" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,16 +19,45 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+    <projectState path="$PROJECT_DIR$/backend">
+      <ProjectState />
+    </projectState>
   </component>
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$/backend">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="ShoppingPlanner" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="ShoppingPlanner" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="ShoppingPlanner" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="team-6" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="team-6" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
             </expand>
             <select />
@@ -32,13 +66,32 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Class" />
+        <option value="Vue Composition API Component" />
+        <option value="JavaScript File" />
+        <option value="CSS File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="production_Branch_deployment" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -50,28 +103,156 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Batch.start.executor&quot;: &quot;Debug&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Gradle.Build backend.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [bootJar].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.backend [dependencies].executor&quot;: &quot;Run&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Shell Script.start.sh.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ShoppingPlannerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;production__Branch&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.11.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.10.2&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.build.executor&quot;: &quot;Run&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.LLMConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;E:\\IntelliJ IDEA 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
     &quot;DatabaseDriversLRU&quot;: [
       &quot;mariadb&quot;
+    ],
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
     ]
   }
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend" />
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src" />
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\assets" />
+      <recent name="C:\Users\leeis\IdeaProjects\team-6" />
       <recent name="C:\Users\leeis\IdeaProjects\FERTIG\backend" />
     </key>
   </component>
-  <component name="RunManager" selected="Compound.Start_website_local" />
+  <component name="RunManager" selected="npm.build">
+    <configuration name="start" type="BatchConfigurationType" factoryName="Batch" temporary="true">
+      <module name="team-6" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SCRIPT_NAME" value="start.bat" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="backend [bootJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="bootJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="backend [dependencies]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="dependencies" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="start.sh" type="ShConfigurationType" temporary="true">
+      <option name="SCRIPT_TEXT" value="" />
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/start.sh" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="EXECUTE_IN_TERMINAL" value="true" />
+      <option name="EXECUTE_SCRIPT_FILE" value="true" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="ShoppingPlannerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="ShoppingPlanner.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="backend.ShoppingPlannerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/frontend/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Shell Script.start.sh" />
+        <item itemvalue="npm.build" />
+        <item itemvalue="Gradle.backend [dependencies]" />
+        <item itemvalue="Gradle.backend [bootJar]" />
+        <item itemvalue="Batch.start" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -89,6 +270,37 @@
       <option name="presentableId" value="Default" />
       <updated>1731173862158</updated>
       <workItem from="1731173863315" duration="1623000" />
+      <workItem from="1731669273991" duration="1037000" />
+      <workItem from="1731670410861" duration="1704000" />
+      <workItem from="1731672207291" duration="192000" />
+      <workItem from="1731672445041" duration="12279000" />
+      <workItem from="1731684858652" duration="728000" />
+      <workItem from="1731693084407" duration="15090000" />
+      <workItem from="1731940781680" duration="6000" />
+      <workItem from="1732095087793" duration="959000" />
+      <workItem from="1732372764106" duration="8017000" />
+      <workItem from="1732382525454" duration="1167000" />
+      <workItem from="1732539720481" duration="723000" />
+      <workItem from="1732540462141" duration="11829000" />
+      <workItem from="1732608174417" duration="24000" />
+      <workItem from="1732608240271" duration="15000" />
+      <workItem from="1732628631766" duration="8732000" />
+      <workItem from="1732692840197" duration="16375000" />
+      <workItem from="1732780209274" duration="11000" />
+      <workItem from="1732865566979" duration="8159000" />
+      <workItem from="1733142649089" duration="25000" />
+      <workItem from="1733143285293" duration="15000" />
+      <workItem from="1733143306778" duration="4000" />
+      <workItem from="1733143339725" duration="10000" />
+      <workItem from="1733143518623" duration="26000" />
+      <workItem from="1733143672664" duration="9000" />
+      <workItem from="1733229025833" duration="8000" />
+      <workItem from="1733229710575" duration="6000" />
+      <workItem from="1733817180588" duration="23253000" />
+      <workItem from="1733897908387" duration="18251000" />
+      <workItem from="1733916585857" duration="81000" />
+      <workItem from="1733916694709" duration="17200000" />
+      <workItem from="1733936669063" duration="621000" />
     </task>
     <task id="LOCAL-00001" summary="Monorepo">
       <option name="closed" value="true" />
@@ -106,15 +318,202 @@
       <option name="project" value="LOCAL" />
       <updated>1731175424116</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="gradle">
+      <option name="closed" value="true" />
+      <created>1731670032580</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1731670032580</updated>
+    </task>
+    <task id="LOCAL-00004" summary="database creation">
+      <option name="closed" value="true" />
+      <created>1731670178404</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1731670178404</updated>
+    </task>
+    <task id="LOCAL-00005" summary="database creation">
+      <option name="closed" value="true" />
+      <created>1731670605179</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1731670605179</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Delete Added">
+      <option name="closed" value="true" />
+      <created>1731673899402</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1731673899402</updated>
+    </task>
+    <task id="LOCAL-00007" summary="- Added Delete&#10;- Simplified and improved Backend&#10;- Page does not need to reload">
+      <option name="closed" value="true" />
+      <created>1731684775865</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1731684775865</updated>
+    </task>
+    <task id="LOCAL-00008" summary="- Style centralized">
+      <option name="closed" value="true" />
+      <created>1731700467443</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1731700467443</updated>
+    </task>
+    <task id="LOCAL-00009" summary="- First Version of Calendar &#10;- RecipeList updated">
+      <option name="closed" value="true" />
+      <created>1731712305844</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1731712305844</updated>
+    </task>
+    <task id="LOCAL-00010" summary="- Get Mealplan updated">
+      <option name="closed" value="true" />
+      <created>1732096037347</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1732096037348</updated>
+    </task>
+    <task id="LOCAL-00011" summary="- Added Searching for recipes&#10;- Added calendar for recipes">
+      <option name="closed" value="true" />
+      <created>1732551651195</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1732551651195</updated>
+    </task>
+    <task id="LOCAL-00012" summary="- Combined RecipeList and search">
+      <option name="closed" value="true" />
+      <created>1732636783483</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1732636783483</updated>
+    </task>
+    <task id="LOCAL-00013" summary="- Added Unit enum and fixed bugs">
+      <option name="closed" value="true" />
+      <created>1732700211543</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1732700211543</updated>
+    </task>
+    <task id="LOCAL-00014" summary="- Added Unit enum and fixed bugs">
+      <option name="closed" value="true" />
+      <created>1732700413049</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1732700413049</updated>
+    </task>
+    <task id="LOCAL-00015" summary="- First Version of ShoppingList">
+      <option name="closed" value="true" />
+      <created>1732704950896</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1732704950896</updated>
+    </task>
+    <task id="LOCAL-00016" summary="- ShoppingList v2">
+      <option name="closed" value="true" />
+      <created>1732873156055</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1732873156055</updated>
+    </task>
+    <task id="LOCAL-00017" summary="- Backend statistic added&#10;- Frontend edditing of Recipes&#10;- cookingTime added as param for recipes">
+      <option name="closed" value="true" />
+      <created>1733831655432</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1733831655432</updated>
+    </task>
+    <task id="LOCAL-00018" summary="- Frontend Statistic finished&#10;- All critical functions implemented">
+      <option name="closed" value="true" />
+      <created>1733842670049</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1733842670049</updated>
+    </task>
+    <task id="LOCAL-00019" summary="- Milestone 2 Deployment">
+      <option name="closed" value="true" />
+      <created>1733935775516</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1733935775516</updated>
+    </task>
+    <task id="LOCAL-00020" summary="- Milestone 2 Deployment">
+      <option name="closed" value="true" />
+      <created>1733936023843</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1733936023843</updated>
+    </task>
+    <task id="LOCAL-00021" summary="- Milestone 2 Deployment">
+      <option name="closed" value="true" />
+      <created>1733936343927</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1733936343927</updated>
+    </task>
+    <task id="LOCAL-00022" summary="- Milestone 2 finished">
+      <option name="closed" value="true" />
+      <created>1733937102427</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1733937102427</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Monorepo" />
     <MESSAGE value="start.bat and start.sh fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="start.bat and start.sh fixed" />
+    <MESSAGE value="gradle" />
+    <MESSAGE value="database creation" />
+    <MESSAGE value="Delete Added" />
+    <MESSAGE value="- Added Delete&#10;- Simplified and improved Backend&#10;- Page does not need to reload" />
+    <MESSAGE value="- Style centralized" />
+    <MESSAGE value="- First Version of Calendar &#10;- RecipeList updated" />
+    <MESSAGE value="- Get Mealplan updated" />
+    <MESSAGE value="- Added Searching for recipes&#10;- Added calendar for recipes" />
+    <MESSAGE value="- Combined RecipeList and search" />
+    <MESSAGE value="- Added Unit enum and fixed bugs" />
+    <MESSAGE value="- First Version of ShoppingList" />
+    <MESSAGE value="- ShoppingList v2" />
+    <MESSAGE value="- Backend statistic added&#10;- Frontend edditing of Recipes&#10;- cookingTime added as param for recipes" />
+    <MESSAGE value="- Frontend Statistic finished&#10;- All critical functions implemented" />
+    <MESSAGE value="- Milestone 2 Deployment" />
+    <MESSAGE value="- Milestone 2 finished" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Milestone 2 finished" />
   </component>
 </project>
