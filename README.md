@@ -30,7 +30,7 @@ http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]:80
 *(Java 21, Spring Boot, Vue.js)*
 
 This project consists of two main components:
-1. **Backend**: A Spring Boot project built and run with Maven.
+1. **Backend**: A Spring Boot project built and run with Gradle.
 2. **Frontend**: A Vue.js project running with Vite as the development server.
 
 This guide explains the steps required to get both parts of the project up and running locally.
