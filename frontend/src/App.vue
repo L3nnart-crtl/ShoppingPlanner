@@ -18,14 +18,3 @@ export default {
 };
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  margin-top: 20px;
-}
-
-h1 {
-  color: #008cba;
-}
-</style>

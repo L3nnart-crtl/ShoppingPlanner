@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="chart-container">
     <canvas ref="canvas"></canvas>
   </div>
 </template>
@@ -16,7 +16,7 @@ import {
   LinearScale,
 } from "chart.js";
 
-// Registriere die Chart.js-Komponenten
+
 ChartJS.register(
     Title,
     Tooltip,
@@ -65,7 +65,19 @@ export default {
 
       this.chartInstance = new ChartJS(ctx, {
         type: "bar",
-        data: data,
+        data: {
+          ...data,
+          datasets: [
+            {
+              ...data.datasets[0],
+              backgroundColor: "#42A5F5",
+              borderColor: "#1E88E5",
+              borderWidth: 2,
+              hoverBackgroundColor: "#1E88E5",
+              hoverBorderColor: "#1565C0",
+            },
+          ],
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -73,10 +85,50 @@ export default {
             legend: {
               display: true,
               position: "top",
+              labels: {
+                font: {
+                  family: "'Arial', sans-serif",
+                  size: 14,
+                },
+              },
             },
             title: {
               display: true,
               text: "Statistik-Diagramm",
+              font: {
+                family: "'Arial', sans-serif",
+                size: 18,
+              },
+              color: "#333",
+            },
+            tooltip: {
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              titleFont: {
+                family: "'Arial', sans-serif",
+                size: 16,
+              },
+              bodyFont: {
+                family: "'Arial', sans-serif",
+                size: 14,
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: {
+                  family: "'Arial', sans-serif",
+                  size: 14,
+                },
+              },
+            },
+            y: {
+              ticks: {
+                font: {
+                  family: "'Arial', sans-serif",
+                  size: 14,
+                },
+              },
             },
           },
         },
@@ -96,8 +148,57 @@ export default {
 </script>
 
 <style scoped>
+.chart-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+  min-height: 400px;
+}
+
+
 canvas {
-  max-width: 100%;
-  height: 400px;
+  width: 100% !important;
+  height: auto;
+  max-height: 500px;
+  border-radius: 8px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.legend {
+  font-size: 16px;
+  color: #555;
+  text-align: center;
+}
+
+.no-chart-message {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .legend {
+    font-size: 14px;
+  }
 }
 </style>

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
@@ -44,14 +45,21 @@ public class RecipeService {
         List<Recipe> recipes;
 
         if (name != null && tags != null && !tags.isEmpty()) {
-            logger.info("Suche nach Name und Tags");
-            recipes = recipeRepository.findByNameAndTagsIn(name, tags);
+            logger.info("Suche nach Name und allen Tags");
+            // Hier wird auch die Anzahl der Tags übergeben
+            recipes = recipeRepository.findByNameContainingIgnoreCaseAndTagsIn(name, tags, tags.size());
         } else if (name != null) {
             logger.info("Suche nur nach Name");
             recipes = recipeRepository.findByNameContainingIgnoreCase(name);
         } else if (tags != null && !tags.isEmpty()) {
             logger.info("Suche nur nach Tags");
+            // Hier wird nach allen Tags gefiltert
             recipes = recipeRepository.findByTagsIn(tags);
+
+            // Filtere nach Rezepten, die alle Tags enthalten
+            recipes = recipes.stream()
+                    .filter(recipe -> recipe.getTags().containsAll(tags))
+                    .collect(Collectors.toList());
         } else {
             logger.info("Keine Suchkriterien angegeben, alle Rezepte werden zurückgegeben");
             recipes = recipeRepository.findAll();
@@ -66,6 +74,8 @@ public class RecipeService {
 
         return recipes;
     }
+
+
 
     public Recipe saveRecipe(Recipe recipe) {
         logger.info("Speichere Rezept: {}", recipe);

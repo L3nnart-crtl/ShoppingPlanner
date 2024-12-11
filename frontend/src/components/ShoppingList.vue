@@ -26,7 +26,7 @@
 
     <h2>Generierte Einkaufsliste</h2>
     <ul v-if="shoppingList.length" class="shopping-list-items">
-      <li v-for="item in shoppingList" :key="item.ingredientName">
+      <li v-for="item in shoppingList" :key="item.ingredientName" class="shopping-list-item">
         {{ item.ingredientName }}: {{ item.unit }}
       </li>
     </ul>
@@ -42,12 +42,12 @@
 export default {
   data() {
     return {
-      startDate: '', // Startdatum
-      endDate: '', // Enddatum
-      shoppingList: [], // Generierte Einkaufsliste
-      isListGenerated: false, // Flag für generierte Liste
-      loading: false, // Ladezustand
-      errorMessage: '', // Fehlernachricht
+      startDate: '',
+      endDate: '',
+      shoppingList: [],
+      isListGenerated: false,
+      loading: false,
+      errorMessage: '',
     };
   },
   methods: {
@@ -58,15 +58,15 @@ export default {
         return;
       }
 
-      // Ladezustand und Fehler zurücksetzen
+
       this.loading = true;
       this.errorMessage = '';
       this.isListGenerated = false;
 
       try {
-        // Sende eine POST-Anfrage an den Server
+
         const response = await fetch(
-            `/api/shopping-list/generate?startDate=${this.startDate}&endDate=${this.endDate}`,
+            `/shopping-list/generate?startDate=${this.startDate}&endDate=${this.endDate}`,
             {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
@@ -77,7 +77,7 @@ export default {
           throw new Error('Serverfehler: Die Einkaufsliste konnte nicht generiert werden.');
         }
 
-        // JSON-Antwort verarbeiten
+
         const data = await response.json();
         this.shoppingList = data;
         this.isListGenerated = true;
@@ -93,13 +93,25 @@ export default {
 
 <style scoped>
 .shopping-list {
-  max-width: 600px;
+  max-width: 400px;
+  height: 650px;
   margin: 0 auto;
+  padding: 20px;
   font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 26px;
+  color: #333;
 }
 
 .date-form {
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group {
@@ -110,22 +122,34 @@ label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
+  font-size: 14px;
+  color: #333;
 }
 
 input[type="date"] {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="date"]:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
 }
 
 button {
-  padding: 10px 20px;
+  padding: 12px 20px;
   font-size: 16px;
   color: white;
   background-color: #4caf50;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:disabled {
@@ -134,20 +158,31 @@ button:disabled {
 }
 
 button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: #388e3c;
 }
 
-ul.shopping-list-items {
+.shopping-list-items {
   list-style-type: none;
   padding-left: 0;
+  margin-top: 20px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-ul.shopping-list-items li {
-  margin: 5px 0;
-  padding: 8px;
-  background: #f9f9f9;
+.shopping-list-item {
+  margin: 10px 0;
+  padding: 12px;
+  background-color: #fff;
+  border-radius: 6px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  transition: background-color 0.3s ease;
+}
+
+.shopping-list-item:hover {
+  background-color: #f1f1f1;
 }
 
 .error-message {
@@ -161,4 +196,5 @@ ul.shopping-list-items li {
   font-style: italic;
   margin-top: 10px;
 }
+
 </style>

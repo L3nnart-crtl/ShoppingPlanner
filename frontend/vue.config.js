@@ -12,7 +12,7 @@ export default defineConfig({
     },
   },
   server: {
-    host: '0.0.0.0',  // Lauscht auf allen IPv4-Adressen, auch localhost
+    host: '::',  // Lauscht auf allen IPv4-Adressen, auch localhost
     port: 80,          // Frontend läuft auf Port 80
     proxy: {
       '/api': {

@@ -1,34 +1,30 @@
 <template>
-  <div class="homepage-container">
-    <div class="content-container">
-      <!-- Rezept hinzufügen -->
-      <div class="add-recipe-container">
-        <AddRecipeForm @recipe-added="addRecipe" />
-      </div>
-
-      <!-- Rezeptliste und Kalender -->
-      <div class="right-container">
-        <!-- Rezeptliste -->
-        <div class="recipe-list-container">
-          <RecipeList :recipes="recipes" @recipe-removed="removeRecipe" ref="recipeList" />
-        </div>
-
-        <!-- Kalender-Komponente mit MealPlan-Optionen -->
-        <div class="calendar-container">
-          <CalendarComponent :recipes="recipes" />
-        </div>
-
-        <!-- ShoppingList Formular -->
-        <div class="shopping-list-container">
-          <ShoppingList />
-        </div>
-
-        <!-- Statistiken -->
-        <div class="statistics-dashboard-container">
-          <StatisticsDashboard />
-        </div>
-      </div>
+  <div class="container">
+    <!-- Formular für Rezepte -->
+    <div class="component">
+      <AddRecipeForm @recipe-added="addRecipe" />
     </div>
+
+    <!-- Rezeptliste -->
+    <div class="component">
+      <RecipeList :recipes="recipes" @recipe-removed="removeRecipe" ref="recipeList" />
+    </div>
+
+    <!-- Einkaufsliste -->
+    <div class="component">
+      <ShoppingList />
+    </div>
+    <!-- Statistiken -->
+    <div class="component">
+      <StatisticsDashboard />
+    </div>
+
+    <!-- Kalender -->
+    <div class="component">
+      <CalendarComponent :recipes="recipes" />
+    </div>
+
+
   </div>
 </template>
 
@@ -53,7 +49,7 @@ export default {
     };
   },
   async created() {
-    await this.reloadRecipes(); // Rezepte beim Erstellen der Komponente laden
+    await this.reloadRecipes();
   },
   methods: {
     async reloadRecipes() {
@@ -64,20 +60,14 @@ export default {
         console.error("Fehler beim Abrufen der Rezepte:", error);
       }
     },
-
-    // Rezept zur Liste hinzufügen
     async addRecipe(newRecipe) {
-      this.recipes.push(newRecipe); // Rezept zur Liste hinzufügen
-      this.updateRecipeList(); // Rezeptliste in RecipeList-Komponente aktualisieren
+      this.recipes.push(newRecipe);
+      this.updateRecipeList();
     },
-
-    // Rezept aus der Liste entfernen
     removeRecipe(recipeId) {
       this.recipes = this.recipes.filter((recipe) => recipe.id !== recipeId);
       this.updateRecipeList();
     },
-
-    // Methode zum Aktualisieren der Rezeptliste in der RecipeList-Komponente
     updateRecipeList() {
       if (this.$refs.recipeList) {
         this.$refs.recipeList.recipesUpdated(this.recipes);
@@ -88,30 +78,18 @@ export default {
 </script>
 
 <style scoped>
-.homepage-container {
+.container {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: Arial, sans-serif;
 
-.content-container {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 20px;
-}
-
-.add-recipe-container,
-.recipe-list-container,
-.calendar-container,
-.shopping-list-container,
-.statistics-dashboard-container {
-  background-color: #f9f9f9;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.statistics-dashboard-container {
-  grid-column: span 2; /* Die Statistik-Komponente über die gesamte Breite anzeigen */
+@media (max-width: 768px) {
+  .component {
+    flex: 1 1 100%;
+  }
 }
 </style>
