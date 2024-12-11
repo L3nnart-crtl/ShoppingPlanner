@@ -12,7 +12,7 @@ app.use(VCalendar, {
 });
 // Globale Axios-Konfiguration
 app.config.globalProperties.$axios = axios.create({
-    baseURL: 'http://localhost:8080/api',  // Backend läuft auf localhost:8080
+    baseURL: 'http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]:8080/api',  // Backend läuft auf localhost:8080
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
