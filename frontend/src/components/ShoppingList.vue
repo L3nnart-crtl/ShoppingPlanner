@@ -65,11 +65,17 @@ export default {
 
       try {
 
-        const response = await fetch(
-            `/shopping-list/generate?startDate=${this.startDate}&endDate=${this.endDate}`,
+        const response = await this.$axios.post(
+            `/shopping-list/generate`,
+            null, // Kein Body erforderlich in deinem Beispiel
             {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json'},
+              params: {
+                startDate: this.startDate,
+                endDate: this.endDate,
+              },
+              headers: {
+                'Content-Type': 'application/json',
+              },
             }
         );
 
