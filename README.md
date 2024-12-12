@@ -1,9 +1,5 @@
 # Shopping Planner
 
-## Description
-
-We have implemented the critical feature **"Add recipe with ingredients and quantities."**
-
 ## Installation and Execution
 
 ### 1. Website on Virtual Machine (VM)
