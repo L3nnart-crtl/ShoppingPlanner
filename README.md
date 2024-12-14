@@ -23,139 +23,20 @@ http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]:80
   sudo nohup python3 -m http.server 80 --bind 2001:7c0:2320:1:f816:3eff:fe50:6f6d &> /dev/null &
 
 # Local Project Setup and Start Guide
-*(Java 21, Spring Boot, Vue.js)*
 
-This project consists of two main components:
-1. **Backend**: A Spring Boot project built and run with Gradle.
-2. **Frontend**: A Vue.js project running with Vite as the development server.
+Prerequisites
 
-This guide explains the steps required to get both parts of the project up and running locally.
+Make sure the following software is installed:
 
----
+    Java: Version 21
+    Gradle: Version 7 or higher
+    Node.js: Version 18 or higher
+    npm: Version 8 or higher
 
-## Prerequisites
+Folder Structure
 
-Ensure the following software packages are installed on your system:
-
-### Java Development Kit (JDK) 21
-
-The Spring Boot backend requires Java 21. Install JDK 21.
-
-- **Ubuntu/Linux**:
-  ```bash
-  sudo apt update
-  sudo apt install openjdk-21-jdk
-  ```
-
-- **Windows**:
-  Download JDK 21 from the official Oracle website and install it.
-
-- **Verify installation**:
-  ```bash
-  java -version
-  ```
-
-Ensure Java 21 is shown as the installed version.
-
----
-
-### Gradle
-
-Gradle is required to build and run the Spring Boot backend.
-
-- **Ubuntu/Linux**:
-  ```bash
-  sudo apt install gradle
-  ```
-
-- **Windows**:
-  Download Gradle from the official website and install it.
-
-- **Verify installation**:
-  ```bash
-  gradle -v
-  ```
-
----
-
-### Node.js and npm
-
-The Vue.js frontend requires Node.js and npm to install dependencies and start the development server.
-
-- **Ubuntu/Linux**:
-  ```bash
-  sudo apt update
-  sudo apt install nodejs npm
-  ```
-
-- **Windows**:
-  Download Node.js from the official Node.js website and install it.
-
-- **Verify installation**:
-  ```bash
-  node -v
-  npm -v
-  ```
-
----
-
-## Project Setup
-
-1. **Clone the repository**:
-   If you haven't cloned the project yet, do so by running:
-   ```bash
-   git clone <Repository URL>
-   cd <Project Directory>
-   ```
-
----
-
-## Backend (Spring Boot)
-
-1. **Navigate to the backend directory**:
-   ```bash
-   cd backend
-   ```
-
-2. **Build the Spring Boot project with Maven**:
-   ```bash
-   gradle build
-   ```
-
-3. **Start the backend**:
-   ```bash
-   gradle bootRun
-   ```
-
-   Alternatively, you can run the backend directly using the `.jar` file:
-   ```bash
-   java -jar build/libs/ShoppingPlanner-0.0.1-SNAPSHOT.jar
-   ```
-
-   The Spring Boot backend should now be running on `http://localhost:8080`. Open this URL in your browser to verify that it works.
-
----
-
-## Frontend (Vue.js with Vite)
-
-1. **Navigate to the frontend directory**:
-   ```bash
-   cd frontend
-   ```
-
-2. **Install the frontend dependencies using npm**:
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
-
-   The Vue.js frontend should now be running on `http://localhost:80`. Open this URL in your browser to verify that it works.
-
----
+    backend/: Contains the Spring Boot backend.
+    frontend/: Contains the Vue frontend.
 
 ## Backend and Frontend Startup
 
