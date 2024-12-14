@@ -59,9 +59,9 @@ Ensure Java 21 is shown as the installed version.
 
 ---
 
-### Maven
+### Gradle
 
-Maven is required to build and run the Spring Boot backend.
+Gradle is required to build and run the Spring Boot backend.
 
 - **Ubuntu/Linux**:
   ```bash
@@ -69,7 +69,7 @@ Maven is required to build and run the Spring Boot backend.
   ```
 
 - **Windows**:
-  Download Maven from the official website and install it.
+  Download Gradle from the official website and install it.
 
 - **Verify installation**:
   ```bash
