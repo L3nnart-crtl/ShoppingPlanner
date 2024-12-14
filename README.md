@@ -32,6 +32,7 @@ Make sure the following software is installed:
     Gradle: Version 7 or higher
     Node.js: Version 18 or higher
     npm: Version 8 or higher
+    MariaDB: Version 10.4 or higher (or any compatible version)
 
 Folder Structure
 
