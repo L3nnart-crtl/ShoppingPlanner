@@ -126,10 +126,13 @@ export default {
             const mealPlansData = response.data;
             mealPlansData.forEach(plan => {
               this.mealPlans[plan.date] = {
+                breakfastId: plan.breakfastRecipeId,
                 breakfastRecipeName: plan.breakfastRecipeName,
                 breakfastPortionSize: plan.breakfastPortionSize,
+                lunchId: plan.lunchRecipeId,
                 lunchRecipeName: plan.lunchRecipeName,
                 lunchPortionSize: plan.lunchPortionSize,
+                dinnerId: plan.dinnerRecipeId,
                 dinnerRecipeName: plan.dinnerRecipeName,
                 dinnerPortionSize: plan.dinnerPortionSize,
               };
@@ -221,12 +224,18 @@ export default {
     },
     openModal(date, isEdit = false) {
       this.selectedDate = date;
-      this.mealPlan.breakfastId = isEdit ? this.mealPlans[date].breakfastRecipeId : null;
-      this.mealPlan.breakfastPortionSize = isEdit ? this.mealPlans[date].breakfastPortionSize : 1;
-      this.mealPlan.lunchId = isEdit ? this.mealPlans[date].lunchRecipeId : null;
-      this.mealPlan.lunchPortionSize = isEdit ? this.mealPlans[date].lunchPortionSize : 1;
-      this.mealPlan.dinnerId = isEdit ? this.mealPlans[date].dinnerRecipeId : null;
-      this.mealPlan.dinnerPortionSize = isEdit ? this.mealPlans[date].dinnerPortionSize : 1;
+      if (isEdit && this.mealPlans[date]) {
+        const currentPlan = this.mealPlans[date];
+        this.mealPlan = {
+          breakfastId: currentPlan.breakfastId || null,
+          breakfastPortionSize: currentPlan.breakfastPortionSize || 1,
+          lunchId: currentPlan.lunchId || null,
+          lunchPortionSize: currentPlan.lunchPortionSize || 1,
+          dinnerId: currentPlan.dinnerId || null,
+          dinnerPortionSize: currentPlan.dinnerPortionSize || 1,
+        };
+        console.log(this.mealPlan); // Überprüfe den Inhalt von mealPlan
+      }
       this.isModalVisible = true;
     },
     closeModal() {
