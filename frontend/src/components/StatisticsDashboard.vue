@@ -15,26 +15,19 @@
       </select>
     </div>
 
-    <div v-if="selectedData === 'favouriteIngredients'" class="ingredients-list">
-      <h3>Beliebteste Zutaten</h3>
-      <ul>
-        <li v-for="(count, ingredient) in statistics.favouriteIngredients" :key="ingredient">
-          {{ ingredient }}: {{ count }}
-        </li>
-      </ul>
+    <!-- Anzeige des Balkendiagramms -->
+    <div v-if="chartData && chartData.labels.length > 0" class="chart-container">
+      <bar-chart :chart-data="chartData" />
     </div>
 
+    <!-- Fallback, wenn keine Daten für das Diagramm vorhanden sind -->
     <div v-else>
-      <div v-if="chartData && chartData.labels.length > 0" class="chart-container">
-        <bar-chart :chart-data="chartData" />
-      </div>
-
-      <div v-else>
-        <p class="no-chart-message">Bitte wählen Sie eine Statistik aus, um sie anzuzeigen.</p>
-      </div>
+      <p class="no-chart-message">Bitte wählen Sie eine Statistik aus, um sie anzuzeigen.</p>
     </div>
   </div>
 </template>
+
+
 
 <script>
 import axios from "axios";
@@ -83,7 +76,6 @@ export default {
     },
 
     updateChart() {
-
       if (!this.selectedData || !this.statistics) return;
 
       let labels = [];

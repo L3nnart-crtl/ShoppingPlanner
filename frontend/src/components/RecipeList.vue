@@ -1,4 +1,3 @@
-
 <template>
   <div class="recipe-container">
     <h2>Rezeptliste und Suche</h2>
@@ -11,20 +10,17 @@
           placeholder="Rezeptname eingeben"
           class="search-input"
       />
-
-
-        <label for="tags">Tags:</label>
-        <multiselect
-            v-model="searchQuery.tags"
-            :options="availableTags"
-            :multiple="true"
-            :close-on-select="false"
-            placeholder="Tags auswählen"
-            label="name"
-            track-by="name"
-        class="tag-dropdown"
-        />
-
+      <label for="tags">Tags:</label>
+      <multiselect
+          v-model="searchQuery.tags"
+          :options="availableTags"
+          :multiple="true"
+          :close-on-select="false"
+          placeholder="Tags auswählen"
+          label="name"
+          track-by="name"
+          class="tag-dropdown"
+      />
 
       <!-- Filter für Kochzeit -->
       <div class="cooking-time-filter">
@@ -36,6 +32,10 @@
             class="search-input"
         />
       </div>
+      <!-- Filter nach Favoriten -->
+      <button @click="toggleFavoriteFilter" class="filter-favorites-button">
+        {{ filterFavorites ? 'Alle Rezepte anzeigen' : 'Nur Favoriten anzeigen' }}
+      </button>
 
       <button @click="searchRecipes" class="search-button">Suchen</button>
     </div>
@@ -61,6 +61,11 @@
         <button v-if="selectedRecipe" @click="confirmDeleteRecipe(selectedRecipe)" class="delete-button">Rezept löschen</button>
         <button v-if="selectedRecipe" @click="openEditRecipe(selectedRecipe)" class="edit-button">Rezept bearbeiten</button>
 
+        <!-- Favorite Toggle -->
+        <button @click="toggleFavorite" :class="['favorite-button', { active: selectedRecipe.favorite }]">
+          {{ selectedRecipe.favorite ? 'Favorit entfernen' : 'Als Favorit markieren' }}
+        </button>
+
         <h4>{{ selectedRecipe.name }}</h4>
         <p><strong>Beschreibung:</strong> {{ selectedRecipe.description || 'Keine Beschreibung verfügbar.' }}</p>
 
@@ -76,7 +81,7 @@
         <p><strong>Tags:</strong></p>
         <div class="tags-container">
           <div v-for="(tag, index) in selectedRecipe.tags" :key="index" class="tag-box">
-            {{ getTagLabel(tag) }} <!-- Zeigt den Namen des Tags an -->
+            {{ getTagLabel(tag) }}
           </div>
         </div>
 
@@ -197,6 +202,7 @@ export default {
       isEditModalVisible: false,
       selectedRecipe: null,
       selectedTags: [],
+      filterFavorites: false, // Hier den Filter für Favoriten hinzufügen
     };
   },
   mounted() {
@@ -206,19 +212,38 @@ export default {
     recipesUpdated(updatedRecipes) {
       this.recipes = updatedRecipes;
     },
+    // Filter für Favoriten umschalten
+    toggleFavoriteFilter() {
+      this.filterFavorites = !this.filterFavorites;
+      this.searchRecipes(); // Nach Änderung des Filters Rezepte durchsuchen
+    },
+
+    // Modifizierte searchRecipes Methode, um Favoriten zu filtern
     async searchRecipes() {
       try {
         const params = {};
+
+        // Name-Filter hinzufügen, wenn vorhanden
         if (this.searchQuery.name) {
           params.name = this.searchQuery.name;
         }
+
+        // Tags-Filter hinzufügen, wenn vorhanden
         if (this.searchQuery.tags.length > 0) {
           params.tags = this.searchQuery.tags.map(tag => tag.value).join(",");
         }
+
+        // Kochzeit-Filter hinzufügen, wenn vorhanden
         if (this.searchQuery.cookingTime) {
-          params.cookingtime = this.searchQuery.cookingTime;
+          params.cookingTime = this.searchQuery.cookingTime;
         }
 
+        // Favoriten-Filter hinzufügen, wenn aktiviert
+        if (this.filterFavorites !== null) {
+          params.favorite = this.filterFavorites;
+        }
+
+        // API-Anfrage mit den Filtern
         const response = await this.$axios.get("/recipes/search", { params });
         this.recipes = response.data;
       } catch (error) {
@@ -226,7 +251,7 @@ export default {
       }
     },
     openRecipeDetails(recipe) {
-      this.selectedRecipe = recipe;
+      this.selectedRecipe = { ...recipe, favorite: recipe.favorite || false };
       this.isModalVisible = true;
     },
     closeModal() {
@@ -273,35 +298,48 @@ export default {
         };
         await this.$axios.put(`/recipes/${this.selectedRecipe.id}`, updatedRecipe);
         this.isEditModalVisible = false;
-        await this.searchRecipes();
+        this.recipes = this.recipes.map(recipe =>
+            recipe.id === updatedRecipe.id ? updatedRecipe : recipe
+        );
       } catch (error) {
         console.error("Fehler beim Bearbeiten des Rezepts:", error);
       }
     },
     addIngredient() {
-      this.selectedRecipe.ingredients.push({
-        name: "",
-        quantity: "",
-        unit: this.quantityUnits[0].value,
-      });
+      if (!this.selectedRecipe.ingredients) {
+        this.selectedRecipe.ingredients = [];
+      }
+      this.selectedRecipe.ingredients.push({ name: "", quantity: "", unit: "" });
     },
     removeIngredient(index) {
       this.selectedRecipe.ingredients.splice(index, 1);
     },
+    async toggleFavorite() {
+      try {
+        // Toggle the favorite status on the client side first
+        this.selectedRecipe.favorite = !this.selectedRecipe.favorite;
+
+        // Send the updated favorite status to the backend
+        await this.$axios.put(`/recipes/${this.selectedRecipe.id}/favorite`);
+
+        // Optionally, you can handle any additional response from the backend
+        console.log('Favorite status updated successfully');
+      } catch (error) {
+        // If something goes wrong with the request, revert the favorite status change
+        this.selectedRecipe.favorite = !this.selectedRecipe.favorite;
+        console.error("Error updating favorite status:", error);
+      }
+    },
+    getTagLabel(tag) {
+      return tagMapping[tag] || tag;
+    },
     getUnitLabel(unit) {
-      return this.quantityUnits.find(u => u.value === unit)?.label || unit;
-    },
-    getTagLabel(value) {
-      const tag = tagsForList.find(tag => tag.value === value);
-      return tag ? tag.name : "Tag nicht gefunden";
-    },
-    closeEditModal() {
-      this.isEditModalVisible = false;
-    },
+      const unitObj = this.quantityUnits.find(u => u.value === unit);
+      return unitObj ? unitObj.label : unit;
+    }
   }
 };
 </script>
-
 
 <style scoped>
 
@@ -654,6 +692,53 @@ h2 {
 .close-button:hover {
   background-color: #5a6268;
 }
+.favorite-button {
+  background-color: #fff;
+  color: #ff9900;
+  border: 2px solid #ff9900;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  outline: none;
+}
 
+.favorite-button.active {
+  background-color: #ff9900;
+  color: #fff;
+  border-color: #ff7f00;
+}
+
+.favorite-button span {
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+.favorite-button:hover {
+  transform: scale(1.1);
+}
+
+.favorite-button:focus {
+  box-shadow: 0 0 10px rgba(255, 153, 0, 0.7);
+}
+.filter-favorites-button {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #ff9900;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filter-favorites-button:hover {
+  background-color: #e68900;
+}
 </style>
 
