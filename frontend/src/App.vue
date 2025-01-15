@@ -3,18 +3,13 @@
     <!-- Heading for the app -->
     <h1>Einkaufsplaner</h1>
 
-    <!-- HomePage component, which includes AddRecipeForm and RecipeList -->
-    <HomePage />
+    <!-- The router view that will display the Login or HomePage depending on the route -->
+    <router-view />
   </div>
 </template>
 
 <script>
-import HomePage from '@/views/HomePage.vue';
-
 export default {
-  components: {
-    HomePage,
-  },
+  name: 'App',
 };
 </script>
-
