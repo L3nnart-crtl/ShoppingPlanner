@@ -183,7 +183,7 @@
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.min.css";
 import axios from "axios";
-import {quantityUnits, tagMapping, tags, tagsForList} from "@/assets/TagsAndUnits.js";
+import { quantityUnits, tagMapping, tags, tagsForList } from "@/assets/TagsAndUnits.js";
 
 export default {
   components: { Multiselect },
@@ -243,6 +243,12 @@ export default {
           params.favorite = this.filterFavorites;
         }
 
+        // CSRF-Token aus dem Cookie holen
+        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+
+        // CSRF-Token in den Header setzen
+        axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
         // API-Anfrage mit den Filtern
         const response = await this.$axios.get("/recipes/search", { params });
         this.recipes = response.data;
@@ -267,6 +273,12 @@ export default {
     async deleteRecipe() {
       if (this.selectedRecipe) {
         try {
+          // CSRF-Token aus dem Cookie holen
+          const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+
+          // CSRF-Token in den Header setzen
+          axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
           await this.$axios.delete(`/recipes/${this.selectedRecipe.id}`);
           this.closeDeleteModal();
           this.closeModal();
@@ -296,6 +308,13 @@ export default {
           ...this.selectedRecipe,
           tags: this.translateTags(this.selectedTags.map(tag => tag.name))
         };
+
+        // CSRF-Token aus dem Cookie holen
+        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+
+        // CSRF-Token in den Header setzen
+        axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
         await this.$axios.put(`/recipes/${this.selectedRecipe.id}`, updatedRecipe);
         this.isEditModalVisible = false;
         this.recipes = this.recipes.map(recipe =>
@@ -318,6 +337,12 @@ export default {
       try {
         // Toggle the favorite status on the client side first
         this.selectedRecipe.favorite = !this.selectedRecipe.favorite;
+
+        // CSRF-Token aus dem Cookie holen
+        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+
+        // CSRF-Token in den Header setzen
+        axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
 
         // Send the updated favorite status to the backend
         await this.$axios.put(`/recipes/${this.selectedRecipe.id}/favorite`);

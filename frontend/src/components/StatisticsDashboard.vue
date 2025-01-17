@@ -30,7 +30,6 @@
 
 
 <script>
-import axios from "axios";
 import BarChart from "./BarChart.vue";
 import { tagsForList } from "@/assets/TagsAndUnits.js";
 
@@ -47,6 +46,10 @@ export default {
   },
   async created() {
     try {
+      // CSRF-Token aus dem Cookie holen und im Header setzen
+      const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+      this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
       const response = await this.$axios.get("/statistics");
       this.statistics = response.data;
       this.updateChart();
@@ -62,6 +65,10 @@ export default {
   methods: {
     async fetchStatistics() {
       try {
+        // CSRF-Token im Header setzen
+        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+        this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
         const response = await this.$axios.get("/statistics");
         this.statistics = response.data;
       } catch (error) {

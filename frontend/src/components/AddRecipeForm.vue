@@ -69,7 +69,7 @@
 import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
 import { tags, quantityUnits, tagMapping } from '@/assets/TagsAndUnits.js';
-
+import axios from 'axios';
 
 export default {
   components: {
@@ -120,6 +120,12 @@ export default {
       this.isSubmitting = true;
 
       try {
+        // CSRF-Token aus dem Cookie holen
+        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+
+        // CSRF-Token in den Header der Anfrage setzen
+        axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
         // Tags übersetzen
         this.recipe.tags = this.translateTags(this.selectedTags.map(tag => tag.name));
 

@@ -1,4 +1,5 @@
 <template>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <div class="calendar-container">
     <h2>Meal Plan Kalender</h2>
 
@@ -84,7 +85,7 @@
 
 <script>
 import { ref, reactive, computed, onMounted } from 'vue';
-
+import axios from 'axios';
 
 export default {
   props: ['recipes'],
@@ -153,6 +154,12 @@ export default {
         dinnerPortionSize: this.mealPlan.dinnerPortionSize,
       };
 
+      // CSRF-Token aus dem Cookie holen
+      const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+
+      // CSRF-Token in den Header setzen
+      axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
       if (this.mealPlans[this.selectedDate]) {
         this.$axios.put(`/mealplans/${this.selectedDate}`, mealPlanData)
             .then(response => {
@@ -175,6 +182,12 @@ export default {
     },
     removeMealPlan(date) {
       if (!this.mealPlans[date]) return;
+
+      // CSRF-Token aus dem Cookie holen
+      const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+
+      // CSRF-Token in den Header setzen
+      axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
 
       this.$axios.delete(`/mealplans/${date}`)
           .then(() => {
@@ -244,6 +257,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 /* Allgemeine Container-Stile */

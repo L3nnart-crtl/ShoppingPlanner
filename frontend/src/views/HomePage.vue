@@ -23,8 +23,6 @@
     <div class="component">
       <CalendarComponent :recipes="recipes" />
     </div>
-
-
   </div>
 </template>
 
@@ -49,6 +47,10 @@ export default {
     };
   },
   async created() {
+    // CSRF-Token aus dem Cookie holen und im Header setzen
+    const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+    this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
     await this.reloadRecipes();
   },
   methods: {
