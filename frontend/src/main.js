@@ -6,8 +6,8 @@ import LoginRegister from './components/login/Login.vue';
 import HomePage from './views/HomePage.vue';
 
 function getCookie(name) {
-    let value = `; ${document.cookie}`;
-    let parts = value.split(`; ${name}=`);
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
@@ -17,7 +17,7 @@ const axiosInstance = axios.create({
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     },
-    withCredentials: true,  // Ensure cookies and session info are included
+    withCredentials: true, // Include cookies and session info
 });
 
 // Set CSRF token from cookie
