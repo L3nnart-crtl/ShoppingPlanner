@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- multitenant first version">
+    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- multitenant second version without csrf">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/login/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/login/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -290,7 +282,7 @@
       <workItem from="1736943891322" duration="4757000" />
       <workItem from="1736948841918" duration="11044000" />
       <workItem from="1737110313964" duration="13362000" />
-      <workItem from="1737124985755" duration="3542000" />
+      <workItem from="1737124985755" duration="4664000" />
     </task>
     <task id="LOCAL-00001" summary="Repo structure updated">
       <option name="closed" value="true" />
@@ -348,7 +340,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736956535488</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="- multitenant second version without csrf">
+      <option name="closed" value="true" />
+      <created>1737129006772</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1737129006773</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,6 +371,7 @@
     <MESSAGE value="-edit mealplan fixed" />
     <MESSAGE value="-add Favorit for recipes" />
     <MESSAGE value="- multitenant first version" />
-    <option name="LAST_COMMIT_MESSAGE" value="- multitenant first version" />
+    <MESSAGE value="- multitenant second version without csrf" />
+    <option name="LAST_COMMIT_MESSAGE" value="- multitenant second version without csrf" />
   </component>
 </project>
