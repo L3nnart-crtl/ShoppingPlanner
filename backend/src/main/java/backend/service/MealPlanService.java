@@ -23,47 +23,57 @@ public class MealPlanService {
     }
 
     // Method to save a new meal plan for a specific date
-    public MealPlan saveMealPlan(LocalDate date, Long breakfastRecipeId, int breakfastPortionSize,
+    public MealPlan saveMealPlan(String tenantId, LocalDate date, Long breakfastRecipeId, int breakfastPortionSize,
                                  Long lunchRecipeId, int lunchPortionSize,
                                  Long dinnerRecipeId, int dinnerPortionSize) {
 
-        // Check if a meal plan already exists for the specified date
-        if (mealPlanRepository.findByDate(date).isPresent()) {
-            throw new IllegalArgumentException("A MealPlan already exists for the date " + date);
+        // Check if a meal plan already exists for the specified date and tenantId
+        if (mealPlanRepository.findByTenantIdAndDate(tenantId, date).isPresent()) {
+            throw new IllegalArgumentException("A MealPlan already exists for the date " + date + " and tenantId " + tenantId);
         }
 
-        // Retrieve the recipes for breakfast, lunch, and dinner by their IDs
-        Recipe breakfastRecipe = recipeRepository.findById(breakfastRecipeId)
-                .orElseThrow(() -> new IllegalArgumentException("Breakfast recipe not found: " + breakfastRecipeId));
-        Recipe lunchRecipe = recipeRepository.findById(lunchRecipeId)
-                .orElseThrow(() -> new IllegalArgumentException("Lunch recipe not found: " + lunchRecipeId));
-        Recipe dinnerRecipe = recipeRepository.findById(dinnerRecipeId)
-                .orElseThrow(() -> new IllegalArgumentException("Dinner recipe not found: " + dinnerRecipeId));
+        // Retrieve the recipes for breakfast, lunch, and dinner by their IDs if provided
+        Recipe breakfastRecipe = (breakfastRecipeId != null) ?
+                recipeRepository.findByTenantIdAndId(tenantId, breakfastRecipeId)
+                        .orElseThrow(() -> new IllegalArgumentException("Breakfast recipe not found: " + breakfastRecipeId)) : null;
+
+        Recipe lunchRecipe = (lunchRecipeId != null) ?
+                recipeRepository.findByTenantIdAndId(tenantId, lunchRecipeId)
+                        .orElseThrow(() -> new IllegalArgumentException("Lunch recipe not found: " + lunchRecipeId)) : null;
+
+        Recipe dinnerRecipe = (dinnerRecipeId != null) ?
+                recipeRepository.findByTenantIdAndId(tenantId, dinnerRecipeId)
+                        .orElseThrow(() -> new IllegalArgumentException("Dinner recipe not found: " + dinnerRecipeId)) : null;
 
         // Create a new MealPlan object with the provided details
-        MealPlan mealPlan = new MealPlan(date, breakfastRecipe, breakfastPortionSize,
+        MealPlan mealPlan = new MealPlan(tenantId, date, breakfastRecipe, breakfastPortionSize,
                 lunchRecipe, lunchPortionSize, dinnerRecipe, dinnerPortionSize);
 
         // Save the new meal plan in the repository
         return mealPlanRepository.save(mealPlan);
     }
 
-    // Method to update an existing meal plan for a specific date
-    public MealPlan updateMealPlan(LocalDate date, Long breakfastRecipeId, int breakfastPortionSize,
+    // Method to update an existing meal plan for a specific date and tenantId
+    public MealPlan updateMealPlan(String tenantId, LocalDate date, Long breakfastRecipeId, int breakfastPortionSize,
                                    Long lunchRecipeId, int lunchPortionSize,
                                    Long dinnerRecipeId, int dinnerPortionSize) {
 
-        // Retrieve the existing meal plan for the given date
-        MealPlan existingMealPlan = mealPlanRepository.findByDate(date)
-                .orElseThrow(() -> new IllegalArgumentException("No MealPlan found for the date " + date));
+        // Retrieve the existing meal plan for the given date and tenantId
+        MealPlan existingMealPlan = mealPlanRepository.findByTenantIdAndDate(tenantId, date)
+                .orElseThrow(() -> new IllegalArgumentException("No MealPlan found for the date " + date + " and tenantId " + tenantId));
 
-        // Retrieve the updated recipes by their IDs
-        Recipe breakfastRecipe = recipeRepository.findById(breakfastRecipeId)
-                .orElseThrow(() -> new IllegalArgumentException("Breakfast recipe not found: " + breakfastRecipeId));
-        Recipe lunchRecipe = recipeRepository.findById(lunchRecipeId)
-                .orElseThrow(() -> new IllegalArgumentException("Lunch recipe not found: " + lunchRecipeId));
-        Recipe dinnerRecipe = recipeRepository.findById(dinnerRecipeId)
-                .orElseThrow(() -> new IllegalArgumentException("Dinner recipe not found: " + dinnerRecipeId));
+        // Retrieve the updated recipes by their IDs if provided
+        Recipe breakfastRecipe = (breakfastRecipeId != null) ?
+                recipeRepository.findByTenantIdAndId(tenantId, breakfastRecipeId)
+                        .orElseThrow(() -> new IllegalArgumentException("Breakfast recipe not found: " + breakfastRecipeId)) : null;
+
+        Recipe lunchRecipe = (lunchRecipeId != null) ?
+                recipeRepository.findByTenantIdAndId(tenantId, lunchRecipeId)
+                        .orElseThrow(() -> new IllegalArgumentException("Lunch recipe not found: " + lunchRecipeId)) : null;
+
+        Recipe dinnerRecipe = (dinnerRecipeId != null) ?
+                recipeRepository.findByTenantIdAndId(tenantId, dinnerRecipeId)
+                        .orElseThrow(() -> new IllegalArgumentException("Dinner recipe not found: " + dinnerRecipeId)) : null;
 
         // Update the existing meal plan with the new recipes and portion sizes
         existingMealPlan.setBreakfastRecipe(breakfastRecipe);
@@ -77,21 +87,21 @@ public class MealPlanService {
         return mealPlanRepository.save(existingMealPlan);
     }
 
-    // Method to retrieve a meal plan by its date
-    public MealPlan getMealPlanByDate(LocalDate date) {
-        return mealPlanRepository.findByDate(date).orElse(null);
+    // Method to retrieve a meal plan by its date and tenantId
+    public MealPlan getMealPlanByDate(String tenantId, LocalDate date) {
+        return mealPlanRepository.findByTenantIdAndDate(tenantId, date).orElse(null);
     }
 
-    // Method to retrieve all meal plans
-    public List<MealPlan> getAllMealPlans() {
-        return mealPlanRepository.findAll();
+    // Method to retrieve all meal plans for a specific tenantId
+    public List<MealPlan> getAllMealPlans(String tenantId) {
+        return mealPlanRepository.findByTenantId(tenantId);
     }
 
-    // Method to delete a meal plan by its date
-    public boolean deleteMealPlanByDate(String date) {
+    // Method to delete a meal plan by its date and tenantId
+    public boolean deleteMealPlanByDate(String tenantId, String date) {
         try {
-            // Attempt to find the meal plan for the specified date
-            Optional<MealPlan> mealPlan = mealPlanRepository.findByDate(LocalDate.parse(date));
+            // Attempt to find the meal plan for the specified date and tenantId
+            Optional<MealPlan> mealPlan = mealPlanRepository.findByTenantIdAndDate(tenantId, LocalDate.parse(date));
 
             // If the meal plan exists, delete it
             mealPlan.ifPresent(mealPlanRepository::delete);

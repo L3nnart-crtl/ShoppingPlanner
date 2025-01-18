@@ -1,5 +1,6 @@
 package backend.model.Recipe;
 
+import backend.multitenant.tenantId.TenantContext;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
@@ -7,9 +8,11 @@ import jakarta.persistence.*;
 @Table(name = "Ingredient")
 public class Ingredient {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String quantity;
 
@@ -30,6 +33,7 @@ public class Ingredient {
         this.quantity = quantity;
         this.unit = unit;
         this.recipe = recipe;
+
     }
 
     public Long getId() {
@@ -71,4 +75,5 @@ public class Ingredient {
     public void setRecipe(final Recipe recipe) {
         this.recipe = recipe;
     }
+
 }

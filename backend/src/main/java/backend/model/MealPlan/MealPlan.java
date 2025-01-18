@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "MealPlan", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"date"})  // Stellt sicher, dass es nur einen MealPlan pro Tag gibt
-})
+@Table(name = "MealPlan")
 public class MealPlan {
 
     @Id
@@ -34,12 +32,14 @@ public class MealPlan {
 
     private int dinnerPortionSize; // Portionenanzahl für das Abendessen
 
+    // Neue Spalte für Tenant-ID
+    @Column(name = "tenant_id", nullable = false)
+    private String tenantId;
+
     // Standard Constructor
     public MealPlan() {}
 
-    // Constructor mit Parametern
-    public MealPlan(LocalDate date, Recipe breakfastRecipe, int breakfastPortionSize,
-                    Recipe lunchRecipe, int lunchPortionSize, Recipe dinnerRecipe, int dinnerPortionSize) {
+    public MealPlan(final String tenantId, final LocalDate date, final Recipe breakfastRecipe, final int breakfastPortionSize, final Recipe lunchRecipe, final int lunchPortionSize, final Recipe dinnerRecipe, final int dinnerPortionSize) {
         this.date = date;
         this.breakfastRecipe = breakfastRecipe;
         this.breakfastPortionSize = breakfastPortionSize;
@@ -47,9 +47,19 @@ public class MealPlan {
         this.lunchPortionSize = lunchPortionSize;
         this.dinnerRecipe = dinnerRecipe;
         this.dinnerPortionSize = dinnerPortionSize;
+        this.tenantId = tenantId;
     }
 
-    // Getter und Setter
+    // Getter und Setter für tenantId
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    // Getter und Setter für andere Felder
     public Long getId() {
         return id;
     }

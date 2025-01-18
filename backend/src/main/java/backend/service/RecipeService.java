@@ -8,7 +8,6 @@ import backend.repository.RecipeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
@@ -16,7 +15,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,57 +33,48 @@ public class RecipeService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();
+    public List<Recipe> getAllRecipes(String tenantId) {
+        return recipeRepository.findByTenantId(tenantId);
     }
 
-    public List<Recipe> searchRecipes(String name, List<Tag> tags, Integer maxCookingTime) {
-        logger.info("Suche nach Rezepten mit Name: {}, Tags: {}, und maximaler Kochzeit: {}", name, tags, maxCookingTime);
+    public List<Recipe> searchRecipes(String tenantId, String name, List<Tag> tags, Integer maxCookingTime, Boolean favorite) {
+        logger.info("Searching recipes for tenantId: {}, name: {}, tags: {}, max cooking time: {}, favorite: {}", tenantId, name, tags, maxCookingTime, favorite);
 
-        List<Recipe> recipes;
+        List<Recipe> recipes = new ArrayList<>();
 
         if (name != null && tags != null && !tags.isEmpty()) {
-            logger.info("Suche nach Name und allen Tags");
-            // Hier wird auch die Anzahl der Tags übergeben
-            recipes = recipeRepository.findByNameContainingIgnoreCaseAndTagsIn(name, tags, tags.size());
+            recipes = recipeRepository.findByTenantIdAndNameContainingIgnoreCaseAndTagsIn(tenantId, name, tags);
         } else if (name != null) {
-            logger.info("Suche nur nach Name");
-            recipes = recipeRepository.findByNameContainingIgnoreCase(name);
+            recipes = recipeRepository.findByTenantIdAndNameContainingIgnoreCase(tenantId, name);
         } else if (tags != null && !tags.isEmpty()) {
-            logger.info("Suche nur nach Tags");
-            // Hier wird nach allen Tags gefiltert
-            recipes = recipeRepository.findByTagsIn(tags);
-
-            // Filtere nach Rezepten, die alle Tags enthalten
-            recipes = recipes.stream()
-                    .filter(recipe -> recipe.getTags().containsAll(tags))
-                    .collect(Collectors.toList());
+            recipes = recipeRepository.findByTenantIdAndTagsIn(tenantId, tags);
+            recipes = recipes.stream().filter(recipe -> recipe.getTags().containsAll(tags)).collect(Collectors.toList());
         } else {
-            logger.info("Keine Suchkriterien angegeben, alle Rezepte werden zurückgegeben");
-            recipes = recipeRepository.findAll();
+            recipes = recipeRepository.findByTenantId(tenantId);
         }
 
-        // Kochzeit filtern, falls angegeben
         if (maxCookingTime != null) {
-            recipes = recipes.stream()
-                    .filter(recipe -> recipe.getCookingTime() != null && recipe.getCookingTime() <= maxCookingTime)
-                    .toList();
+            recipes = recipes.stream().filter(recipe -> recipe.getCookingTime() != null && recipe.getCookingTime() <= maxCookingTime).toList();
+        }
+
+        // Filter by favorite status
+        if (favorite != null && favorite) {
+            recipes = recipes.stream().filter(Recipe::isFavorite).collect(Collectors.toList());
         }
 
         return recipes;
     }
 
-
-
-    public Recipe saveRecipe(Recipe recipe) {
-        logger.info("Speichere Rezept: {}", recipe);
+    public Recipe saveRecipe(String tenantId, Recipe recipe) {
+        logger.info("Speichere Rezept für tenantId: {}", tenantId);
+        recipe.setTenantId(tenantId);  // Setze den tenantId
         return recipeRepository.save(recipe);
     }
 
     @Transactional
-    public Recipe updateRecipe(Long recipeId, Recipe updatedRecipe) {
-        // 1. Rezept aus der Datenbank laden
-        Recipe existingRecipe = recipeRepository.findById(recipeId)
+    public Recipe updateRecipe(String tenantId, Long recipeId, Recipe updatedRecipe) {
+        // 1. Rezept aus der Datenbank laden, nur für den richtigen tenantId
+        Recipe existingRecipe = recipeRepository.findByTenantIdAndId(tenantId, recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("Recipe not found with id: " + recipeId));
 
         // 2. Rezept-Daten aktualisieren
@@ -93,6 +82,7 @@ public class RecipeService {
         existingRecipe.setDescription(updatedRecipe.getDescription());
         existingRecipe.setCookingTime(updatedRecipe.getCookingTime());
         existingRecipe.setTags(updatedRecipe.getTags());
+        existingRecipe.setFavorite(updatedRecipe.isFavorite());
 
         // 3. Zutaten (Ingredients) aktualisieren
         List<Ingredient> updatedIngredients = updatedRecipe.getIngredients();
@@ -119,24 +109,31 @@ public class RecipeService {
         return recipeRepository.save(existingRecipe);
     }
 
-
-
     @Transactional
-    public boolean deleteRecipe(Long id) {
-        logger.info("Lösche Rezept mit ID: {}", id);
-        Optional<Recipe> recipe = recipeRepository.findById(id);
+    public boolean deleteRecipe(String tenantId, Long id) {
+        logger.info("Lösche Rezept mit ID: {} für tenantId: {}", id, tenantId);
+        Optional<Recipe> recipe = recipeRepository.findByTenantIdAndId(tenantId, id);
         if (recipe.isPresent()) {
-            // Prüfen, ob das Rezept von einem MealPlan referenziert wird
-            Query query = em.createQuery("SELECT COUNT(mp) FROM MealPlan mp WHERE mp.dinnerRecipe.id = :recipeId");
-            query.setParameter("recipeId", id);
-            long count = (long) query.getSingleResult();
+            // Entferne alle Verweise auf das Rezept in MealPlans
+            Query updateMealPlanQuery = em.createQuery("UPDATE MealPlan mp SET mp.breakfastRecipe = NULL WHERE mp.breakfastRecipe.id = :recipeId AND mp.tenantId = :tenantId");
+            updateMealPlanQuery.setParameter("recipeId", id);
+            updateMealPlanQuery.setParameter("tenantId", tenantId);
+            int updatedBreakfastMealPlans = updateMealPlanQuery.executeUpdate();
+            logger.info("{} MealPlans updated to remove breakfast reference.", updatedBreakfastMealPlans);
 
-            if (count > 0) {
-                logger.warn("Rezept mit ID {} kann nicht gelöscht werden, da es noch einem MealPlan zugeordnet ist", id);
-                return false;
-            }
+            updateMealPlanQuery = em.createQuery("UPDATE MealPlan mp SET mp.lunchRecipe = NULL WHERE mp.lunchRecipe.id = :recipeId AND mp.tenantId = :tenantId");
+            updateMealPlanQuery.setParameter("recipeId", id);
+            updateMealPlanQuery.setParameter("tenantId", tenantId);
+            int updatedLunchMealPlans = updateMealPlanQuery.executeUpdate();
+            logger.info("{} MealPlans updated to remove lunch reference.", updatedLunchMealPlans);
 
-            // Lösche recipe Eintrag
+            updateMealPlanQuery = em.createQuery("UPDATE MealPlan mp SET mp.dinnerRecipe = NULL WHERE mp.dinnerRecipe.id = :recipeId AND mp.tenantId = :tenantId");
+            updateMealPlanQuery.setParameter("recipeId", id);
+            updateMealPlanQuery.setParameter("tenantId", tenantId);
+            int updatedDinnerMealPlans = updateMealPlanQuery.executeUpdate();
+            logger.info("{} MealPlans updated to remove dinner reference.", updatedDinnerMealPlans);
+
+            // Lösche das Rezept
             recipeRepository.delete(recipe.get());
             logger.info("Rezept gelöscht");
             return true;
@@ -145,13 +142,16 @@ public class RecipeService {
         return false;
     }
 
+
     @Transactional
-    public void removeIngredientFromRecipe(Long recipeId, Long ingredientId) {
+    public void removeIngredientFromRecipe(String tenantId, Long recipeId, Long ingredientId) {
         // Rezept abrufen
-        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+        Recipe recipe = recipeRepository.findByTenantIdAndId(tenantId, recipeId)
+                .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
 
         // Zutat abrufen
-        Ingredient ingredient = ingredientRepository.findById(ingredientId).orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
+        Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
 
         // Zutat vom Rezept entfernen
         recipe.getIngredients().remove(ingredient);
@@ -159,5 +159,15 @@ public class RecipeService {
 
         // Rezept speichern, nachdem die Zutat entfernt wurde
         recipeRepository.save(recipe);
+    }
+
+    // Favoritenstatus umschalten (markieren oder nicht markieren)
+    public Recipe toggleFavorite(String tenantId, Long id) {
+        Recipe recipe = recipeRepository.findByTenantIdAndId(tenantId, id)
+                .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+
+        // Favoritenstatus umschalten
+        recipe.setFavorite(!recipe.isFavorite());
+        return recipeRepository.save(recipe);
     }
 }

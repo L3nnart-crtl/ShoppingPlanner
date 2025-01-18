@@ -4,6 +4,7 @@ import backend.model.MealPlan.MealPlan;
 import backend.model.Recipe.Ingredient;
 import backend.model.Recipe.QuantityUnit;
 import backend.model.Recipe.Recipe;
+import backend.multitenant.tenantId.TenantContext;  // Import für TenantContext hinzufügen
 
 import java.time.LocalDate;
 import java.util.*;
@@ -21,15 +22,16 @@ public class ShoppingList {
     }
 
     public void generateShoppingList(List<MealPlan> mealPlans) {
+        String tenantId = TenantContext.getCurrentTenant();  // Tenant-ID holen
         // Map für Zutaten, die Namen, Mengen und Einheiten speichert
         Map<String, List<ShoppingItem>> ingredientMap = new HashMap<>();
 
         // Iteriere über alle MealPlans im angegebenen Zeitraum
         for (MealPlan mealPlan : mealPlans) {
             if (mealPlan.getDate().isAfter(startDate.minusDays(1)) && mealPlan.getDate().isBefore(endDate.plusDays(1))) {
-                addIngredientsFromRecipe(mealPlan.getBreakfastRecipe(), mealPlan.getBreakfastPortionSize(), ingredientMap);
-                addIngredientsFromRecipe(mealPlan.getLunchRecipe(), mealPlan.getLunchPortionSize(), ingredientMap);
-                addIngredientsFromRecipe(mealPlan.getDinnerRecipe(), mealPlan.getDinnerPortionSize(), ingredientMap);
+                addIngredientsFromRecipe(mealPlan.getBreakfastRecipe(), mealPlan.getBreakfastPortionSize(), ingredientMap, tenantId);
+                addIngredientsFromRecipe(mealPlan.getLunchRecipe(), mealPlan.getLunchPortionSize(), ingredientMap, tenantId);
+                addIngredientsFromRecipe(mealPlan.getDinnerRecipe(), mealPlan.getDinnerPortionSize(), ingredientMap, tenantId);
             }
         }
 
@@ -41,7 +43,7 @@ public class ShoppingList {
         }
     }
 
-    private void addIngredientsFromRecipe(Recipe recipe, int portionSize, Map<String, List<ShoppingItem>> ingredientMap) {
+    private void addIngredientsFromRecipe(Recipe recipe, int portionSize, Map<String, List<ShoppingItem>> ingredientMap, String tenantId) {
         if (recipe != null && recipe.getIngredients() != null) {
             for (Ingredient ingredient : recipe.getIngredients()) {
                 if (ingredient.getQuantity() != null && !ingredient.getQuantity().trim().isEmpty()) {
@@ -89,7 +91,6 @@ public class ShoppingList {
 
         return new ShoppingItem(ingredientName, totalAmount, combinedUnits.toString());
     }
-
 
     // Getter und Setter
     public List<ShoppingItem> getItems() {
