@@ -81,20 +81,16 @@ export default {
         const response = await this.$axios.post('/auth/login', {
           username: this.username,
           password: this.password,
-        }, {
-          withCredentials: true,  // Ensure credentials (cookies) are sent with the request
         });
         if (response.status === 200) {
-          this.$router.push('/');
+          this.$router.push('/home');
         } else {
           this.error = 'Login failed. Please check your username and password!';
         }
-      } catch (error) {
-        console.error(error);
+      } catch {
         this.error = 'Login failed. Please check your username and password!';
       }
-    }
-    ,
+    },
     async registerUser() {
       try {
         const response = await this.$axios.post('/auth/register', {

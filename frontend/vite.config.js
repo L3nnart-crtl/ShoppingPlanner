@@ -16,12 +16,11 @@ export default defineConfig({
     port: 80,  // Frontend läuft auf Port 80
     proxy: {
       '/api': {
-        target: 'http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]:8080',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path,  // Entfernt das Ersetzen des Pfads
       },
     },
-    historyApiFallback: true,
   },
 });
