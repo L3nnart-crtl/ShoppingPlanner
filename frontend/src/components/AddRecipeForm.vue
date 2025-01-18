@@ -4,19 +4,16 @@
     <form @submit.prevent="submitRecipe" class="recipe-form">
       <!-- Rezeptname -->
       <div class="input-group">
-        <label for="name">Rezeptname:</label>
         <input type="text" v-model="recipe.name" placeholder="Rezeptname eingeben" required />
       </div>
 
       <!-- Beschreibung -->
       <div class="input-group">
-        <label for="description">Beschreibung:</label>
         <textarea v-model="recipe.description" placeholder="Beschreibung eingeben" required></textarea>
       </div>
 
       <!-- Kochzeit -->
       <div class="input-group">
-        <label for="cookingTime">Kochzeit (in Minuten):</label>
         <input type="number" v-model="recipe.cookingTime" placeholder="Kochzeit in Minuten" min="1" required />
       </div>
 
@@ -162,12 +159,12 @@ export default {
 .form-container {
   width: 250px;
   max-width: 500px;
+  height: 660px;
   margin: 0 auto;
   padding: 15px;
-  background-color: #fff;
+  background-color: #f9f9f9;
   border-radius: 8px;
   font-family: Arial, sans-serif;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .form-title {

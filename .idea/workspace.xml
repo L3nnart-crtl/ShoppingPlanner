@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- multitenant second version without csrf">
+    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="logout button">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/login/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/login/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,16 +75,16 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Vue Composition API Component" />
         <option value="JavaScript File" />
         <option value="Class" />
+        <option value="Vue Composition API Component" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="production_branch_refactorRecipeList" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -138,11 +139,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components" />
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components\recipeList" />
       <recent name="C:\Users\leeis\IdeaProjects\team-6\backend\src\main\java\backend\repository" />
       <recent name="C:\Users\leeis\IdeaProjects\team-6\backend\src\main\java\backend\multitenant\tenantId" />
       <recent name="C:\Users\leeis\IdeaProjects\team-6\backend\src\main\java\backend\multitenant\authentication" />
-      <recent name="C:\Users\leeis\IdeaProjects\team-6\backend\src\main\java\backend\multitenant" />
-      <recent name="C:\Users\leeis\IdeaProjects\team-6\backend\src\main\java\backend\multitenancy" />
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.ShoppingPlannerApplication">
@@ -257,9 +258,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.backend [build]" />
-        <item itemvalue="Gradle.backend [clean]" />
         <item itemvalue="npm.dev" />
+        <item itemvalue="Gradle.backend [clean]" />
+        <item itemvalue="Gradle.backend [build]" />
         <item itemvalue="Gradle.backend [bootJar]" />
         <item itemvalue="Application.ShoppingPlannerApplication" />
       </list>
@@ -286,7 +287,8 @@
       <workItem from="1736943891322" duration="4757000" />
       <workItem from="1736948841918" duration="11044000" />
       <workItem from="1737110313964" duration="13362000" />
-      <workItem from="1737124985755" duration="6894000" />
+      <workItem from="1737124985755" duration="7758000" />
+      <workItem from="1737188612651" duration="5868000" />
     </task>
     <task id="LOCAL-00001" summary="Repo structure updated">
       <option name="closed" value="true" />
@@ -360,7 +362,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737129985374</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="logout button">
+      <option name="closed" value="true" />
+      <created>1737134823813</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1737134823813</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -384,6 +394,7 @@
     <MESSAGE value="-add Favorit for recipes" />
     <MESSAGE value="- multitenant first version" />
     <MESSAGE value="- multitenant second version without csrf" />
-    <option name="LAST_COMMIT_MESSAGE" value="- multitenant second version without csrf" />
+    <MESSAGE value="logout button" />
+    <option name="LAST_COMMIT_MESSAGE" value="logout button" />
   </component>
 </project>

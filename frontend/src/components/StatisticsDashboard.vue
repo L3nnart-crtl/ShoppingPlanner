@@ -135,7 +135,7 @@ export default {
 
 <style scoped>
 .statistics-dashboard {
-  width: 600px;
+  width: 550px;
   height:650px;
   margin: 0 auto;
   padding: 20px;

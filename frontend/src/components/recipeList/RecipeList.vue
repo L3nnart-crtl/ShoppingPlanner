@@ -10,7 +10,7 @@
           placeholder="Rezeptname eingeben"
           class="search-input"
       />
-      <label for="tags">Tags:</label>
+
       <multiselect
           v-model="searchQuery.tags"
           :options="availableTags"
@@ -257,6 +257,7 @@ export default {
       }
     },
     openRecipeDetails(recipe) {
+      // Update the selected recipe and set its favorite status correctly
       this.selectedRecipe = { ...recipe, favorite: recipe.favorite || false };
       this.isModalVisible = true;
     },
@@ -269,6 +270,9 @@ export default {
     },
     closeDeleteModal() {
       this.isDeleteModalVisible = false;
+    },
+    closeEditModal() {
+      this.isEditModalVisible = false;
     },
     async deleteRecipe() {
       if (this.selectedRecipe) {
@@ -333,6 +337,7 @@ export default {
     removeIngredient(index) {
       this.selectedRecipe.ingredients.splice(index, 1);
     },
+    // This method is used to update the favorite status of the selected recipe.
     async toggleFavorite() {
       try {
         // Toggle the favorite status on the client side first
@@ -349,12 +354,23 @@ export default {
 
         // Optionally, you can handle any additional response from the backend
         console.log('Favorite status updated successfully');
+
+        // Update the recipes list to reflect the change immediately
+        this.recipes = this.recipes.map(recipe =>
+            recipe.id === this.selectedRecipe.id ? { ...recipe, favorite: this.selectedRecipe.favorite } : recipe
+        );
+
+        // Optionally close the modal or keep it open based on your design
+        // this.closeModal(); // Uncomment this line if you want to close the modal after toggling the favorite
       } catch (error) {
         // If something goes wrong with the request, revert the favorite status change
         this.selectedRecipe.favorite = !this.selectedRecipe.favorite;
         console.error("Error updating favorite status:", error);
       }
     },
+
+    // This method opens the modal and ensures that the selected recipe is properly set.
+
     getTagLabel(tag) {
       return tagMapping[tag] || tag;
     },
@@ -367,7 +383,6 @@ export default {
 </script>
 
 <style scoped>
-
 .recipe-container {
   display: flex;
   font-family: Arial, sans-serif;
@@ -375,6 +390,12 @@ export default {
   padding: 20px;
   height: 650px;
   width: 400px;
+  background-color: #f9f9f9;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
 
 h2 {
@@ -383,7 +404,6 @@ h2 {
   margin-bottom: 20px;
   text-align: center;
 }
-
 
 .search-fields {
   display: flex;
@@ -451,7 +471,6 @@ h2 {
   box-sizing: border-box;
 }
 
-
 .tags-filter, .cooking-time-filter {
   overflow: hidden;
 }
@@ -459,7 +478,6 @@ h2 {
 .cooking-time-filter select, .tag-dropdown {
   max-width: 100%;
 }
-
 
 @media (max-width: 768px) {
   .search-input, .search-button, .tags-filter, .cooking-time-filter {
@@ -475,9 +493,6 @@ h2 {
     align-items: stretch;
   }
 }
-
-
-
 
 .recipe-cards-container {
   display: block;
@@ -506,12 +521,10 @@ h2 {
   transform: translateY(-2px);
 }
 
-
 .recipe-name {
   font-size: 1.2rem;
   font-weight: bold;
 }
-
 
 .no-recipes {
   font-size: 1.2rem;
@@ -559,14 +572,15 @@ h2 {
   background-color: #0056b3;
 }
 
-
 .delete-button, .edit-button {
+
   padding: 10px;
   border-radius: 4px;
   background-color: #dc3545;
   color: white;
   border: none;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 .delete-button:hover {
@@ -580,7 +594,23 @@ h2 {
 .edit-button:hover {
   background-color: #e0a800;
 }
+.favorite-button {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #095cbb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
+.favorite-button.active {
+  background-color: #099abb; /* Active favorite color */
+}
+
+.favorite-button:hover {
+  background-color: #0056b3; /* Hover effect */
+}
 
 .recipe-form .input-group {
   margin-bottom: 15px;
@@ -630,7 +660,6 @@ h2 {
   background-color: #0056b3;
 }
 
-
 .ingredient-group {
   margin-bottom: 15px;
 }
@@ -658,7 +687,6 @@ h2 {
   margin-bottom: 5px;
 }
 
-
 .tags-container {
   display: flex;
   flex-wrap: wrap;
@@ -676,7 +704,6 @@ h2 {
   width: 100%;
 }
 
-
 @media (max-width: 1024px) {
   .recipe-cards-container {
     grid-template-columns: repeat(1, 1fr);
@@ -689,12 +716,10 @@ h2 {
   }
 }
 
-
 .ingredient-list-container {
   max-height: 200px;
   overflow-y: auto;
 }
-
 
 .modal-content.large-modal {
   width: 80%;
@@ -703,7 +728,6 @@ h2 {
   max-height: 90%;
   overflow-y: auto;
 }
-
 
 .close-button {
   padding: 10px;
@@ -717,40 +741,8 @@ h2 {
 .close-button:hover {
   background-color: #5a6268;
 }
-.favorite-button {
-  background-color: #fff;
-  color: #ff9900;
-  border: 2px solid #ff9900;
-  border-radius: 25px;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  outline: none;
-}
 
-.favorite-button.active {
-  background-color: #ff9900;
-  color: #fff;
-  border-color: #ff7f00;
-}
 
-.favorite-button span {
-  margin-right: 8px;
-  font-size: 20px;
-}
-
-.favorite-button:hover {
-  transform: scale(1.1);
-}
-
-.favorite-button:focus {
-  box-shadow: 0 0 10px rgba(255, 153, 0, 0.7);
-}
 .filter-favorites-button {
   padding: 12px;
   border-radius: 8px;

@@ -21,13 +21,13 @@
           <!-- MealPlan untereinander -->
           <div class="meal-plans-container">
             <div class="meal-box">
-              <p class="meal-field">Frühstück: {{ mealPlans[day.date].breakfastRecipeName }} ({{ mealPlans[day.date].breakfastPortionSize }} Portionen)</p>
+              <p class="meal-field">Frühstück: {{ mealPlans[day.date].breakfastRecipeName || mealPlans[day.date].customBreakfastName }} ({{ mealPlans[day.date].breakfastPortionSize }} Portionen)</p>
             </div>
             <div class="meal-box">
-              <p class="meal-field">Mittagessen: {{ mealPlans[day.date].lunchRecipeName }} ({{ mealPlans[day.date].lunchPortionSize }} Portionen)</p>
+              <p class="meal-field">Mittagessen: {{ mealPlans[day.date].lunchRecipeName || mealPlans[day.date].customLunchName }} ({{ mealPlans[day.date].lunchPortionSize }} Portionen)</p>
             </div>
             <div class="meal-box">
-              <p class="meal-field">Abendessen: {{ mealPlans[day.date].dinnerRecipeName }} ({{ mealPlans[day.date].dinnerPortionSize }} Portionen)</p>
+              <p class="meal-field">Abendessen: {{ mealPlans[day.date].dinnerRecipeName || mealPlans[day.date].customDinnerName }} ({{ mealPlans[day.date].dinnerPortionSize }} Portionen)</p>
             </div>
           </div>
           <div class="action-buttons">
@@ -52,25 +52,31 @@
         <div class="meal-selection">
           <div class="meal-item">
             <label>Frühstück:</label>
-            <select v-model="mealPlan.breakfastId" class="meal-select">
+            <select v-if="filteredRecipes.length > 0" v-model="mealPlan.breakfastId" class="meal-select">
               <option v-for="recipe in filteredRecipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
+              <option value="none">Kein Rezept</option>
             </select>
+            <input v-else type="text" v-model="mealPlan.customBreakfastName" placeholder="Frühstückname" class="meal-select" />
             <input type="number" v-model="mealPlan.breakfastPortionSize" min="1" class="portion-input"/>
           </div>
 
           <div class="meal-item">
             <label>Mittagessen:</label>
-            <select v-model="mealPlan.lunchId" class="meal-select">
+            <select v-if="filteredRecipes.length > 0" v-model="mealPlan.lunchId" class="meal-select">
               <option v-for="recipe in filteredRecipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
+              <option value="none">Kein Rezept</option>
             </select>
+            <input v-else type="text" v-model="mealPlan.customLunchName" placeholder="Mittagessenname" class="meal-select" />
             <input type="number" v-model="mealPlan.lunchPortionSize" min="1" class="portion-input"/>
           </div>
 
           <div class="meal-item">
             <label>Abendessen:</label>
-            <select v-model="mealPlan.dinnerId" class="meal-select">
+            <select v-if="filteredRecipes.length > 0" v-model="mealPlan.dinnerId" class="meal-select">
               <option v-for="recipe in filteredRecipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
+              <option value="none">Kein Rezept</option>
             </select>
+            <input v-else type="text" v-model="mealPlan.customDinnerName" placeholder="Abendessenname" class="meal-select" />
             <input type="number" v-model="mealPlan.dinnerPortionSize" min="1" class="portion-input"/>
           </div>
         </div>
@@ -84,7 +90,7 @@
 </template>
 
 <script>
-import { ref, reactive, computed, onMounted } from 'vue';
+
 import axios from 'axios';
 
 export default {
@@ -104,6 +110,9 @@ export default {
         lunchPortionSize: 1,
         dinnerId: null,
         dinnerPortionSize: 1,
+        customBreakfastName: '',
+        customLunchName: '',
+        customDinnerName: '',
       },
       searchQuery: '',
     };
@@ -136,6 +145,9 @@ export default {
                 dinnerId: plan.dinnerRecipeId,
                 dinnerRecipeName: plan.dinnerRecipeName,
                 dinnerPortionSize: plan.dinnerPortionSize,
+                customBreakfastName: plan.customBreakfastName,
+                customLunchName: plan.customLunchName,
+                customDinnerName: plan.customDinnerName,
               };
             });
           })
@@ -146,18 +158,18 @@ export default {
 
       const mealPlanData = {
         date: this.selectedDate,
-        breakfastRecipeId: this.mealPlan.breakfastId,
+        breakfastRecipeId: this.mealPlan.breakfastId === 'none' ? null : this.mealPlan.breakfastId,
         breakfastPortionSize: this.mealPlan.breakfastPortionSize,
-        lunchRecipeId: this.mealPlan.lunchId,
+        lunchRecipeId: this.mealPlan.lunchId === 'none' ? null : this.mealPlan.lunchId,
         lunchPortionSize: this.mealPlan.lunchPortionSize,
-        dinnerRecipeId: this.mealPlan.dinnerId,
+        dinnerRecipeId: this.mealPlan.dinnerId === 'none' ? null : this.mealPlan.dinnerId,
         dinnerPortionSize: this.mealPlan.dinnerPortionSize,
+        customBreakfastName: this.mealPlan.customBreakfastName,
+        customLunchName: this.mealPlan.customLunchName,
+        customDinnerName: this.mealPlan.customDinnerName,
       };
 
-      // CSRF-Token aus dem Cookie holen
       const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
-
-      // CSRF-Token in den Header setzen
       axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
 
       if (this.mealPlans[this.selectedDate]) {
@@ -183,10 +195,7 @@ export default {
     removeMealPlan(date) {
       if (!this.mealPlans[date]) return;
 
-      // CSRF-Token aus dem Cookie holen
       const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
-
-      // CSRF-Token in den Header setzen
       axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
 
       this.$axios.delete(`/mealplans/${date}`)
@@ -205,7 +214,7 @@ export default {
     },
     changeWeek(amount) {
       const newDate = new Date(this.currentDate);
-      newDate.setDate(this.currentDate.getDate() + amount * 7); // Woche vor oder nach
+      newDate.setDate(this.currentDate.getDate() + amount * 7);
       this.currentDate = newDate;
       this.updateWeek();
     },
@@ -246,8 +255,10 @@ export default {
           lunchPortionSize: currentPlan.lunchPortionSize || 1,
           dinnerId: currentPlan.dinnerId || null,
           dinnerPortionSize: currentPlan.dinnerPortionSize || 1,
+          customBreakfastName: currentPlan.customBreakfastName || '',
+          customLunchName: currentPlan.customLunchName || '',
+          customDinnerName: currentPlan.customDinnerName || '',
         };
-        console.log(this.mealPlan); // Überprüfe den Inhalt von mealPlan
       }
       this.isModalVisible = true;
     },
@@ -257,7 +268,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 /* Allgemeine Container-Stile */
