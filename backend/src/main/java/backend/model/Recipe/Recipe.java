@@ -18,6 +18,7 @@ public class Recipe {
     private String name;
     private String description;
     private Integer cookingTime; // Kochzeit in Minuten
+    private boolean isFavorite;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
@@ -27,16 +28,21 @@ public class Recipe {
     @JsonManagedReference
     private List<Ingredient> ingredients;
 
+    @Column(name = "tenant_id", nullable = false)
+    private String tenantId;  // Neue Spalte für die Mandanten-ID
+
     // Standard Constructor
     public Recipe() {}
 
     // Constructor with parameters
-    public Recipe(String name, String description, Integer cookingTime, List<Ingredient> ingredients, Set<Tag> tags) {
+    public Recipe(String name, String description, Integer cookingTime, List<Ingredient> ingredients, Set<Tag> tags, String tenantId) {
         this.name = name;
         this.description = description;
         this.cookingTime = cookingTime;
         this.ingredients = ingredients;
         this.tags = tags;
+        this.isFavorite = false;  // Standardwert
+        this.tenantId = tenantId; // Tenant ID setzen
     }
 
     // Getter und Setter
@@ -86,5 +92,21 @@ public class Recipe {
 
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(final boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

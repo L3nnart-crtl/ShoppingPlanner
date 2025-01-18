@@ -15,29 +15,21 @@
       </select>
     </div>
 
-    <div v-if="selectedData === 'favouriteIngredients'" class="ingredients-list">
-      <h3>Beliebteste Zutaten</h3>
-      <ul>
-        <li v-for="(count, ingredient) in statistics.favouriteIngredients" :key="ingredient">
-          {{ ingredient }}: {{ count }}
-        </li>
-      </ul>
+    <!-- Anzeige des Balkendiagramms -->
+    <div v-if="chartData && chartData.labels.length > 0" class="chart-container">
+      <bar-chart :chart-data="chartData" />
     </div>
 
+    <!-- Fallback, wenn keine Daten für das Diagramm vorhanden sind -->
     <div v-else>
-      <div v-if="chartData && chartData.labels.length > 0" class="chart-container">
-        <bar-chart :chart-data="chartData" />
-      </div>
-
-      <div v-else>
-        <p class="no-chart-message">Bitte wählen Sie eine Statistik aus, um sie anzuzeigen.</p>
-      </div>
+      <p class="no-chart-message">Bitte wählen Sie eine Statistik aus, um sie anzuzeigen.</p>
     </div>
   </div>
 </template>
 
+
+
 <script>
-import axios from "axios";
 import BarChart from "./BarChart.vue";
 import { tagsForList } from "@/assets/TagsAndUnits.js";
 
@@ -54,6 +46,10 @@ export default {
   },
   async created() {
     try {
+      // CSRF-Token aus dem Cookie holen und im Header setzen
+      const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+      this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
       const response = await this.$axios.get("/statistics");
       this.statistics = response.data;
       this.updateChart();
@@ -69,6 +65,10 @@ export default {
   methods: {
     async fetchStatistics() {
       try {
+        // CSRF-Token im Header setzen
+        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+        this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
         const response = await this.$axios.get("/statistics");
         this.statistics = response.data;
       } catch (error) {
@@ -83,7 +83,6 @@ export default {
     },
 
     updateChart() {
-
       if (!this.selectedData || !this.statistics) return;
 
       let labels = [];
@@ -136,7 +135,7 @@ export default {
 
 <style scoped>
 .statistics-dashboard {
-  width: 600px;
+  width: 550px;
   height:650px;
   margin: 0 auto;
   padding: 20px;

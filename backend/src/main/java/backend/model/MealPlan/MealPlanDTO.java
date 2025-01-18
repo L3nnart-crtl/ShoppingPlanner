@@ -15,7 +15,11 @@ public class MealPlanDTO {
     private String lunchRecipeName;
     private String dinnerRecipeName;
 
+    // Neues Feld für tenantId
+    private String tenantId;
+
     public MealPlanDTO() {}
+
     // Konstruktor für Response
     public MealPlanDTO(MealPlan mealPlan) {
         this.date = mealPlan.getDate().toString();
@@ -25,9 +29,24 @@ public class MealPlanDTO {
         this.lunchPortionSize = mealPlan.getLunchPortionSize();
         this.dinnerRecipeName = mealPlan.getDinnerRecipe() != null ? mealPlan.getDinnerRecipe().getName() : null;
         this.dinnerPortionSize = mealPlan.getDinnerPortionSize();
+        this.breakfastRecipeId = mealPlan.getBreakfastRecipe() != null ? mealPlan.getBreakfastRecipe().getId() : null;
+        this.lunchRecipeId = mealPlan.getLunchRecipe() != null ? mealPlan.getLunchRecipe().getId() : null;
+        this.dinnerRecipeId = mealPlan.getDinnerRecipe() != null ? mealPlan.getDinnerRecipe().getId() : null;
+
+        // tenantId setzen
+        this.tenantId = mealPlan.getTenantId();
     }
 
-    // Getter und Setter
+    // Getter und Setter für tenantId
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    // Getter und Setter für andere Felder
     public String getDate() {
         return date;
     }

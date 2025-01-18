@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
 @Entity
 public class CookingStatistic {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,6 +48,30 @@ public class CookingStatistic {
     @ElementCollection
     @MapKeyColumn(name = "ingredient")
     @Column(name = "amount")
-    private Map<String, Double> favouriteIngredients = new HashMap<>();
+    private Map<String, Integer> favouriteIngredients = new HashMap<>();
 
+    // Neue Spalte für Tenant-ID
+    @Column(name = "tenant_id", nullable = false)
+    private String tenantId;
+
+    // Standard Constructor
+    public CookingStatistic() {}
+
+    // Constructor with tenantId
+    public CookingStatistic(Long amountOfCookedRecipes, Long averagePortions, Double cookingTime, Long averageCookingTime, String tenantId) {
+        this.amountOfCookedRecipes = amountOfCookedRecipes;
+        this.averagePortions = averagePortions;
+        this.cookingTime = cookingTime;
+        this.averageCookingTime = averageCookingTime;
+        this.tenantId = tenantId;
+    }
+
+    // Getter und Setter für tenantId
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 }

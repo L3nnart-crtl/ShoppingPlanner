@@ -63,6 +63,12 @@ export default {
       this.isListGenerated = false;
 
       try {
+        // CSRF-Token aus dem Cookie holen
+        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+
+        // CSRF-Token in den Header setzen
+        this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
         const response = await this.$axios.post(
             '/shopping-list/generate',
             null, // Kein Body erforderlich in deinem Beispiel
@@ -92,6 +98,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .shopping-list {

@@ -1,19 +1,20 @@
 package backend.repository;
 
 import backend.model.MealPlan.MealPlan;
-import backend.model.Recipe.Recipe;
-import backend.model.Recipe.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 public interface MealPlanRepository extends JpaRepository<MealPlan, Long> {
 
-    // Suche nach MealPlan für ein bestimmtes Datum
-    Optional<MealPlan> findByDate(LocalDate date);
-    boolean existsByDate(LocalDate date);
+    // Suche nach MealPlan für ein bestimmtes Datum und tenantId
+    Optional<MealPlan> findByTenantIdAndDate(String tenantId, LocalDate date);
 
+    // Überprüfen, ob ein MealPlan für ein bestimmtes Datum und tenantId existiert
+    boolean existsByTenantIdAndDate(String tenantId, LocalDate date);
+
+    // Alle MealPlans für einen bestimmten tenantId
+    List<MealPlan> findByTenantId(String tenantId);
 }

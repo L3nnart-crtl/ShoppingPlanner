@@ -1,22 +1,58 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import axios from 'axios';
-import VCalendar from 'v-calendar';
-import './assets/style.css';
+import { createRouter, createWebHistory } from 'vue-router';
+import LoginRegister from './components/login/Login.vue';
+import HomePage from './views/HomePage.vue';
 
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
 
-
-const app = createApp(App);
-app.use(VCalendar, {
-    componentPrefix: 'v'  // optional: damit die Kalender-Komponenten mit "v-" als Prefix verwendet werden
-});
-// Globale Axios-Konfiguration
-app.config.globalProperties.$axios = axios.create({
-    baseURL: 'http://localhost:8080/api',  // Backend läuft auf localhost:8080
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:8080/api',
     headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+    },
+    withCredentials: true, // Include cookies and session info
+});
+
+// Set CSRF token from cookie
+axiosInstance.defaults.headers['X-XSRF-TOKEN'] = getCookie('XSRF-TOKEN');
+
+const routes = [
+    { path: '/', redirect: '/auth' },
+    { path: '/auth', component: LoginRegister },
+    { path: '/home', component: HomePage, meta: { requiresAuth: true } },
+];
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        try {
+            const response = await axiosInstance.get('/auth/status');
+            if (response.status === 200) {
+                next();
+            } else {
+                next('/auth');
+            }
+        } catch (error) {
+            console.error('Authentication check failed', error);
+            next('/auth'); // Redirect to login page on error
+        }
+    } else {
+        next();
     }
 });
 
+const app = createApp(App);
+app.config.globalProperties.$axios = axiosInstance;
+app.use(router);
 app.mount('#app');
