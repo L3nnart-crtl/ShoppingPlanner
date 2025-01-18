@@ -12,7 +12,7 @@ function getCookie(name) {
 }
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: 'http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]:8080/api',
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -24,9 +24,8 @@ const axiosInstance = axios.create({
 axiosInstance.defaults.headers['X-XSRF-TOKEN'] = getCookie('XSRF-TOKEN');
 
 const routes = [
-    { path: '/', redirect: '/auth' },
     { path: '/auth', component: LoginRegister },
-    { path: '/home', component: HomePage, meta: { requiresAuth: true } },
+    { path: '/', component: HomePage, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({
