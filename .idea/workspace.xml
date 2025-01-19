@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="-MS3">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="Repo structure updated">
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/AddRecipeForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +67,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="production_branch_refactorRecipeList" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -86,8 +88,9 @@
     "Gradle.Build backend.executor": "Run",
     "Gradle.backend [:ShoppingPlannerApplication.main()].executor": "Run",
     "Gradle.backend [bootJar].executor": "Run",
-    "Gradle.backend [build].executor": "Debug",
+    "Gradle.backend [build].executor": "Run",
     "Gradle.backend [clean].executor": "Run",
+    "Gradle.backend [dependencies].executor": "Debug",
     "Gradle.backend [jar].executor": "Run",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
@@ -96,7 +99,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.ShoppingPlannerApplication.executor": "Debug",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "production__branch",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/leeis/IdeaProjects/team-6fghjdgf/backend",
     "node.js.detected.package.eslint": "true",
@@ -133,7 +136,7 @@
       <recent name="C:\Users\leeis\IdeaProjects\team-6\backend\src\main\java\backend\multitenant\authentication" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.build">
+  <component name="RunManager" selected="Spring Boot.ShoppingPlannerApplication">
     <configuration name="backend [bootJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -146,6 +149,28 @@
         <option name="taskNames">
           <list>
             <option value="bootJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="backend [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -178,7 +203,7 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="backend [jar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="backend [dependencies]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
@@ -189,7 +214,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="jar" />
+            <option value="dependencies" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -230,23 +255,13 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/frontend/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dev" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.backend [build]" />
+        <item itemvalue="Gradle.backend [clean]" />
+        <item itemvalue="Gradle.backend [dependencies]" />
         <item itemvalue="npm.build" />
         <item itemvalue="Gradle.backend [bootJar]" />
-        <item itemvalue="Gradle.backend [jar]" />
-        <item itemvalue="Gradle.backend [clean]" />
-        <item itemvalue="npm.dev" />
       </list>
     </recent_temporary>
   </component>
@@ -277,6 +292,7 @@
       <workItem from="1737199708209" duration="2683000" />
       <workItem from="1737202868563" duration="374000" />
       <workItem from="1737203730827" duration="89000" />
+      <workItem from="1737290524117" duration="6224000" />
     </task>
     <task id="LOCAL-00001" summary="Repo structure updated">
       <option name="closed" value="true" />

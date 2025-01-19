@@ -73,10 +73,14 @@
         <div class="ingredient-list-container">
           <ul class="ingredient-list">
             <li v-for="(ingredient, index) in selectedRecipe.ingredients" :key="index">
-              {{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}
+              <span class="ingredient-name">{{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}</span>
+              <span class="ingredient-nutrients">
+        Kalorien: {{ ingredient.calories }} kcal | Eiweiß: {{ ingredient.proteins }} g | Fett: {{ ingredient.fats }} g | Kohlenhydrate: {{ ingredient.carbohydrates }} g
+      </span>
             </li>
           </ul>
         </div>
+
 
         <p><strong>Tags:</strong></p>
         <div class="tags-container">
@@ -757,5 +761,25 @@ h2 {
 .filter-favorites-button:hover {
   background-color: #e68900;
 }
+.ingredient-list-container {
+  padding: 10px;
+}
+
+.ingredient-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.ingredient-name {
+  font-weight: bold;
+}
+
+.ingredient-nutrients {
+  font-size: 0.9em;
+  color: #666;
+  display: block;
+  margin-top: 5px;
+}
+
 </style>
 

@@ -20,26 +20,60 @@
       <!-- Zutaten hinzufügen -->
       <div class="ingredients-container">
         <label>Zutaten:</label>
-        <div class="ingredient-list" style="max-height: 50px; overflow-y: auto;">
+        <div class="ingredient-list" style="max-height: 150px; overflow-y: auto;">
           <div v-for="(ingredient, index) in recipe.ingredients" :key="index" class="ingredient-item">
-            <span>{{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}</span>
+            <span>
+              {{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}
+              ({{ ingredient.calories }} kcal, {{ ingredient.carbohydrates }}g Carbs,
+              {{ ingredient.proteins }}g Protein, {{ ingredient.fats }}g Fats)
+            </span>
             <button type="button" @click="removeIngredient(index)" class="remove-button">Entfernen</button>
           </div>
         </div>
 
-        <!-- Eingabefelder für Zutat -->
+        <!-- API-Suche nach Zutaten -->
         <div class="input-group">
-          <input type="text" v-model="newIngredient.name" placeholder="Zutat" />
-          <input type="text" v-model="newIngredient.quantity" placeholder="Menge" />
-          <select v-model="newIngredient.unit">
-            <option v-for="unit in quantityUnits" :key="unit.value" :value="unit.value">{{ unit.label }}</option>
-          </select>
+          <input
+              type="text"
+              v-model="ingredientSearchQuery"
+              placeholder="Zutat suchen..."
+          />
+          <button type="button" @click="searchIngredients" class="search-button">Suchen</button>
+          <div v-if="searchResults.length" class="search-results">
+            <ul>
+              <li
+                  v-for="result in searchResults"
+                  :key="result.name"
+                  @click="selectIngredient(result)"
+                  class="search-result-item"
+              >
+                {{ result.name }} ({{ result.calories }} kcal,
+                {{ result.carbohydrates }}g KH, {{ result.proteins }}g Proteins, {{ result.fats }}g Fats)
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <button type="button" @click="addIngredient" class="add-button">Zutat hinzufügen</button>
+        <!-- Eingabefelder für Menge und Einheit (Vorschau der ausgewählten Zutat) -->
+        <div v-if="selectedIngredient" class="selected-ingredient-preview">
+          <h4>{{ selectedIngredient.name }} ({{ selectedIngredient.calories }} kcal)</h4>
+          <p>Carbs: {{ selectedIngredient.carbohydrates }}g, Protein: {{ selectedIngredient.proteins }}g, Fats: {{ selectedIngredient.fats }}g</p>
+
+          <div class="input-group">
+            <input
+                type="text"
+                v-model="newIngredient.quantity"
+                placeholder="Menge"
+            />
+            <select v-model="newIngredient.unit">
+              <option v-for="unit in quantityUnits" :key="unit.value" :value="unit.value">{{ unit.label }}</option>
+            </select>
+            <button type="button" @click="addIngredient" class="add-button">Zutat hinzufügen</button>
+          </div>
+        </div>
       </div>
 
-      <!-- Tag-Auswahl mit vue-multiselect -->
+      <!-- Tag-Auswahl -->
       <div class="tag-selection">
         <label for="tags">Wähle Tags:</label>
         <multiselect
@@ -65,12 +99,12 @@
 <script>
 import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { tags, quantityUnits, tagMapping } from '@/assets/TagsAndUnits.js';
 import axios from 'axios';
+import { tags, quantityUnits, tagMapping } from '@/assets/TagsAndUnits.js';
 
 export default {
   components: {
-    Multiselect
+    Multiselect,
   },
   data() {
     return {
@@ -81,7 +115,18 @@ export default {
         ingredients: [],
         tags: [],
       },
-      newIngredient: { name: '', quantity: '', unit: '' }, // Eingabewerte für neue Zutat
+      newIngredient: {
+        name: '',
+        quantity: '',
+        unit: '',
+        calories: 0,
+        carbohydrates: 0,
+        proteins: 0,
+        fats: 0,
+      },
+      ingredientSearchQuery: '',
+      searchResults: [],
+      selectedIngredient: null,
       selectedTags: [],
       allTags: tags,
       quantityUnits: quantityUnits,
@@ -89,15 +134,47 @@ export default {
     };
   },
   methods: {
+    async searchIngredients() {
+      if (!this.ingredientSearchQuery) {
+        this.searchResults = [];
+        return;
+      }
+      try {
+        const response = await this.$axios.get('/ingredients/search', {
+          params: { query: this.ingredientSearchQuery },
+        });
+        this.searchResults = response.data;
+      } catch (error) {
+        console.error('Error fetching ingredients:', error);
+      }
+    },
+    selectIngredient(ingredient) {
+      this.selectedIngredient = ingredient;
+      this.newIngredient = {
+        name: ingredient.name,
+        calories: ingredient.calories,
+        carbohydrates: ingredient.carbohydrates,
+        proteins: ingredient.proteins,
+        fats: ingredient.fats,
+        quantity: '',
+        unit: '',
+      };
+      this.ingredientSearchQuery = '';
+      this.searchResults = [];
+    },
     addIngredient() {
       if (this.newIngredient.name && this.newIngredient.quantity && this.newIngredient.unit) {
-        // Zutat zur Liste hinzufügen
-        this.recipe.ingredients.push({
-          ...this.newIngredient,  // Fügt die neue Zutat hinzu, ohne sie zu verändern
-        });
-
-        // Leere das Eingabefeld
-        this.newIngredient = { name: '', quantity: '', unit: '' };
+        this.recipe.ingredients.push({ ...this.newIngredient });
+        this.newIngredient = {
+          name: '',
+          quantity: '',
+          unit: '',
+          calories: 0,
+          carbohydrates: 0,
+          proteins: 0,
+          fats: 0,
+        };
+        this.selectedIngredient = null;
       } else {
         alert('Bitte alle Felder ausfüllen!');
       }
@@ -106,50 +183,29 @@ export default {
       this.recipe.ingredients.splice(index, 1);
     },
     getUnitLabel(unitValue) {
-      const unit = this.quantityUnits.find(unit => unit.value === unitValue);
-      return unit ? unit.label : unitValue; // Falls keine Übereinstimmung gefunden wird, den value zurückgeben
+      const unit = this.quantityUnits.find((unit) => unit.value === unitValue);
+      return unit ? unit.label : unitValue;
     },
     translateTags(tags) {
-      return tags.map(tag => tagMapping[tag] || tag);
+      return tags.map((tag) => tagMapping[tag] || tag);
     },
     async submitRecipe() {
       if (this.isSubmitting) return;
       this.isSubmitting = true;
 
       try {
-        // CSRF-Token aus dem Cookie holen
-        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
-
-        // CSRF-Token in den Header der Anfrage setzen
-        axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
-
-        // Tags übersetzen
-        this.recipe.tags = this.translateTags(this.selectedTags.map(tag => tag.name));
-
-        // Rezept an die API senden
+        this.recipe.tags = this.translateTags(this.selectedTags.map((tag) => tag.name));
         const response = await this.$axios.post('/recipes', this.recipe);
 
         this.$emit('recipe-added', response.data);
-
-        // Formular und Tags zurücksetzen
-        this.recipe = {
-          name: '',
-          description: '',
-          cookingTime: null,
-          ingredients: [],
-          tags: []
-        };
-
-        // Tags zurücksetzen
+        this.recipe = {name: '', description: '', cookingTime: null, ingredients: [], tags: []};
         this.selectedTags = [];
-
-
       } catch (error) {
         console.error('Fehler beim Hinzufügen des Rezepts:', error);
       } finally {
         this.isSubmitting = false;
       }
-    }
+    },
   },
 };
 </script>
@@ -312,5 +368,40 @@ input::placeholder, textarea::placeholder {
     flex-direction: column;
     align-items: stretch;
   }
+}
+
+.search-results {
+  border: 1px solid #ccc;
+  background: #fff;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.search-result-item:hover {
+  background-color: #f0f0f0;
+}
+
+.selected-ingredient-preview {
+  padding: 1rem;
+  background-color: #e0f7fa;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.selected-ingredient-preview h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.selected-ingredient-preview p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
 }
 </style>
