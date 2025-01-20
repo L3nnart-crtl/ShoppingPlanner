@@ -34,7 +34,7 @@
 
 
 <script>
-import AddRecipeForm from "@/components/AddRecipeForm.vue";
+import AddRecipeForm from "@/components/addRecipe/AddRecipeForm.vue";
 import RecipeList from "@/components/recipeList/RecipeList.vue";
 import CalendarComponent from "@/components/Calendar.vue";
 import ShoppingList from "@/components/ShoppingList.vue";
