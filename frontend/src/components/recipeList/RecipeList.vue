@@ -85,7 +85,8 @@ import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue";
 import DeleteConfirmationModal from "@/components/recipeList/DeleteConfirmationModal.vue";
 import EditRecipeModal from "@/components/recipeList/EditRecipeModal.vue";
 import Multiselect from 'vue-multiselect'; // Vergewissere dich, dass dieser Import korrekt ist
-import {quantityUnits,tagsForList} from "@/assets/TagsAndUnits.js"; // Import your helper data
+import {quantityUnits,tagsForList} from "@/assets/TagsAndUnits.js";
+import {EventBus} from "@/assets/event-bus.js"; // Import your helper data
 
 export default {
   components: {
@@ -165,6 +166,7 @@ export default {
         this.recipes = this.recipes.map(recipe =>
             recipe.id === updatedRecipe.id ? updatedRecipe : recipe
         );
+        EventBus.emit('recipeUpdated'); // Emit event to notify that a recipe has been updated
       } catch (error) {
         console.error("Fehler beim Bearbeiten des Rezepts:", error);
       }
@@ -196,6 +198,7 @@ export default {
           this.closeDeleteModal();
           this.closeModal();
           this.recipes = this.recipes.filter(r => r.id !== this.selectedRecipe.id);
+          EventBus.emit('recipeUpdated');
         } catch (error) {
           console.error("Fehler beim Löschen des Rezepts:", error);
           if (error.response && error.response.status === 409) {

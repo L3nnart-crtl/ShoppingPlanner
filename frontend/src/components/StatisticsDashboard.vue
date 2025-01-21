@@ -5,19 +5,19 @@
     <!-- Dropdown zur Auswahl der Statistik -->
     <div class="dropdown">
       <label for="data-select">Wählen Sie eine Statistik:</label>
-      <select id="data-select" v-model="selectedData" @change="updateChart">
-        <option value="AmountOfCookedRecipes">Gekochte Rezepte</option>
-        <option value="AveragePortions">Durchschnittliche Portionen</option>
-        <option value="AverageCookingTime">Durchschnittliche Kochzeit</option>
-        <option value="Tags">Tags</option>
-        <option value="FavouriteRecipes">Beliebteste Rezepte</option>
-        <option value="FavouriteIngredients">Beliebteste Zutaten</option>
+      <select id="data-select" v-model="selectedData" @change="handleOptionChange">
+        <option
+            v-for="option in filteredOptions"
+            :key="option.value"
+            :value="option.value">
+          {{ option.label }}
+        </option>
       </select>
     </div>
 
     <!-- Anzeige des Balkendiagramms -->
-    <div v-if="chartData && chartData.labels.length > 0" class="chart-container">
-      <bar-chart :chart-data="chartData" :selectedData="selectedData"/>
+    <div v-if="newSelectedData && chartData?.labels?.length > 0" class="chart-container">
+      <bar-chart :chart-data="chartData" :selectedData="newSelectedData"/>
     </div>
 
     <!-- Meldung, wenn keine Chart-Daten vorhanden sind -->
@@ -34,8 +34,8 @@
 
 <script>
 import BarChart from "./BarChart.vue";
-import { tagsForList } from "@/assets/TagsAndUnits.js";
-import { EventBus } from "@/assets/event-bus.js"; // Import EventBus
+import {tagsForList} from "@/assets/TagsAndUnits.js";
+import {EventBus} from "@/assets/event-bus.js"; // Import EventBus
 
 export default {
   components: {
@@ -45,35 +45,43 @@ export default {
     return {
       statistics: null,
       selectedData: null,
+      newSelectedData: null,
       chartData: null,
+      allOptions: [
+        { value: "AmountOfCookedRecipes", label: "Gekochte Rezepte" },
+        { value: "AveragePortions", label: "Durchschnittliche Portionen" },
+        { value: "AverageCookingTime", label: "Durchschnittliche Kochzeit" },
+        { value: "Tags", label: "Tags" },
+        { value: "FavouriteRecipes", label: "Beliebteste Rezepte" },
+        { value: "FavouriteIngredients", label: "Beliebteste Zutaten" },
+      ],
+      filteredOptions: [], // Temporäre Liste für die angezeigten Optionen
     };
   },
-
-  // Listen for the event as soon as the component is mounted
   mounted() {
-    this.fetchStatistics();
     this.setupEventListeners();
+    this.fetchStatistics();
+    this.filteredOptions = this.allOptions;
   },
-
   beforeDestroy() {
-    // Clean up the event listener when the component is destroyed
     EventBus.off('mealPlanUpdated', this.fetchStatistics);
+    EventBus.off('recipeUpdated', this.fetchStatistics);
   },
 
   methods: {
     setupEventListeners() {
-      // Add listener for the 'mealPlanUpdated' event
       EventBus.on('mealPlanUpdated', this.fetchStatistics);
+      EventBus.on('recipeUpdated', this.fetchStatistics);
     },
 
     async fetchStatistics() {
       try {
         const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
-        this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+        this.$axios.defaults.headers.common["X-XSRF-TOKEN"] = csrfToken;
 
         const response = await this.$axios.get("/statistics");
         this.statistics = response.data;
-        this.updateChart(); // Re-render the chart with the updated data
+
       } catch (error) {
         console.error("Fehler beim Abrufen der Statistiken:", error);
       }
@@ -81,64 +89,95 @@ export default {
 
     async updateChart() {
 
-      let labels = [];
-      let data = [];
+        this.newSelectedData = this.selectedData;
 
-      if (this.selectedData === "AmountOfCookedRecipes" && this.statistics.amountOfCookedRecipes != null) {
-        labels = ["Gekochte Rezepte"];
-        data = [this.statistics.amountOfCookedRecipes];
-      } else if (this.selectedData === "AveragePortions" && this.statistics.averagePortions != null) {
-        labels = ["Durchschnittliche Portionen"];
-        data = [this.statistics.averagePortions];
-      } else if (this.selectedData === "AverageCookingTime" && this.statistics.averageCookingTime != null) {
-        labels = ["Durchschnittliche Kochzeit"];
-        data = [this.statistics.averageCookingTime];
-      } else if (this.selectedData === "Tags" && this.statistics.attributes) {
-        const attributesArray = Array.isArray(this.statistics.attributes)
-            ? this.statistics.attributes
-            : Object.entries(this.statistics.attributes);
+        let labels = [];
+        let data = [];
+        if (
+            this.newSelectedData === "AmountOfCookedRecipes" &&
+            this.statistics.amountOfCookedRecipes != null
+        ) {
+          labels = ["Gekochte Rezepte"];
+          data = [this.statistics.amountOfCookedRecipes];
+        } else if (
+            this.newSelectedData === "AveragePortions" &&
+            this.statistics.averagePortions != null
+        ) {
+          labels = ["Durchschnittliche Portionen"];
+          data = [this.statistics.averagePortions];
+        } else if (
+            this.newSelectedData === "AverageCookingTime" &&
+            this.statistics.averageCookingTime != null
+        ) {
+          labels = ["Durchschnittliche Kochzeit"];
+          data = [this.statistics.averageCookingTime];
+        } else if (
+            this.newSelectedData === "Tags" &&
+            this.statistics &&
+            this.statistics.attributes
+        ) {
+          const attributesArray = Array.isArray(this.statistics.attributes)
+              ? this.statistics.attributes
+              : Object.entries(this.statistics.attributes);
 
-        labels = attributesArray.map(([tag, value]) => {
-          const translatedTag = this.translateTags([tag])[0];
-          return translatedTag;
-        });
+          labels = attributesArray.map(
+              ([tag]) => this.translateTags([tag])[0]
+          );
+          data = attributesArray.map(([, value]) => value);
+        } else if (
+            this.newSelectedData === "FavouriteRecipes" &&
+            this.statistics.favouriteRecipes
+        ) {
+          labels = Object.keys(this.statistics.favouriteRecipes);
+          data = Object.values(this.statistics.favouriteRecipes);
+        } else if (
+            this.newSelectedData === "FavouriteIngredients" &&
+            this.statistics.favouriteIngredients
+        ) {
+          labels = Object.keys(this.statistics.favouriteIngredients);
+          data = Object.values(this.statistics.favouriteIngredients);
+        }
 
-        data = attributesArray.map(([tag, value]) => value);
-      } else if (this.selectedData === "FavouriteRecipes" && this.statistics.favouriteRecipes) {
-        // Umwandlung von Lieblingsrezepten in Labels und Daten
-        labels = Object.keys(this.statistics.favouriteRecipes);
-        data = Object.values(this.statistics.favouriteRecipes);
-      } else if (this.selectedData === "FavouriteIngredients" && this.statistics.favouriteIngredients) {
-        // Umwandlung von Lieblingszutaten in Labels und Daten
-        labels = Object.keys(this.statistics.favouriteIngredients);
-        data = Object.values(this.statistics.favouriteIngredients);
-      }
-
-      if (labels.length === 0 || data.length === 0 || data[0] === 0 ) {
-        this.chartData = null;  // Setze chartData auf null, falls keine Daten vorhanden sind
-      } else {
-        this.chartData = {
-          labels,
-          datasets: [
-            {
-              label: this.selectedData,
-              data,
-              backgroundColor: "#42A5F5",
-            },
-          ],
-        };
-      }
+        // Ensure chartData is properly set
+        if (labels.length === 0 || data.length === 0 || data[0] === 0) {
+          this.chartData = null;
+        } else {
+          this.chartData = {
+            labels,
+            datasets: [
+              {
+                label: this.newSelectedData,
+                data,
+                backgroundColor: "#42A5F5",
+              },
+            ],
+          };
+        }
     },
-
     translateTags(tags) {
-      return tags.map(tag => {
-        const tagEntry = tagsForList.find(entry => entry.value === tag);
+      return tags.map((tag) => {
+        const tagEntry = tagsForList.find((entry) => entry.value === tag);
         return tagEntry ? tagEntry.name : tag;
       });
+    },
+    handleOptionChange() {
+      // Temporär leere Optionen
+      this.filteredOptions = [];
+      this.newSelectedData = null;
+
+      // Nach 700 ms wieder alle Optionen anzeigen
+      setTimeout(() => {
+        this.filteredOptions = this.allOptions;
+      }, 900);
+
+      // Aktualisiere das Chart
+      this.updateChart();
+      EventBus.emit("chartUpdated");
     },
   },
 };
 </script>
+
 
 <style scoped>
 .statistics-dashboard {
@@ -187,7 +226,6 @@ select:focus {
 }
 
 .chart-container {
-
   margin-top: 20px;
   display: flex;
   justify-content: center;

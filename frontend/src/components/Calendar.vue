@@ -127,7 +127,12 @@ export default {
   mounted() {
     this.fetchMealPlans();
     this.updateWeek();
+    EventBus.on('recipeUpdated', this.fetchMealPlans); // Listen for recipe updates
   },
+  beforeDestroy() {
+    EventBus.off('recipeUpdated', this.fetchMealPlans); // Clean up the event listener
+  },
+
   methods: {
     fetchMealPlans() {
       this.$axios.get('/mealplans')

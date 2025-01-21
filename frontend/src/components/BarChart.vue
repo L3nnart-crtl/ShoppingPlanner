@@ -1,6 +1,5 @@
 <template>
   <div class="chart-container">
-
     <canvas ref="canvas"></canvas>
   </div>
 </template>
@@ -16,7 +15,7 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
-
+import {EventBus} from "@/assets/event-bus.js";
 
 ChartJS.register(
     Title,
@@ -42,17 +41,24 @@ export default {
       chartInstance: null,
     };
   },
-  watch: {
-    chartData(newData) {
-      this.destroyChart(); // Alte Instanz zerstören
-      this.initializeChart(newData); // Neue Instanz mit den neuen Daten erstellen
-    },
-  },
-  
+
   mounted() {
-    this.initializeChart(this.chartData);
+        this.destroyChart(); // Zerstöre den alten Chart
+        this.initializeChart(this.chartData); // Initialisiere den neuen Chart
+        this.setupEventListeners();
+  },
+  beforeDestroy() {
+    EventBus.off("chartUpdated");
   },
   methods: {
+    setupEventListeners() {
+      EventBus.on("chartUpdated",this.newChart);
+    },
+    newChart() {
+      this.destroyChart(); // Destroy the old chart
+      this.initializeChart(this.chartData); // Reinitialize the chart with the current chartData
+
+    },
     initializeChart(data) {
       if (!this.$refs.canvas) {
         console.error("Canvas-Element nicht gefunden!");
@@ -157,7 +163,6 @@ export default {
   font-family: 'Arial', sans-serif;
   min-height: 400px;
 }
-
 
 canvas {
   width: 100% !important;
