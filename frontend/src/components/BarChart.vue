@@ -1,5 +1,6 @@
 <template>
   <div class="chart-container">
+
     <canvas ref="canvas"></canvas>
   </div>
 </template>
@@ -30,6 +31,7 @@ ChartJS.register(
 export default {
   name: "BarChart",
   props: {
+    selectedData: String,
     chartData: {
       type: Object,
       required: true,
@@ -41,16 +43,12 @@ export default {
     };
   },
   watch: {
-    chartData: {
-      deep: true,
-      handler(newData) {
-        if (this.chartInstance) {
-          this.destroyChart();
-        }
-        this.initializeChart(newData);
-      },
+    chartData(newData) {
+      this.destroyChart(); // Alte Instanz zerstören
+      this.initializeChart(newData); // Neue Instanz mit den neuen Daten erstellen
     },
   },
+  
   mounted() {
     this.initializeChart(this.chartData);
   },
@@ -94,7 +92,7 @@ export default {
             },
             title: {
               display: true,
-              text: "Statistik-Diagramm",
+              text: this.selectedData,
               font: {
                 family: "'Arial', sans-serif",
                 size: 18,
@@ -136,13 +134,13 @@ export default {
     },
     destroyChart() {
       if (this.chartInstance) {
-        this.chartInstance.destroy();
+        this.chartInstance.destroy(); // Zerstört die bestehende Chart-Instanz
         this.chartInstance = null;
       }
     },
   },
   beforeUnmount() {
-    this.destroyChart();
+    this.destroyChart(); // Bereinigt die Chart-Instanz beim Entfernen der Komponente
   },
 };
 </script>

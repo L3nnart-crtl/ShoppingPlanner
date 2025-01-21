@@ -22,19 +22,19 @@
         <h3>Zutaten</h3>
         <ul>
           <li v-for="(ingredient, index) in recipe.ingredients" :key="index">
-            - {{ ingredient.name }} - {{ ingredient.quantity }} {{ ingredient.unit }}
+            - {{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}
           </li>
         </ul>
       </div>
 
       <!-- Add Ingredient Button -->
-      <button @click="showIngredientModal" type="button" class="add-ingredient-button">Zutat hinzufügen</button>
+      <button @click="showIngredientModal()" type="button" class="add-ingredient-button">Zutat hinzufügen</button>
 
       <!-- Ingredient Modal -->
       <ingredient-modal
           v-if="isIngredientModalVisible"
           :is-visible="isIngredientModalVisible"
-          :quantity-units="quantityUnits"
+          :newManualIngredient="ingredient"
           @add-ingredient="addIngredient"
           @close-modal="closeIngredientModal"
       />
@@ -66,7 +66,7 @@
 import IngredientModal from './IngredientModal.vue';
 import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
-import {tags, quantityUnits, tagMapping} from "@/assets/TagsAndUnits.js";
+import {quantityUnits, tagsForList} from "@/assets/TagsAndUnits.js";
 
 export default {
   components: {
@@ -83,9 +83,18 @@ export default {
         cookingTime: null,
         tags: [],
       },
+      ingredient: {
+        name: '',
+        quantity: '',
+        unit: '',
+        calories: 0,
+        carbohydrates: 0,
+        proteins: 0,
+        fats: 0,
+      },
       selectedTags: [],
-      allTags: tags, // Tags aus der externen Datei (TagsAndUnits.js)
-      quantityUnits: quantityUnits,
+      allTags: tagsForList, // Tags aus der externen Datei (TagsAndUnits.js)
+      quantityUnits,
       isSubmitting: false,
     };
   },
@@ -95,14 +104,21 @@ export default {
     },
     closeIngredientModal() {
       this.isIngredientModalVisible = false;
+      this.ingredient = {
+        name: '',
+        quantity: '',
+        unit: '',
+        calories: 0,
+        carbohydrates: 0,
+        proteins: 0,
+        fats: 0,
+      }
     },
     addIngredient(ingredient) {
       // Hinzufügen der Zutat zur Rezeptliste
       this.recipe.ingredients.push(ingredient);
     },
-    translateTags(tags) {
-      return tags.map(tag => tagMapping[tag] || tag);
-    },
+
     async submitRecipe() {
       if (this.isSubmitting) return;
       this.isSubmitting = true;
@@ -110,7 +126,7 @@ export default {
       try {
         // Tags hinzufügen
         // Make sure each tag sent is an object with a 'name' property
-        this.recipe.tags = this.translateTags(this.selectedTags.map(tag => tag.name));
+        this.recipe.tags = this.selectedTags.map(tag => tag.value);
 
         const response = await this.$axios.post('/recipes', this.recipe);
 
@@ -123,6 +139,10 @@ export default {
         this.isSubmitting = false;
       }
     },
+    getUnitLabel(unit) {
+      const unitObj = quantityUnits.find(u => u.value === unit);
+      return unitObj ? unitObj.label : unit;
+    },
   },
 };
 </script>
@@ -130,10 +150,14 @@ export default {
 <style scoped>
 /* Allgemeine Container-Stile */
 .form-container {
-  width: 100%;
+  width: 350px;
+  height: 690px;
   font-family: Arial, sans-serif;
   padding: 20px;
   box-sizing: border-box;
+  background-color: #f9f9f9;
+  margin: 0 auto;
+  border-radius: 8px;
 }
 
 .form-title {

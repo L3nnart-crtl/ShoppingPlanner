@@ -14,7 +14,11 @@
       <p><strong>Ingredients:</strong></p>
       <div class="ingredient-list-container">
         <ul class="ingredient-list">
-          <li v-for="(ingredient, index) in selectedRecipe.ingredients" :key="index" class="ingredient-item">
+          <li
+              v-for="(ingredient, index) in selectedRecipe.ingredients"
+              :key="index"
+              class="ingredient-item"
+          >
             <span class="ingredient-name">{{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}</span>
             <span class="ingredient-nutrients">
               Calories: {{ ingredient.calories }} kcal | Protein: {{ ingredient.proteins }} g | Fat: {{ ingredient.fats }} g | Carbs: {{ ingredient.carbohydrates }} g
@@ -25,8 +29,12 @@
 
       <p><strong>Tags:</strong></p>
       <div class="tags-container">
-        <div v-for="(tag, index) in selectedRecipe.tags" :key="index" class="tag-box">
-          {{ getTagLabel(tag) }}
+        <div
+            v-for="(tag, index) in selectedTags"
+            :key="index"
+            class="tag-box"
+        >
+          {{ tag.name }}
         </div>
       </div>
 
@@ -37,16 +45,25 @@
   </div>
 </template>
 
-
 <script>
-import { quantityUnits, tagMapping } from "@/assets/TagsAndUnits.js";
+import { quantityUnits, tagsForList } from "@/assets/TagsAndUnits.js";
+
 
 export default {
+
   props: {
     selectedRecipe: Object,
+    selectedTags: Object,
     isVisible: Boolean,
   },
   methods: {
+    toggleFavorite() {
+      this.$emit("toggleFavorite");
+    },
+    getUnitLabel(unit) {
+      const unitObj = quantityUnits.find((u) => u.value === unit);
+      return unitObj ? unitObj.label : unit;
+    },
     closeModal() {
       this.$emit("closeModal");
     },
@@ -56,19 +73,10 @@ export default {
     deleteRecipe() {
       this.$emit("confirmDelete", this.selectedRecipe);
     },
-    toggleFavorite() {
-      this.$emit("toggleFavorite");
-    },
-    getTagLabel(tag) {
-      return tagMapping[tag] || tag;
-    },
-    getUnitLabel(unit) {
-      const unitObj = quantityUnits.find(u => u.value === unit);
-      return unitObj ? unitObj.label : unit;
-    }
   },
 };
 </script>
+
 <style scoped>
 .modal-overlay {
   position: fixed;
@@ -80,7 +88,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9998;
+  z-index: 9996;
 }
 
 .modal-content {

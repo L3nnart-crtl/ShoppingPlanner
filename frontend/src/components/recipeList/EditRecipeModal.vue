@@ -1,102 +1,190 @@
 <template>
   <div class="modal-overlay">
     <div class="modal-content">
-      <h2>Rezept bearbeiten</h2>
+      <h2>Edit Recipe</h2>
       <form @submit.prevent="submitEdit">
         <div class="input-group">
-          <label for="name">Rezeptname:</label>
-          <input type="text" v-model="selectedRecipe.name" placeholder="Rezeptname eingeben" required />
+          <label for="name">Recipe Name:</label>
+          <input
+              type="text"
+              v-model="selectedRecipe.name"
+              placeholder="Enter Recipe Name"
+              required
+          />
         </div>
 
         <div class="input-group">
-          <label for="description">Beschreibung:</label>
-          <textarea v-model="selectedRecipe.description" placeholder="Beschreibung eingeben" required></textarea>
+          <label for="description">Description:</label>
+          <textarea
+              v-model="selectedRecipe.description"
+              placeholder="Enter Description"
+              required
+          ></textarea>
         </div>
 
         <div class="input-group">
-          <label for="cookingTime">Kochzeit (in Minuten):</label>
-          <input type="number" v-model="selectedRecipe.cookingTime" placeholder="Kochzeit in Minuten" min="1" required />
+          <label for="cookingTime">Cooking Time (in minutes):</label>
+          <input
+              type="number"
+              v-model="selectedRecipe.cookingTime"
+              placeholder="Enter Cooking Time"
+              min="1"
+              required
+          />
         </div>
 
         <div class="ingredient-list-container">
-          <div v-for="(ingredient, index) in selectedRecipe.ingredients" :key="index" class="ingredient-group">
+          <div
+              v-for="(ingredient, index) in selectedRecipe.ingredients"
+              :key="index"
+              class="ingredient-group"
+          >
             <div class="ingredient-item">
-              <label>Zutat {{ index + 1 }}:</label>
-              <input type="text" v-model="ingredient.name" placeholder="Zutat" required />
-              <input type="text" v-model="ingredient.quantity" placeholder="Menge" required />
-              <div class="unit-selection">
-                <label for="unit">Einheit:</label>
-                <select v-model="ingredient.unit" required>
-                  <option v-for="unit in quantityUnits()" :key="unit.value" :value="unit.value">{{ unit.label }}</option>
-                </select>
-              </div>
-              <button type="button" @click="removeIngredient(index)" class="remove-button">Entfernen</button>
+              <label>Ingredient {{ index + 1 }}:</label>
+              <label>{{ ingredient.name }}</label>
+              <label>{{ ingredient.quantity }}</label>
+              <label>{{ getUnitLabel(ingredient.unit) }}</label>
+
+              <button
+                  type="button"
+                  @click="openIngredientModal(ingredient)"
+                  class="edit-button"
+              >
+                Edit
+              </button>
+              <button
+                  type="button"
+                  @click="removeIngredient(index)"
+                  class="remove-button"
+              >
+                Remove
+              </button>
             </div>
           </div>
         </div>
 
-        <button type="button" @click="addIngredient" class="add-button">Zutat hinzufügen</button>
+        <button
+            type="button"
+            @click="openIngredientModalAdd"
+            class="add-button"
+        >
+          Add Ingredient
+        </button>
 
         <div class="tag-selection">
-          <label for="tags">Wähle Tags:</label>
-          <multiselect
-              :value="selectedTags"
+          <label for="tags">Select Tags:</label>
+          <Multiselect
+              ref="multiselect"
+              v-model="newTags"
               :options="availableTags"
               :multiple="true"
               :close-on-select="false"
-              placeholder="Tags auswählen"
+              placeholder="Select Tags"
               label="name"
               track-by="name"
-              :tag-placeholder="'Tag hinzufügen'"
+              :tag-placeholder="'Add Tag'"
               class="tag-dropdown"
-              @input="updateSelectedTags"
           />
         </div>
 
-        <button type="submit" class="submit-button">Rezept speichern</button>
+        <button type="submit" class="submit-button">Save Recipe</button>
       </form>
-      <button @click="closeEditModal" class="close-button">Schließen</button>
+      <button @click="closeEditModal" class="close-button">Close</button>
     </div>
   </div>
+
+  <IngredientModal
+      v-if="isIngredientModalVisible"
+      :is-visible="isIngredientModalVisible"
+      :newManualIngredient="selectedIngredient"
+      :quantity-units="quantityUnits"
+      @add-ingredient="addIngredient"
+      @close-modal="closeIngredientModal"
+  />
 </template>
+
 <script>
-import Multiselect from 'vue-multiselect';
-import {quantityUnits} from "@/assets/TagsAndUnits.js";
+import Multiselect from "vue-multiselect";
+import IngredientModal from "@/components/addRecipe/IngredientModal.vue";
+import {quantityUnits, tagsForList} from "@/assets/TagsAndUnits.js";
 
 export default {
+  emits: ['closeEditModal', 'submitEditRecipe', 'update:selectedTags'],
   components: {
     Multiselect,
+    IngredientModal,
   },
   props: {
     selectedRecipe: Object,
-    availableTags: Array,
-    selectedTags: Array,
+    selectedTags: Object,  // Ensure selectedTags is an array
+  },
+  data() {
+    return {
+      newTags: this.selectedTags, // Convert to array if it's an object
+      isIngredientModalVisible: false,
+      selectedIngredient: null,
+      availableTags: tagsForList,
+      quantityUnits
+    };
   },
   methods: {
-    quantityUnits() {
-      return quantityUnits;
-    },
-    submitEdit() {
-      this.$emit("submitEditRecipe", this.selectedRecipe);
-    },
-    closeEditModal() {
-      this.$emit("closeEditModal");
-    },
-    addIngredient() {
-      if (!this.selectedRecipe.ingredients) {
-        this.selectedRecipe.ingredients = [];
+    //Ingredient
+    addIngredient(ingredient) {
+      const index = this.selectedRecipe.ingredients.findIndex(
+          (ing) => ing === this.selectedIngredient
+      );
+
+      if (index !== -1) {
+        this.selectedRecipe.ingredients.splice(index, 1, ingredient);
+      } else {
+        this.selectedRecipe.ingredients.push(ingredient);
       }
-      this.selectedRecipe.ingredients.push({name: "", quantity: "", unit: ""});
+      this.closeIngredientModal();
+    },
+    closeIngredientModal() {
+      this.isIngredientModalVisible = false;
+      this.selectedIngredient = null;
+    },
+    openIngredientModal(ingredient) {
+      this.selectedIngredient = ingredient;
+      this.isIngredientModalVisible = true;
+    },
+    openIngredientModalAdd() {
+      this.selectedIngredient = {
+        name: "",
+        quantity: "",
+        unit: "",
+        calories: 0,
+        carbohydrates: 0,
+        proteins: 0,
+        fats: 0,
+      };
+      this.isIngredientModalVisible = true;
     },
     removeIngredient(index) {
       this.selectedRecipe.ingredients.splice(index, 1);
     },
-    updateSelectedTags(newTags) {
-      this.$emit("update:selectedTags", newTags);
+    //Modal
+    submitEdit() {
+      this.updateSelectedTags();
+      this.$emit("submitEditRecipe", this.selectedRecipe);
+    },
+    updateSelectedTags() {
+      this.$emit("update:selectedTags", this.newTags);
+    },
+
+    closeEditModal() {
+      this.$emit("closeEditModal");
+    },
+    //Helper functions
+    getUnitLabel(unit) {
+      const unitObj = quantityUnits.find(u => u.value === unit);
+      return unitObj ? unitObj.label : unit;
     },
   },
 };
 </script>
+
 <style scoped>
 .modal-overlay {
   position: fixed;
@@ -107,9 +195,8 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
-  align-items: center; /* Vertikal und horizontal zentrieren */
-
-  z-index: 9999;
+  align-items: center;
+  z-index: 9997;
 }
 
 .modal-content {
@@ -117,12 +204,11 @@ export default {
   padding: 20px;
   border-radius: 8px;
   width: 100%;
-  max-width: 600px;  /* Passt die Breite an */
-  max-height: 80vh;  /* Verhindert zu große Modal-Boxen */
-  overflow-y: auto;  /* Scrollt, falls der Inhalt zu lang ist */
-  margin: 0 10px; /* Sorgt für Abstand zu den Rändern */
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  margin: 0 10px;
 }
-
 
 h2 {
   font-size: 1.75rem;
@@ -189,7 +275,6 @@ button:hover {
   background-color: #5a6268;
 }
 
-/* Media query for responsiveness */
 @media (max-width: 768px) {
   .modal-content {
     width: 90%;

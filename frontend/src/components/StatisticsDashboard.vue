@@ -6,18 +6,23 @@
     <div class="dropdown">
       <label for="data-select">Wählen Sie eine Statistik:</label>
       <select id="data-select" v-model="selectedData" @change="updateChart">
-        <option value="amountOfCookedRecipes">Gekochte Rezepte</option>
-        <option value="averagePortions">Durchschnittliche Portionen</option>
-        <option value="averageCookingTime">Durchschnittliche Kochzeit</option>
-        <option value="attributes">Attribute</option>
-        <option value="favouriteRecipes">Beliebteste Rezepte</option>
-        <option value="favouriteIngredients">Beliebteste Zutaten</option>
+        <option value="AmountOfCookedRecipes">Gekochte Rezepte</option>
+        <option value="AveragePortions">Durchschnittliche Portionen</option>
+        <option value="AverageCookingTime">Durchschnittliche Kochzeit</option>
+        <option value="Tags">Tags</option>
+        <option value="FavouriteRecipes">Beliebteste Rezepte</option>
+        <option value="FavouriteIngredients">Beliebteste Zutaten</option>
       </select>
     </div>
 
     <!-- Anzeige des Balkendiagramms -->
     <div v-if="chartData && chartData.labels.length > 0" class="chart-container">
-      <bar-chart :chart-data="chartData" />
+      <bar-chart :chart-data="chartData" :selectedData="selectedData"/>
+    </div>
+
+    <!-- Meldung, wenn keine Chart-Daten vorhanden sind -->
+    <div v-else-if="chartData === null || chartData.labels.length === 0">
+      <p class="no-chart-message">Keine Daten verfügbar. Bitte wählen Sie eine Statistik aus.</p>
     </div>
 
     <!-- Fallback, wenn keine Daten für das Diagramm vorhanden sind -->
@@ -27,11 +32,10 @@
   </div>
 </template>
 
-
-
 <script>
 import BarChart from "./BarChart.vue";
 import { tagsForList } from "@/assets/TagsAndUnits.js";
+import { EventBus } from "@/assets/event-bus.js"; // Import EventBus
 
 export default {
   components: {
@@ -44,60 +48,52 @@ export default {
       chartData: null,
     };
   },
-  async created() {
-    try {
-      // CSRF-Token aus dem Cookie holen und im Header setzen
-      const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
-      this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
 
-      const response = await this.$axios.get("/statistics");
-      this.statistics = response.data;
-      this.updateChart();
-    } catch (error) {
-      console.error("Fehler beim Abrufen der Statistiken:", error);
-    }
+  // Listen for the event as soon as the component is mounted
+  mounted() {
+    this.fetchStatistics();
+    this.setupEventListeners();
   },
-  watch: {
-    selectedData(newSelectedData) {
-      this.updateChart();
-    },
+
+  beforeDestroy() {
+    // Clean up the event listener when the component is destroyed
+    EventBus.off('mealPlanUpdated', this.fetchStatistics);
   },
+
   methods: {
+    setupEventListeners() {
+      // Add listener for the 'mealPlanUpdated' event
+      EventBus.on('mealPlanUpdated', this.fetchStatistics);
+    },
+
     async fetchStatistics() {
       try {
-        // CSRF-Token im Header setzen
         const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
         this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
 
         const response = await this.$axios.get("/statistics");
         this.statistics = response.data;
+        this.updateChart(); // Re-render the chart with the updated data
       } catch (error) {
         console.error("Fehler beim Abrufen der Statistiken:", error);
       }
     },
-    translateTags(tags) {
-      return tags.map(tag => {
-        const tagEntry = tagsForList.find(entry => entry.value === tag);
-        return tagEntry ? tagEntry.name : tag;
-      });
-    },
 
-    updateChart() {
-      if (!this.selectedData || !this.statistics) return;
+    async updateChart() {
 
       let labels = [];
       let data = [];
 
-      if (this.selectedData === "amountOfCookedRecipes") {
+      if (this.selectedData === "AmountOfCookedRecipes" && this.statistics.amountOfCookedRecipes != null) {
         labels = ["Gekochte Rezepte"];
         data = [this.statistics.amountOfCookedRecipes];
-      } else if (this.selectedData === "averagePortions") {
+      } else if (this.selectedData === "AveragePortions" && this.statistics.averagePortions != null) {
         labels = ["Durchschnittliche Portionen"];
         data = [this.statistics.averagePortions];
-      } else if (this.selectedData === "averageCookingTime") {
+      } else if (this.selectedData === "AverageCookingTime" && this.statistics.averageCookingTime != null) {
         labels = ["Durchschnittliche Kochzeit"];
         data = [this.statistics.averageCookingTime];
-      } else if (this.selectedData === "attributes") {
+      } else if (this.selectedData === "Tags" && this.statistics.attributes) {
         const attributesArray = Array.isArray(this.statistics.attributes)
             ? this.statistics.attributes
             : Object.entries(this.statistics.attributes);
@@ -108,34 +104,45 @@ export default {
         });
 
         data = attributesArray.map(([tag, value]) => value);
-      } else if (this.selectedData === "favouriteRecipes") {
+      } else if (this.selectedData === "FavouriteRecipes" && this.statistics.favouriteRecipes) {
+        // Umwandlung von Lieblingsrezepten in Labels und Daten
         labels = Object.keys(this.statistics.favouriteRecipes);
         data = Object.values(this.statistics.favouriteRecipes);
-      } else if (this.selectedData === "favouriteIngredients") {
+      } else if (this.selectedData === "FavouriteIngredients" && this.statistics.favouriteIngredients) {
+        // Umwandlung von Lieblingszutaten in Labels und Daten
         labels = Object.keys(this.statistics.favouriteIngredients);
         data = Object.values(this.statistics.favouriteIngredients);
       }
 
-      this.chartData = {
-        labels,
-        datasets: [
-          {
-            label: "Anzahl",
-            backgroundColor: "#42A5F5",
-            borderColor: "#1E88E5",
-            borderWidth: 1,
-            data,
-          },
-        ],
-      };
-    }
+      if (labels.length === 0 || data.length === 0 || data[0] === 0 ) {
+        this.chartData = null;  // Setze chartData auf null, falls keine Daten vorhanden sind
+      } else {
+        this.chartData = {
+          labels,
+          datasets: [
+            {
+              label: this.selectedData,
+              data,
+              backgroundColor: "#42A5F5",
+            },
+          ],
+        };
+      }
+    },
+
+    translateTags(tags) {
+      return tags.map(tag => {
+        const tagEntry = tagsForList.find(entry => entry.value === tag);
+        return tagEntry ? tagEntry.name : tag;
+      });
+    },
   },
 };
 </script>
 
 <style scoped>
 .statistics-dashboard {
-  width: 550px;
+  width: 500px;
   height:650px;
   margin: 0 auto;
   padding: 20px;

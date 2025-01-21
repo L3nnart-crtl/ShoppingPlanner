@@ -5,10 +5,11 @@
 
       <!-- API-Suche nach Zutaten -->
       <div class="input-group">
+        <label for="ingredient-search">Zutat suchen in Openfoodfacts</label>
         <input
+            id="ingredient-search"
             type="text"
             v-model="ingredientSearchQuery"
-            placeholder="Zutat suchen..."
         />
         <button type="button" @click="searchIngredients" class="search-button">Suchen</button>
         <div v-if="searchResults.length" class="search-results">
@@ -28,37 +29,33 @@
 
       <!-- Kompakte manuelle Eingabe von Zutaten -->
       <div class="manual-ingredient-entry">
-        <h4>Manuelle Zutat</h4>
+        <h3>Manuelle Zutat</h3>
         <div class="input-group compact">
-          <input type="text" v-model="newManualIngredient.name" placeholder="Zutatname" class="input-small" />
-          <input type="number" v-model="newManualIngredient.quantity" placeholder="Menge" class="input-small" />
-          <select v-model="newManualIngredient.unit" class="input-small">
-            <option v-for="unit in quantityUnits" :key="unit.value" :value="unit.value">{{ unit.label }}</option>
-          </select>
-          <input type="number" v-model="newManualIngredient.calories" placeholder="Kalorien" class="input-small" />
-          <input type="number" v-model="newManualIngredient.carbohydrates" placeholder="KH" class="input-small" />
-          <input type="number" v-model="newManualIngredient.proteins" placeholder="Proteine" class="input-small" />
-          <input type="number" v-model="newManualIngredient.fats" placeholder="Fette" class="input-small" />
-        </div>
-        <button type="button" @click="addManualIngredient" class="add-button">Hinzufügen</button>
-      </div>
+          <label for="ingredient-name">Zutatname</label>
+          <input id="ingredient-name" type="text" v-model="localManualIngredient.name" class="input-small" />
 
-      <!-- Eingabefelder für Menge und Einheit -->
-      <div v-if="selectedIngredient" class="selected-ingredient-preview">
-        <h4>{{ selectedIngredient.name }} ({{ selectedIngredient.calories }} kcal)</h4>
-        <p>Carbs: {{ selectedIngredient.carbohydrates }}g, Protein: {{ selectedIngredient.proteins }}g, Fats: {{ selectedIngredient.fats }}g</p>
-        <div class="input-group">
-          <input
-              type="text"
-              v-model="newIngredient.quantity"
-              placeholder="Menge"
-          />
-          <label for="unit">Einheit:</label>
-          <select v-model="newIngredient.unit">
+          <label for="ingredient-quantity">Menge</label>
+          <input id="ingredient-quantity" type="number" v-model="localManualIngredient.quantity" class="input-small" />
+
+          <label for="ingredient-unit">Einheit</label>
+          <select id="ingredient-unit" v-model="localManualIngredient.unit" class="input-small">
             <option v-for="unit in quantityUnits" :key="unit.value" :value="unit.value">{{ unit.label }}</option>
           </select>
-          <button type="button" @click="addIngredient" class="add-button">Zutat hinzufügen</button>
+
+          <label for="ingredient-calories">Kalorien</label>
+          <input id="ingredient-calories" type="number" v-model="localManualIngredient.calories" class="input-small" />
+
+          <label for="ingredient-carbs">Kohlenhydrate</label>
+          <input id="ingredient-carbs" type="number" v-model="localManualIngredient.carbohydrates" class="input-small" />
+
+          <label for="ingredient-proteins">Proteine</label>
+          <input id="ingredient-proteins" type="number" v-model="localManualIngredient.proteins" class="input-small" />
+
+          <label for="ingredient-fats">Fette</label>
+          <input id="ingredient-fats" type="number" v-model="localManualIngredient.fats" class="input-small" />
         </div>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <button type="button" @click="addManualIngredient" class="add-button">Hinzufügen</button>
       </div>
 
       <button @click="closeModal" class="close-modal-button">Schließen</button>
@@ -66,18 +63,16 @@
   </div>
 </template>
 
+
 <script>
+import {quantityUnits} from "@/assets/TagsAndUnits.js";
+
 export default {
   props: {
     isVisible: Boolean,
-    quantityUnits: Array,
-  },
-  data() {
-    return {
-      ingredientSearchQuery: '',
-      searchResults: [],
-      selectedIngredient: null,
-      newIngredient: {
+    newManualIngredient: {
+      type: Object,
+      default: () => ({
         name: '',
         quantity: '',
         unit: '',
@@ -85,16 +80,17 @@ export default {
         carbohydrates: 0,
         proteins: 0,
         fats: 0,
-      },
-      newManualIngredient: {
-        name: '',
-        quantity: '',
-        unit: '',
-        calories: null,
-        carbohydrates: null,
-        proteins: null,
-        fats: null,
-      },
+      }),
+    },
+  },
+  data() {
+    return {
+      ingredientSearchQuery: '',
+      searchResults: [],
+      selectedIngredient: null,
+      errorMessage: '',
+      localManualIngredient: { ...this.newManualIngredient }, // Kopie der initialen Props
+      quantityUnits
     };
   },
   methods: {
@@ -113,32 +109,39 @@ export default {
       }
     },
     selectIngredient(ingredient) {
-      this.selectedIngredient = ingredient;
-      this.newIngredient = {
+      // Setze die Felder mit den Werten des ausgewählten Ingredients
+      this.localManualIngredient = {
         name: ingredient.name,
+        quantity: this.localManualIngredient.quantity || '', // Behalte die vorhandene Menge, falls vorhanden
+        unit: this.localManualIngredient.unit || '', // Behalte die vorhandene Einheit, falls vorhanden
         calories: ingredient.calories,
         carbohydrates: ingredient.carbohydrates,
         proteins: ingredient.proteins,
         fats: ingredient.fats,
-        quantity: '',
-        unit: '',
       };
+
+      // Clear the search query and results after selection
       this.ingredientSearchQuery = '';
       this.searchResults = [];
     },
-    addIngredient() {
-      this.$emit('add-ingredient', this.newIngredient);
-      this.resetNewIngredient();
-    },
     addManualIngredient() {
-      this.$emit('add-ingredient', this.newManualIngredient);
-      this.resetNewManualIngredient();
+      const { name, quantity, unit } = this.localManualIngredient;
+
+      if (!name || !quantity || !unit) {
+        this.errorMessage = 'Bitte füllen Sie Name, Menge und Einheit aus.';
+        return;
+      }
+
+      this.errorMessage = '';
+      this.$emit('add-ingredient', { ...this.localManualIngredient });
+      this.resetLocalManualIngredient();
+      this.closeModal();
     },
     closeModal() {
       this.$emit('close-modal');
     },
-    resetNewIngredient() {
-      this.newIngredient = {
+    resetLocalManualIngredient() {
+      this.localManualIngredient = {
         name: '',
         quantity: '',
         unit: '',
@@ -146,18 +149,6 @@ export default {
         carbohydrates: 0,
         proteins: 0,
         fats: 0,
-      };
-      this.selectedIngredient = null;
-    },
-    resetNewManualIngredient() {
-      this.newManualIngredient = {
-        name: '',
-        quantity: '',
-        unit: '',
-        calories: null,
-        carbohydrates: null,
-        proteins: null,
-        fats: null,
       };
     },
   },
@@ -175,6 +166,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 
 .modal-content {
@@ -198,19 +190,32 @@ h2 {
   gap: 10px;
 }
 
+.input-group label {
+  font-weight: bold;
+  margin-bottom: 2px; /* Minimaler Abstand zwischen Label und Eingabefeld */
+}
+
+.input-group input,
+.input-group select {
+  margin-bottom: 10px;
+}
+
+.input-group button {
+  margin-top: 5px; /* Abstand zum Feld davor */
+}
+
 .input-group.compact {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 12px; /* Mehr Abstand zwischen den Feldern */
 }
 
 .input-small {
-  width: 100px; /* Verkleinert die Eingabefelder */
+  width: 100px;
 }
 
 input, select, button {
   padding: 10px;
-  margin: 5px 0;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
@@ -244,7 +249,7 @@ button:hover {
   margin-top: 20px;
 }
 
-.manual-ingredient-entry h4 {
+.manual-ingredient-entry h3 {
   margin-bottom: 10px;
 }
 
@@ -262,4 +267,11 @@ button:hover {
 .close-modal-button:hover {
   background-color: #c82333;
 }
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
 </style>
+

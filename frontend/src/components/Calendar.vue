@@ -90,9 +90,8 @@
 </template>
 
 <script>
-
 import axios from 'axios';
-
+import { EventBus } from '@/assets/event-bus.js'; // import the event bus
 export default {
   props: ['recipes'],
   data() {
@@ -177,6 +176,7 @@ export default {
             .then(response => {
               this.mealPlans[this.selectedDate] = response.data;
               this.closeModal();
+              EventBus.emit('mealPlanUpdated'); // emit the event after saving
             })
             .catch(error => {
               console.error('Fehler beim Aktualisieren des MealPlans:', error.response);
@@ -186,6 +186,7 @@ export default {
             .then(response => {
               this.mealPlans[this.selectedDate] = response.data;
               this.closeModal();
+              EventBus.emit('mealPlanUpdated'); // emit the event after adding
             })
             .catch(error => {
               console.error('Fehler beim Hinzufügen des MealPlans:', error.response);
@@ -207,6 +208,7 @@ export default {
           .catch(error => {
             console.error('Fehler beim Entfernen des MealPlans:', error);
           });
+      EventBus.emit('mealPlanUpdated');
     },
     updateWeek() {
       this.displayedWeek = this.getDaysOfWeek(this.getStartOfWeek(this.currentDate));
