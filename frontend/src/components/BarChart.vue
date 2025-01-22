@@ -43,7 +43,6 @@ export default {
   },
 
   mounted() {
-        this.destroyChart(); // Zerstöre den alten Chart
         this.initializeChart(this.chartData); // Initialisiere den neuen Chart
         this.setupEventListeners();
   },
@@ -54,10 +53,9 @@ export default {
     setupEventListeners() {
       EventBus.on("chartUpdated",this.newChart);
     },
-    newChart() {
-      this.destroyChart(); // Destroy the old chart
+    async newChart() {
+      await this.destroyChart(); // Destroy the old chart
       this.initializeChart(this.chartData); // Reinitialize the chart with the current chartData
-
     },
     initializeChart(data) {
       if (!this.$refs.canvas) {

@@ -22,12 +22,15 @@
           <div class="meal-plans-container">
             <div class="meal-box">
               <p class="meal-field">Frühstück: {{ mealPlans[day.date].breakfastRecipeName || mealPlans[day.date].customBreakfastName }} ({{ mealPlans[day.date].breakfastPortionSize }} Portionen)</p>
+              <button @click="openRecipeDetailsModal(day.date, 'dinner')" class="details-button">Details anzeigen</button>
             </div>
             <div class="meal-box">
               <p class="meal-field">Mittagessen: {{ mealPlans[day.date].lunchRecipeName || mealPlans[day.date].customLunchName }} ({{ mealPlans[day.date].lunchPortionSize }} Portionen)</p>
+              <button @click="openRecipeDetailsModal(day.date, 'dinner')" class="details-button">Details anzeigen</button>
             </div>
             <div class="meal-box">
               <p class="meal-field">Abendessen: {{ mealPlans[day.date].dinnerRecipeName || mealPlans[day.date].customDinnerName }} ({{ mealPlans[day.date].dinnerPortionSize }} Portionen)</p>
+              <button @click="openRecipeDetailsModal(mealPlans[day.date].dinnerRe)" class="details-button">Details anzeigen</button>
             </div>
           </div>
           <div class="action-buttons">
@@ -86,13 +89,42 @@
         </div>
       </div>
     </div>
+    <!-- Recipe Modals -->
+    <RecipeDetailsModal
+        v-if="isModalVisible"
+        :selectedRecipe="selectedRecipe"
+        :selectedTags="selectedTags"
+        :isVisible="isModalVisible"
+        @closeModal="closeModal"
+        @openEdit="openEditRecipe"
+        @confirmDelete="confirmDeleteRecipe"
+        @toggleFavorite="toggleFavorite"
+    />
+    <DeleteConfirmationModal
+        v-if="isDeleteModalVisible"
+        :selectedRecipe="selectedRecipe"
+        @closeDeleteModal="closeDeleteModal"
+        @deleteRecipe="deleteRecipe"
+    />
+    <EditRecipeModal
+        v-if="isEditModalVisible"
+        :selectedRecipe="selectedRecipe"
+        :selectedTags="selectedTags"
+        @closeEditModal="closeEditModal"
+        @submitEditRecipe="submitEditRecipe"
+        @update:selectedTags="selectedTags = $event"
+    />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { EventBus } from '@/assets/event-bus.js'; // import the event bus
+import { EventBus } from '@/assets/event-bus.js';
+import DeleteConfirmationModal from "@/components/recipeList/DeleteConfirmationModal.vue";
+import EditRecipeModal from "@/components/recipeList/EditRecipeModal.vue";
+import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue"; // import the event bus
 export default {
+  components: {RecipeDetailsModal, EditRecipeModal, DeleteConfirmationModal},
   props: ['recipes'],
   data() {
     return {
@@ -100,7 +132,15 @@ export default {
       currentDate: new Date(),
       displayedWeek: [],
       currentWeekRange: '',
+
+      //Modals
       isModalVisible: false,
+      isDeleteModalVisible: false,
+      isEditModalVisible: false,
+      selectedRecipe: null,
+      filterFavorites: false,
+      selectedTags: [],
+
       selectedDate: '',
       mealPlan: {
         breakfastId: null,
@@ -269,9 +309,89 @@ export default {
       }
       this.isModalVisible = true;
     },
+    //Modal functions
+    openRecipeDetails(recipe) {
+      this.selectedRecipe = { ...recipe, favorite: recipe.favorite || false };
+      this.selectedTags = this.translateTags(recipe.tags);
+      console.log(this.selectedTags);
+      this.isModalVisible = true;
+    },
     closeModal() {
       this.isModalVisible = false;
     },
+    openEditRecipe(recipe) {
+      this.selectedRecipe = JSON.parse(JSON.stringify(recipe));
+      this.isEditModalVisible = true;
+    },
+    confirmDeleteRecipe(recipe) {
+      this.selectedRecipe = recipe;
+      this.isDeleteModalVisible = true;
+    },
+    async toggleFavorite() {
+      try {
+        this.selectedRecipe.favorite = !this.selectedRecipe.favorite;
+        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+        axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
+        await this.$axios.put(`/recipes/${this.selectedRecipe.id}/favorite`);
+
+        console.log('Favorite status updated successfully');
+        this.recipes = this.recipes.map(recipe =>
+            recipe.id === this.selectedRecipe.id ? { ...recipe, favorite: this.selectedRecipe.favorite } : recipe
+        );
+      } catch (error) {
+        this.selectedRecipe.favorite = !this.selectedRecipe.favorite;
+        console.error("Error updating favorite status:", error);
+      }
+    },
+    closeDeleteModal() {
+      this.isDeleteModalVisible = false;
+    },
+    async deleteRecipe() {
+      if (this.selectedRecipe) {
+        try {
+          const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+          axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
+          await this.$axios.delete(`/recipes/${this.selectedRecipe.id}`);
+          this.closeDeleteModal();
+          this.closeModal();
+          this.recipes = this.recipes.filter(r => r.id !== this.selectedRecipe.id);
+          EventBus.emit('recipeUpdated');
+        } catch (error) {
+          console.error("Fehler beim Löschen des Rezepts:", error);
+          if (error.response && error.response.status === 409) {
+            alert(`Rezept mit ID ${this.selectedRecipe.id} kann nicht gelöscht werden, da es noch einem MealPlan zugeordnet ist.`);
+          } else {
+            alert("Beim Löschen des Rezepts ist ein Fehler aufgetreten.");
+          }
+        }
+      }
+    },
+    closeEditModal() {
+      this.isEditModalVisible = false;
+    },
+    async submitEditRecipe() {
+      try {
+        const updatedRecipe = {
+          ...this.selectedRecipe,
+          tags: this.selectedTags.map(tag => tag.value),
+        };
+
+        const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
+        axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
+
+        await this.$axios.put(`/recipes/${this.selectedRecipe.id}`, updatedRecipe);
+        this.isEditModalVisible = false;
+        this.recipes = this.recipes.map(recipe =>
+            recipe.id === updatedRecipe.id ? updatedRecipe : recipe
+        );
+        EventBus.emit('recipeUpdated'); // Emit event to notify that a recipe has been updated
+      } catch (error) {
+        console.error("Fehler beim Bearbeiten des Rezepts:", error);
+      }
+    }
+
   },
 };
 </script>

@@ -6,13 +6,22 @@
     <div class="dropdown">
       <label for="data-select">Wählen Sie eine Statistik:</label>
       <select id="data-select" v-model="selectedData" @change="handleOptionChange">
-        <option
-            v-for="option in filteredOptions"
-            :key="option.value"
-            :value="option.value">
+        <option v-for="option in filteredOptions" :key="option" :value="option.value">
           {{ option.label }}
         </option>
       </select>
+    </div>
+
+    <!-- Datumsauswahl -->
+    <div class="date-selection">
+      <label for="start-date">Startdatum:</label>
+      <input type="date" id="start-date" v-model="startDate" />
+
+      <label for="end-date">Enddatum:</label>
+      <input type="date" id="end-date" v-model="endDate" />
+      <button @click="fetchStatistics()">Statistiken aktualisieren</button>
+      <!-- Button für den gesamten Zeitraum -->
+      <button @click="setDefaultDateRange">Zeitraum für die letzten 7 Tage</button>
     </div>
 
     <!-- Anzeige des Balkendiagramms -->
@@ -32,6 +41,7 @@
   </div>
 </template>
 
+
 <script>
 import BarChart from "./BarChart.vue";
 import {tagsForList} from "@/assets/TagsAndUnits.js";
@@ -47,6 +57,8 @@ export default {
       selectedData: null,
       newSelectedData: null,
       chartData: null,
+      startDate: "", // Start date for the date range
+      endDate: "",   // End date for the date range
       allOptions: [
         { value: "AmountOfCookedRecipes", label: "Gekochte Rezepte" },
         { value: "AveragePortions", label: "Durchschnittliche Portionen" },
@@ -54,6 +66,10 @@ export default {
         { value: "Tags", label: "Tags" },
         { value: "FavouriteRecipes", label: "Beliebteste Rezepte" },
         { value: "FavouriteIngredients", label: "Beliebteste Zutaten" },
+        { value: "AverageCaloriesPerRecipe", label: "Durchschnittliche Kalorien pro Rezept" },
+        { value: "AverageCaloriesPerDay", label: "Durchschnittliche Kalorien pro Tag" },
+        { value: "AverageNutrientDistributionPerRecipe", label: "Durchschnittliche Nährstoffverteilung pro Rezept" },
+        { value: "AverageNutrientDistributionPerDay", label: "Durchschnittliche Nährstoffverteilung pro Tag" }
       ],
       filteredOptions: [], // Temporäre Liste für die angezeigten Optionen
     };
@@ -79,87 +95,125 @@ export default {
         const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
         this.$axios.defaults.headers.common["X-XSRF-TOKEN"] = csrfToken;
 
-        const response = await this.$axios.get("/statistics");
+        const response = await this.$axios.get("/statistics", {
+          params: {
+            startDate: this.startDate,
+            endDate: this.endDate,
+          }
+        });
         this.statistics = response.data;
-
+        this.updateChart(); // Update chart after fetching statistics
       } catch (error) {
         console.error("Fehler beim Abrufen der Statistiken:", error);
       }
     },
 
     async updateChart() {
+      this.newSelectedData = this.selectedData;
 
-        this.newSelectedData = this.selectedData;
+      let labels = [];
+      let data = [];
+      if (
+          this.newSelectedData === "AmountOfCookedRecipes" &&
+          this.statistics.amountOfCookedRecipes != null
+      ) {
+        labels = ["Gekochte Rezepte"];
+        data = [this.statistics.amountOfCookedRecipes];
+      } else if (
+          this.newSelectedData === "AveragePortions" &&
+          this.statistics.averagePortions != null
+      ) {
+        labels = ["Durchschnittliche Portionen"];
+        data = [this.statistics.averagePortions];
+      } else if (
+          this.newSelectedData === "AverageCookingTime" &&
+          this.statistics.averageCookingTime != null
+      ) {
+        labels = ["Durchschnittliche Kochzeit"];
+        data = [this.statistics.averageCookingTime];
+      } else if (
+          this.newSelectedData === "Tags" &&
+          this.statistics &&
+          this.statistics.attributes
+      ) {
+        const attributesArray = Array.isArray(this.statistics.attributes)
+            ? this.statistics.attributes
+            : Object.entries(this.statistics.attributes);
 
-        let labels = [];
-        let data = [];
-        if (
-            this.newSelectedData === "AmountOfCookedRecipes" &&
-            this.statistics.amountOfCookedRecipes != null
-        ) {
-          labels = ["Gekochte Rezepte"];
-          data = [this.statistics.amountOfCookedRecipes];
-        } else if (
-            this.newSelectedData === "AveragePortions" &&
-            this.statistics.averagePortions != null
-        ) {
-          labels = ["Durchschnittliche Portionen"];
-          data = [this.statistics.averagePortions];
-        } else if (
-            this.newSelectedData === "AverageCookingTime" &&
-            this.statistics.averageCookingTime != null
-        ) {
-          labels = ["Durchschnittliche Kochzeit"];
-          data = [this.statistics.averageCookingTime];
-        } else if (
-            this.newSelectedData === "Tags" &&
-            this.statistics &&
-            this.statistics.attributes
-        ) {
-          const attributesArray = Array.isArray(this.statistics.attributes)
-              ? this.statistics.attributes
-              : Object.entries(this.statistics.attributes);
+        labels = attributesArray.map(
+            ([tag]) => this.translateTags([tag])[0]
+        );
+        data = attributesArray.map(([, value]) => value);
+      } else if (
+          this.newSelectedData === "FavouriteRecipes" &&
+          this.statistics.favouriteRecipes
+      ) {
+        labels = Object.keys(this.statistics.favouriteRecipes);
+        data = Object.values(this.statistics.favouriteRecipes);
+      } else if (
+          this.newSelectedData === "FavouriteIngredients" &&
+          this.statistics.favouriteIngredients
+      ) {
+        labels = Object.keys(this.statistics.favouriteIngredients);
+        data = Object.values(this.statistics.favouriteIngredients);
+      } else if (
+          this.newSelectedData === "AverageCaloriesPerRecipe" &&
+          this.statistics.averageCaloriesPerRecipe
+      ) {
+        labels = ["Durchschnittliche Kalorien pro Rezept"];
+        data = [this.statistics.averageCaloriesPerRecipe];
+      } else if (
+          this.newSelectedData === "AverageCaloriesPerDay" &&
+          this.statistics.averageCaloriesPerDay
+      ) {
+        labels = ["Durchschnittliche Kalorien pro Tag"];
+        data = [this.statistics.averageCaloriesPerDay];
+      } else if (
+          this.newSelectedData === "AverageNutrientDistributionPerRecipe" &&
+          this.statistics.averageNutrientDistributionPerRecipe != null
+      ) {
+        labels = ["Protein", "Fett", "Kohlenhydrate"];
+        data = [
+          this.statistics.averageNutrientDistributionPerRecipe.protein,
+          this.statistics.averageNutrientDistributionPerRecipe.fat,
+          this.statistics.averageNutrientDistributionPerRecipe.carbohydrate,
+        ];
+      } else if (
+          this.newSelectedData === "AverageNutrientDistributionPerDay" &&
+          this.statistics.averageNutrientDistributionPerDay != null
+      ) {
+        labels = ["Protein", "Fett", "Kohlenhydrate"];
+        data = [
+          this.statistics.averageNutrientDistributionPerDay.protein,
+          this.statistics.averageNutrientDistributionPerDay.fat,
+          this.statistics.averageNutrientDistributionPerDay.carbohydrate,
+        ];
+      }
 
-          labels = attributesArray.map(
-              ([tag]) => this.translateTags([tag])[0]
-          );
-          data = attributesArray.map(([, value]) => value);
-        } else if (
-            this.newSelectedData === "FavouriteRecipes" &&
-            this.statistics.favouriteRecipes
-        ) {
-          labels = Object.keys(this.statistics.favouriteRecipes);
-          data = Object.values(this.statistics.favouriteRecipes);
-        } else if (
-            this.newSelectedData === "FavouriteIngredients" &&
-            this.statistics.favouriteIngredients
-        ) {
-          labels = Object.keys(this.statistics.favouriteIngredients);
-          data = Object.values(this.statistics.favouriteIngredients);
-        }
-
-        // Ensure chartData is properly set
-        if (labels.length === 0 || data.length === 0 || data[0] === 0) {
-          this.chartData = null;
-        } else {
-          this.chartData = {
-            labels,
-            datasets: [
-              {
-                label: this.newSelectedData,
-                data,
-                backgroundColor: "#42A5F5",
-              },
-            ],
-          };
-        }
+      // Ensure chartData is properly set
+      if (labels.length === 0 || data.length === 0 || data[0] === 0) {
+        this.chartData = null;
+      } else {
+        this.chartData = {
+          labels,
+          datasets: [
+            {
+              label: this.newSelectedData,
+              data,
+              backgroundColor: "#42A5F5",
+            },
+          ],
+        };
+      }
     },
+
     translateTags(tags) {
       return tags.map((tag) => {
         const tagEntry = tagsForList.find((entry) => entry.value === tag);
         return tagEntry ? tagEntry.name : tag;
       });
     },
+
     handleOptionChange() {
       // Temporär leere Optionen
       this.filteredOptions = [];
@@ -169,20 +223,30 @@ export default {
       setTimeout(() => {
         this.filteredOptions = this.allOptions;
       }, 900);
-
-      // Aktualisiere das Chart
       this.updateChart();
+      // Aktualisiere das Chart
       EventBus.emit("chartUpdated");
+    },
+
+    setDefaultDateRange() {
+      const today = new Date();
+      const start = new Date();
+      start.setDate(today.getDate() - 7); // Set start date to 7 days ago
+
+      this.startDate = start.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      this.endDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+
+      // Call fetchStatistics to update the chart with the default range
+      this.fetchStatistics();
     },
   },
 };
 </script>
 
-
 <style scoped>
 .statistics-dashboard {
   width: 500px;
-  height:650px;
+  height: 650px;
   margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;
