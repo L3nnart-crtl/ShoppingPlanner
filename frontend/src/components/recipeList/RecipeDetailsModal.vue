@@ -165,12 +165,13 @@ export default {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
+  align-items: center; /* Centering the header content horizontally */
 }
 
 .button-container {
   display: flex;
-  justify-content: space-between;
-  gap: 15px;
+  align-items: center;
+  gap: 2px;
 }
 
 .modal-button {
@@ -179,6 +180,7 @@ export default {
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
+
   transition: background-color 0.3s ease;
 }
 
