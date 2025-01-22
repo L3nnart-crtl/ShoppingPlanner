@@ -59,13 +59,6 @@ export const quantityUnits = [
     { label: 'g', value: 'GRAM' },
     { label: 'kg', value: 'KILOGRAM' },
     { label: 'mg', value: 'MILLIGRAM' },
-    { label: 'ml', value: 'MILLILITER' },
-    { label: 'l', value: 'LITER' },
-    { label: 'Tasse', value: 'CUP' },
-    { label: 'EL', value: 'TABLESPOON' },
-    { label: 'TL', value: 'TEASPOON' },
-    { label: 'Stk.', value: 'PIECE' },
-    { label: 'Dtz.', value: 'DOZEN' },
 ];
 export const tagsForList =[
         { name: "Vegetarisch", value: "VEGETARIAN" },
