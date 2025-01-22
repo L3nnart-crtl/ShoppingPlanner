@@ -1,7 +1,6 @@
 <template>
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <div class="calendar-container">
-    <h2>Meal Plan Kalender</h2>
 
     <!-- Navigation für die Woche -->
     <div class="week-navigation">
@@ -20,33 +19,33 @@
         <div v-if="mealPlans[day.date]" class="meal-plan">
           <!-- MealPlan untereinander -->
           <div class="meal-plans-container">
-            <div class="meal-box">
-              <p class="meal-field">Frühstück: {{ mealPlans[day.date].breakfastRecipeName || mealPlans[day.date].customBreakfastName }} ({{ mealPlans[day.date].breakfastPortionSize }} Portionen)</p>
-              <button @click="openRecipeDetailsModal(day.date, 'dinner')" class="details-button">Details anzeigen</button>
+            <div class="meal-box" @click="openRecipeDetailsModal(mealPlans[day.date].breakfastRecipe)">
+              <h3 class="meal-title">Frühstück</h3>
+              <p class="meal-field">{{ mealPlans[day.date].breakfastRecipeName || mealPlans[day.date].customBreakfastName }} {{ mealPlans[day.date].breakfastPortionSize }}x</p>
             </div>
-            <div class="meal-box">
-              <p class="meal-field">Mittagessen: {{ mealPlans[day.date].lunchRecipeName || mealPlans[day.date].customLunchName }} ({{ mealPlans[day.date].lunchPortionSize }} Portionen)</p>
-              <button @click="openRecipeDetailsModal(day.date, 'dinner')" class="details-button">Details anzeigen</button>
+            <div class="meal-box" @click="openRecipeDetailsModal(mealPlans[day.date].lunchRecipe)">
+              <h3 class="meal-title">Mittagessen</h3>
+              <p class="meal-field">{{ mealPlans[day.date].lunchRecipeName || mealPlans[day.date].customLunchName }} {{ mealPlans[day.date].lunchPortionSize }}x</p>
             </div>
-            <div class="meal-box">
-              <p class="meal-field">Abendessen: {{ mealPlans[day.date].dinnerRecipeName || mealPlans[day.date].customDinnerName }} ({{ mealPlans[day.date].dinnerPortionSize }} Portionen)</p>
-              <button @click="openRecipeDetailsModal(mealPlans[day.date].dinnerRe)" class="details-button">Details anzeigen</button>
+            <div class="meal-box" @click="openRecipeDetailsModal(mealPlans[day.date].dinnerRecipe)">
+              <h3 class="meal-title">Abendessen</h3>
+              <p class="meal-field">{{ mealPlans[day.date].dinnerRecipeName || mealPlans[day.date].customDinnerName }} {{ mealPlans[day.date].dinnerPortionSize }}x</p>
             </div>
           </div>
           <div class="action-buttons">
-            <button @click="openModal(day.date, true)" class="edit-button">Bearbeiten</button>
+            <button @click="openMealPlanEditModal(day.date, true)" class="edit-button">Bearbeiten</button>
             <button @click="removeMealPlan(day.date)" class="remove-button">Entfernen</button>
           </div>
         </div>
         <div v-else class="no-meal-plan">
           <p>Kein MealPlan vorhanden</p>
-          <button @click="openModal(day.date)" class="add-button">MealPlan hinzufügen</button>
+          <button @click="openMealPlanEditModal(day.date)" class="add-button">MealPlan hinzufügen</button>
         </div>
       </div>
     </div>
 
     <!-- Modal zum Hinzufügen oder Bearbeiten eines MealPlans -->
-    <div v-if="isModalVisible" class="modal-overlay">
+    <div v-if="isMealPlanModalVisible" class="modal-overlay">
       <div class="modal-content">
         <h3>{{ selectedDate }} MealPlan</h3>
         <div class="search-container">
@@ -55,40 +54,38 @@
         <div class="meal-selection">
           <div class="meal-item">
             <label>Frühstück:</label>
-            <select v-if="filteredRecipes.length > 0" v-model="mealPlan.breakfastId" class="meal-select">
+            <select v-model="mealPlan.breakfastId" class="meal-select">
               <option v-for="recipe in filteredRecipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
               <option value="none">Kein Rezept</option>
             </select>
-            <input v-else type="text" v-model="mealPlan.customBreakfastName" placeholder="Frühstückname" class="meal-select" />
             <input type="number" v-model="mealPlan.breakfastPortionSize" min="1" class="portion-input"/>
           </div>
 
           <div class="meal-item">
             <label>Mittagessen:</label>
-            <select v-if="filteredRecipes.length > 0" v-model="mealPlan.lunchId" class="meal-select">
+            <select v-model="mealPlan.lunchId" class="meal-select">
               <option v-for="recipe in filteredRecipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
               <option value="none">Kein Rezept</option>
             </select>
-            <input v-else type="text" v-model="mealPlan.customLunchName" placeholder="Mittagessenname" class="meal-select" />
             <input type="number" v-model="mealPlan.lunchPortionSize" min="1" class="portion-input"/>
           </div>
 
           <div class="meal-item">
             <label>Abendessen:</label>
-            <select v-if="filteredRecipes.length > 0" v-model="mealPlan.dinnerId" class="meal-select">
+            <select v-model="mealPlan.dinnerId" class="meal-select">
               <option v-for="recipe in filteredRecipes" :key="recipe.id" :value="recipe.id">{{ recipe.name }}</option>
               <option value="none">Kein Rezept</option>
             </select>
-            <input v-else type="text" v-model="mealPlan.customDinnerName" placeholder="Abendessenname" class="meal-select" />
             <input type="number" v-model="mealPlan.dinnerPortionSize" min="1" class="portion-input"/>
           </div>
         </div>
         <div class="modal-actions">
           <button @click="saveMealPlan" class="save-button">Speichern</button>
-          <button @click="closeModal" class="cancel-button">Abbrechen</button>
+          <button @click="closeMealPlanModal" class="cancel-button">Abbrechen</button>
         </div>
       </div>
     </div>
+
     <!-- Recipe Modals -->
     <RecipeDetailsModal
         v-if="isModalVisible"
@@ -116,13 +113,13 @@
     />
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 import { EventBus } from '@/assets/event-bus.js';
 import DeleteConfirmationModal from "@/components/recipeList/DeleteConfirmationModal.vue";
 import EditRecipeModal from "@/components/recipeList/EditRecipeModal.vue";
-import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue"; // import the event bus
+import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue";
+import {tagsForList} from "@/assets/TagsAndUnits.js"; // import the event bus
 export default {
   components: {RecipeDetailsModal, EditRecipeModal, DeleteConfirmationModal},
   props: ['recipes'],
@@ -137,6 +134,7 @@ export default {
       isModalVisible: false,
       isDeleteModalVisible: false,
       isEditModalVisible: false,
+      isMealPlanModalVisible: false,
       selectedRecipe: null,
       filterFavorites: false,
       selectedTags: [],
@@ -149,9 +147,9 @@ export default {
         lunchPortionSize: 1,
         dinnerId: null,
         dinnerPortionSize: 1,
-        customBreakfastName: '',
-        customLunchName: '',
-        customDinnerName: '',
+        dinnerRecipe: null,
+        lunchRecipe: null,
+        breakfastRecipe: null,
       },
       searchQuery: '',
     };
@@ -189,9 +187,9 @@ export default {
                 dinnerId: plan.dinnerRecipeId,
                 dinnerRecipeName: plan.dinnerRecipeName,
                 dinnerPortionSize: plan.dinnerPortionSize,
-                customBreakfastName: plan.customBreakfastName,
-                customLunchName: plan.customLunchName,
-                customDinnerName: plan.customDinnerName,
+                dinnerRecipe: plan.dinnerRecipe,
+                lunchRecipe: plan.lunchRecipe,
+                breakfastRecipe: plan.breakfastRecipe
               };
             });
           })
@@ -208,9 +206,6 @@ export default {
         lunchPortionSize: this.mealPlan.lunchPortionSize,
         dinnerRecipeId: this.mealPlan.dinnerId === 'none' ? null : this.mealPlan.dinnerId,
         dinnerPortionSize: this.mealPlan.dinnerPortionSize,
-        customBreakfastName: this.mealPlan.customBreakfastName,
-        customLunchName: this.mealPlan.customLunchName,
-        customDinnerName: this.mealPlan.customDinnerName,
       };
 
       const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
@@ -220,7 +215,7 @@ export default {
         this.$axios.put(`/mealplans/${this.selectedDate}`, mealPlanData)
             .then(response => {
               this.mealPlans[this.selectedDate] = response.data;
-              this.closeModal();
+              this.closeMealPlanModal();
               EventBus.emit('mealPlanUpdated'); // emit the event after saving
             })
             .catch(error => {
@@ -230,7 +225,7 @@ export default {
         this.$axios.post('/mealplans', mealPlanData)
             .then(response => {
               this.mealPlans[this.selectedDate] = response.data;
-              this.closeModal();
+              this.closeMealPlanModal();
               EventBus.emit('mealPlanUpdated'); // emit the event after adding
             })
             .catch(error => {
@@ -291,7 +286,7 @@ export default {
       const d = new Date(date);
       return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
     },
-    openModal(date, isEdit = false) {
+    openMealPlanEditModal(date, isEdit = false) {
       this.selectedDate = date;
       if (isEdit && this.mealPlans[date]) {
         const currentPlan = this.mealPlans[date];
@@ -302,22 +297,34 @@ export default {
           lunchPortionSize: currentPlan.lunchPortionSize || 1,
           dinnerId: currentPlan.dinnerId || null,
           dinnerPortionSize: currentPlan.dinnerPortionSize || 1,
-          customBreakfastName: currentPlan.customBreakfastName || '',
-          customLunchName: currentPlan.customLunchName || '',
-          customDinnerName: currentPlan.customDinnerName || '',
         };
       }
-      this.isModalVisible = true;
+      this.isMealPlanModalVisible = true;
     },
     //Modal functions
-    openRecipeDetails(recipe) {
+    openRecipeDetailsModal(recipe) {
+      if (recipe == null) {
+        // Show a notification or message if recipe is null
+        alert("Recipe not found. Please select a valid recipe.");  // Example alert, you can customize this
+        return;  // Exit the function if recipe is null
+      }
+
       this.selectedRecipe = { ...recipe, favorite: recipe.favorite || false };
       this.selectedTags = this.translateTags(recipe.tags);
       console.log(this.selectedTags);
       this.isModalVisible = true;
     },
+    translateTags(tags) {
+      return tags.map(tag => {
+        const tagEntry = tagsForList.find(entry => entry.value === tag);
+        return tagEntry ? { name: tagEntry.name, value: tagEntry.value } : { name: tag, value: tag }; // Falls der Tag nicht gefunden wird, wird der Enum-Wert selbst zurückgegeben
+      });
+    },
     closeModal() {
       this.isModalVisible = false;
+    },
+    closeMealPlanModal() {
+      this.isMealPlanModalVisible = false;
     },
     openEditRecipe(recipe) {
       this.selectedRecipe = JSON.parse(JSON.stringify(recipe));
@@ -336,9 +343,6 @@ export default {
         await this.$axios.put(`/recipes/${this.selectedRecipe.id}/favorite`);
 
         console.log('Favorite status updated successfully');
-        this.recipes = this.recipes.map(recipe =>
-            recipe.id === this.selectedRecipe.id ? { ...recipe, favorite: this.selectedRecipe.favorite } : recipe
-        );
       } catch (error) {
         this.selectedRecipe.favorite = !this.selectedRecipe.favorite;
         console.error("Error updating favorite status:", error);
@@ -356,7 +360,6 @@ export default {
           await this.$axios.delete(`/recipes/${this.selectedRecipe.id}`);
           this.closeDeleteModal();
           this.closeModal();
-          this.recipes = this.recipes.filter(r => r.id !== this.selectedRecipe.id);
           EventBus.emit('recipeUpdated');
         } catch (error) {
           console.error("Fehler beim Löschen des Rezepts:", error);
@@ -383,28 +386,44 @@ export default {
 
         await this.$axios.put(`/recipes/${this.selectedRecipe.id}`, updatedRecipe);
         this.isEditModalVisible = false;
-        this.recipes = this.recipes.map(recipe =>
-            recipe.id === updatedRecipe.id ? updatedRecipe : recipe
-        );
         EventBus.emit('recipeUpdated'); // Emit event to notify that a recipe has been updated
       } catch (error) {
         console.error("Fehler beim Bearbeiten des Rezepts:", error);
       }
-    }
-
+    },
   },
 };
 </script>
 
 <style scoped>
-/* Allgemeine Container-Stile */
-.calendar-container {
-  width: 100%;
-  font-family: Arial, sans-serif;
-  padding: 20px;
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  transform: scale(0.2); /* Scale everything down by 80% */
+  transform-origin: top left; /* Ensure scaling starts from the top-left */
+}
+/* Calendar Styles */
+.calendar-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Week Navigation */
 .week-navigation {
   display: flex;
   justify-content: space-between;
@@ -413,12 +432,17 @@ export default {
 }
 
 .nav-button {
-  padding: 10px 15px;
-  cursor: pointer;
-  background-color: #4CAF50;
+  background-color: #4CAF50; /* Green */
   color: white;
+  padding: 10px 20px;
   border: none;
+  cursor: pointer;
+  font-size: 16px;
   border-radius: 5px;
+}
+
+.nav-button:hover {
+  background-color: #45a049;
 }
 
 .month-name {
@@ -426,96 +450,137 @@ export default {
   font-weight: bold;
 }
 
-/* Kalender-Stile */
+/* Calendar Days */
 .calendar {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
   gap: 10px;
-  justify-content: flex-start;
 }
 
 .calendar-day {
-  width: calc(100% / 7 - 10px);
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 15px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  box-sizing: border-box;
 }
 
 .day-header {
-  font-size: 16px;
+  text-align: center;
   margin-bottom: 10px;
 }
 
 .weekday {
+  font-size: 14px;
   font-weight: bold;
 }
 
 .date {
-  font-size: 14px;
-  color: #555;
+  font-size: 16px;
 }
 
-/* MealPlan Container */
-.meal-plans-container {
+/* Meal Plan Section */
+.meal-plan {
   margin-top: 10px;
 }
 
+.meal-plans-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .meal-box {
-  background-color: #e0f7fa;
+  background-color: #e0f7fa; /* Light cyan */
   padding: 10px;
-  margin-bottom: 5px;
+  height: 60px;
   border-radius: 8px;
-  box-sizing: border-box;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.meal-box:hover {
+  background-color: #b2ebf2; /* Lighter cyan */
+}
+
+.meal-title {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .meal-field {
   font-size: 14px;
-  margin: 0;
+  color: #666;
 }
 
-.meal-selection {
-  margin-top: 10px;
-}
-
-.meal-item {
-  margin-bottom: 10px;
-}
-
-.meal-select,
-.portion-input {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.modal-actions {
+.action-buttons {
   display: flex;
   justify-content: space-between;
+  margin-top: 10px;
 }
-
-.save-button,
-.cancel-button {
-  padding: 10px 15px;
+.edit-button {
+  padding: 6px 6px;
+  background-color: #ff9800;
+  color: white;
   border: none;
   border-radius: 5px;
+  font-size: 12px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.edit-button:hover {
+  background-color: #e68900;
 }
 
-.save-button {
-  background-color: #4CAF50;
-  color: white;
+.edit-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.5);
 }
-
-.cancel-button {
+.remove-button {
   background-color: #f44336;
   color: white;
+  padding: 6px 6px;
+  border-radius: 5px;
+  border: none;
 }
 
+.remove-button:hover {
+  background-color: #e53935;
+}
+.add-button {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.add-button:hover {
+  background-color: #45a049;
+}
+
+.no-meal-plan {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.no-meal-plan button {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.no-meal-plan button:hover {
+  background-color: #45a049;
+}
+
+/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -526,10 +591,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 
 .modal-content {
-  background-color: #fff;
+  background-color: white;
   padding: 20px;
   border-radius: 8px;
   box-sizing: border-box;
@@ -537,69 +603,147 @@ export default {
   width: 100%;
 }
 
-.add-button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  border: none;
+.modal-content h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
 }
 
-.no-meal-plan {
-  font-size: 14px;
-  color: #555;
+.search-container {
+  margin-bottom: 15px;
 }
 
-.remove-button {
-  background-color: #f44336;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-}
-
-.remove-button:hover {
-  background-color: #e53935;
-}
-.edit-button {
-  padding: 8px 15px;
-  background-color: #ff9800;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.edit-button:hover {
-  background-color: #e68900;
-}
-
-.edit-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.5);
-}
 .search-input {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
+  margin-bottom: 15px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #f9f9f9;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.search-input:focus {
-  border-color: #4CAF50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-  outline: none;
+.meal-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.search-input::placeholder {
-  color: #888;
-  font-style: italic;
+.meal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meal-select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.portion-input {
+  width: 50px;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.save-button,
+.cancel-button {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.save-button {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+.cancel-button {
+  background-color: #f44336; /* Red */
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #45a049;
+}
+
+.cancel-button:hover {
+  background-color: #e53935;
+}
+
+/* Recipe Modal Styles */
+.recipe-modal {
+  padding: 20px;
+}
+
+.recipe-modal .recipe-details {
+  margin-top: 20px;
+}
+
+.recipe-modal .recipe-details h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.recipe-modal .recipe-details p {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.recipe-modal .action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.recipe-modal .action-buttons button {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.recipe-modal .action-buttons button:hover {
+  background-color: #45a049;
+}
+
+/* Add this to your CSS */
+
+
+/* For finer control, you can also scale other elements individually */
+
+h2, .week-navigation, .calendar-day, .meal-box, .meal-select {
+  font-size: 0.8rem;  /* Reduce font size */
+}
+
+.nav-button {
+  padding: 8px 16px;  /* Adjust button padding */
+}
+
+.calendar-day {
+  padding: 8px; /* Adjust calendar day padding */
+}
+
+.meal-plans-container .meal-box {
+  padding: 6px; /* Adjust meal box padding */
+}
+
+.search-input, .portion-input {
+  font-size: 0.8rem; /* Adjust input sizes */
 }
 
 </style>

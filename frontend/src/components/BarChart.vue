@@ -59,7 +59,6 @@ export default {
     },
     initializeChart(data) {
       if (!this.$refs.canvas) {
-        console.error("Canvas-Element nicht gefunden!");
         return;
       }
 

@@ -1,83 +1,207 @@
 <template>
   <div class="recipe-container">
     <h2>Rezeptliste und Suche</h2>
+    <!-- Add Recipe Button -->
+    <button @click="openAddRecipeModal" class="add-recipe-button">Rezept hinzufügen</button>
 
-    <!-- Suchfelder -->
+    <!-- Recipe Modal -->
+    <AddRecipeForm
+        v-if="isAddModalVisible"
+        :isAddModalVisible="isAddModalVisible"
+        :recipes="recipes"
+        @closeAddModal="closeAddModal"
+        @recipe-added="emitRecipeAdd"
+        @update:recipes="recipes = $event"
+    />
+    <!-- Search fields and filters -->
     <div class="search-fields">
-      <input
-          v-model="searchQuery.name"
-          type="text"
-          placeholder="Rezeptname eingeben"
-          class="search-input"
-      />
-      <Multiselect
-          ref="multiselect"
-          v-model="searchQuery.tags"
-          :options="availableTags"
-          :multiple="true"
-          :close-on-select="false"
-          placeholder="Tags auswählen"
-          label="name"
-          track-by="name"
-          :tag-placeholder="'Tag hinzufügen'"
-          class="tag-dropdown"
-      >
-      </Multiselect>
-      <div class="cooking-time-filter">
-        <label for="cookingtime">Kochzeit (Minuten):</label>
-        <input
-            v-model="searchQuery.cookingTime"
-            type="number"
-            placeholder="Kochzeit eingeben"
-            class="search-input"
+      <div class="input-group">
+        <input v-model="searchQuery.name" type="text" placeholder="Rezeptname eingeben" class="search-input" />
+        <Multiselect
+            ref="multiselect"
+            v-model="searchQuery.tags"
+            :options="availableTags"
+            :multiple="true"
+            :close-on-select="false"
+            placeholder="Tags auswählen"
+            label="name"
+            track-by="name"
+            class="tag-dropdown"
         />
       </div>
 
-      <button @click="toggleFavoriteFilter" class="filter-favorites-button">
-        {{ filterFavorites ? 'Alle Rezepte anzeigen' : 'Nur Favoriten anzeigen' }}
-      </button>
-      <button @click="searchRecipes" class="search-button">Suchen</button>
+      <div class="input-group">
+        <div class="cooking-time-filter">
+          <label for="cookingtime">Kochzeit (Minuten):</label>
+          <input v-model="searchQuery.cookingTime" type="number" placeholder="Kochzeit eingeben" class="search-input" />
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button @click="toggleFavoriteFilter" class="filter-favorites-button">
+          {{ filterFavorites ? 'Alle Rezepte anzeigen' : 'Nur Favoriten anzeigen' }}
+        </button>
+        <button @click="searchRecipes" class="search-button">Suchen</button>
+      </div>
     </div>
 
+    <!-- Recipe List -->
     <div class="recipe-cards-container" v-if="recipes.length">
-      <div
-          v-for="recipe in recipes"
-          :key="recipe.id"
-          class="recipe-card"
-          @click="openRecipeDetails(recipe)"
-      >
+      <div v-for="recipe in recipes" :key="recipe.id" class="recipe-card" @click="openRecipeDetails(recipe)">
         <h3 class="recipe-name">{{ recipe.name || 'Kein Name' }}</h3>
       </div>
     </div>
     <p v-else class="no-recipes">Keine Rezepte gefunden.</p>
 
     <!-- Recipe Modals -->
-    <RecipeDetailsModal
-        v-if="isModalVisible"
-        :selectedRecipe="selectedRecipe"
-        :selectedTags="selectedTags"
-        :isVisible="isModalVisible"
-        @closeModal="closeModal"
-        @openEdit="openEditRecipe"
-        @confirmDelete="confirmDeleteRecipe"
-        @toggleFavorite="toggleFavorite"
-    />
-    <DeleteConfirmationModal
-        v-if="isDeleteModalVisible"
-        :selectedRecipe="selectedRecipe"
-        @closeDeleteModal="closeDeleteModal"
-        @deleteRecipe="deleteRecipe"
-    />
-    <EditRecipeModal
-        v-if="isEditModalVisible"
-        :selectedRecipe="selectedRecipe"
-        :selectedTags="selectedTags"
-        @closeEditModal="closeEditModal"
-        @submitEditRecipe="submitEditRecipe"
-        @update:selectedTags="selectedTags = $event"
-    />
+    <RecipeDetailsModal v-if="isModalVisible" :selectedRecipe="selectedRecipe" :selectedTags="selectedTags" :isVisible="isModalVisible" @closeModal="closeModal" @openEdit="openEditRecipe" @confirmDelete="confirmDeleteRecipe" @toggleFavorite="toggleFavorite" />
+    <DeleteConfirmationModal v-if="isDeleteModalVisible" :selectedRecipe="selectedRecipe" @closeDeleteModal="closeDeleteModal" @deleteRecipe="deleteRecipe" />
+    <EditRecipeModal v-if="isEditModalVisible" :selectedRecipe="selectedRecipe" :selectedTags="selectedTags" @closeEditModal="closeEditModal" @submitEditRecipe="submitEditRecipe" @update:selectedTags="selectedTags = $event" />
   </div>
 </template>
+
+
+<style scoped>
+.recipe-container {
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #444;
+  font-weight: bold;
+}
+
+/* Add Recipe Button */
+.add-recipe-button {
+  display: inline-block;
+  margin-left: 100px;
+  padding: 12px 25px;
+  background: linear-gradient(145deg, #6c63ff, #3c3d99);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.add-recipe-button:hover {
+  background: linear-gradient(145deg, #5a52e0, #2c2d7a);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.add-recipe-button:focus {
+  outline: none;
+}
+
+.search-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.search-input, .tag-dropdown {
+  padding: 10px 15px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.cooking-time-filter {
+  flex-grow: 1;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.filter-favorites-button, .search-button {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filter-favorites-button {
+  background: #007bff;
+}
+
+.filter-favorites-button:hover {
+  background: #0056b3;
+}
+
+.search-button {
+  background: #28a745;
+}
+
+.search-button:hover {
+  background: #218838;
+}
+
+.recipe-cards-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.recipe-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  margin-bottom: 10px;
+  background: linear-gradient(to right, #f9f9f9, #ffffff);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.recipe-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.no-recipes {
+  text-align: center;
+  font-size: 16px;
+  color: #888;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+</style>
+
+
+
 
 <script>
 import axios from "axios";
@@ -86,10 +210,12 @@ import DeleteConfirmationModal from "@/components/recipeList/DeleteConfirmationM
 import EditRecipeModal from "@/components/recipeList/EditRecipeModal.vue";
 import Multiselect from 'vue-multiselect'; // Vergewissere dich, dass dieser Import korrekt ist
 import {quantityUnits,tagsForList} from "@/assets/TagsAndUnits.js";
-import {EventBus} from "@/assets/event-bus.js"; // Import your helper data
+import {EventBus} from "@/assets/event-bus.js";
+import AddRecipeForm from "@/components/addRecipe/AddRecipeForm.vue"; // Import your helper data
 
 export default {
   components: {
+    AddRecipeForm,
     EditRecipeModal,
     DeleteConfirmationModal,
     RecipeDetailsModal,
@@ -105,6 +231,7 @@ export default {
       recipes: [],
       availableTags: tagsForList, // Make sure this is populated with available tags
       isModalVisible: false,
+      isAddModalVisible: false,
       isDeleteModalVisible: false,
       isEditModalVisible: false,
       selectedRecipe: null,
@@ -209,7 +336,9 @@ export default {
         }
       }
     },
-
+    openAddRecipeModal() {
+      this.isAddModalVisible = true;
+    },
     //Modal functions
     openRecipeDetails(recipe) {
       this.selectedRecipe = { ...recipe, favorite: recipe.favorite || false };
@@ -228,6 +357,9 @@ export default {
     closeModal() {
       this.isModalVisible = false;
     },
+    closeAddModal() {
+      this.isAddModalVisible = false;
+    },
     closeDeleteModal() {
       this.isDeleteModalVisible = false;
     },
@@ -236,6 +368,9 @@ export default {
     },
     recipesUpdated(updatedRecipes) {
       this.recipes = updatedRecipes;
+    },
+    emitRecipeAdd() {
+      this.recipes.push()
     },
     //Helper functions
     translateTags(tags) {
@@ -248,143 +383,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.recipe-container {
-  display: flex;
-  font-family: Arial, sans-serif;
-  flex-direction: column;
-  padding: 20px;
-  height: 650px;
-  width: 400px;
-  background-color: #f9f9f9;
-  margin: 0 auto;
-  border-radius: 8px;
-}
-
-h2 {
-  font-size: 1.75rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.search-fields {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
-  justify-content: center;
-}
-
-.search-input, .search-button, .tags-filter, .cooking-time-filter {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  font-family: 'Arial', sans-serif;
-}
-
-.search-input {
-  width: 250px;
-}
-
-.search-button {
-  background-color: #007BFF;
-  color: white;
-  cursor: pointer;
-  width: 150px;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
-
-.search-button:hover {
-  background-color: #0056b3;
-}
-
-.tags-filter, .cooking-time-filter {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  width: 400px;
-  box-sizing: border-box;
-}
-
-.tags-filter label, .cooking-time-filter label {
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #555;
-}
-
-.tag-dropdown, .cooking-time-filter select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: #fafafa;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-
-.cooking-time-filter input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background-color: #fafafa;
-  box-sizing: border-box;
-}
-
-.tags-filter, .cooking-time-filter {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.recipe-cards-container {
-  overflow-y: auto;
-  max-height: 450px;
-}
-
-.recipe-card {
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  margin-bottom: 10px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.recipe-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.recipe-name {
-  font-size: 1.25rem;
-  font-weight: bold;
-}
-
-.no-recipes {
-  font-size: 1.25rem;
-  color: #777;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.filter-favorites-button {
-  background-color: #28a745;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.filter-favorites-button:hover {
-  background-color: #218838;
-}
-</style>

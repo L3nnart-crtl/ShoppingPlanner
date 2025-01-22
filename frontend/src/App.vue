@@ -22,16 +22,16 @@ export default {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f4f8, #d9e9f1);
   font-family: Arial, sans-serif;
-  padding: 20px;
+  padding: 2px;
   box-sizing: border-box;
 }
 
 .app-title {
-  font-size: 2.5rem;
+  font-size: 2.0rem;
   font-weight: bold;
   color: #007BFF;
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: 0px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 

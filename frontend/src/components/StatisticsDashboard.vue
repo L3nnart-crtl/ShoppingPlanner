@@ -12,34 +12,40 @@
       </select>
     </div>
 
-    <!-- Datumsauswahl -->
-    <div class="date-selection">
-      <label for="start-date">Startdatum:</label>
-      <input type="date" id="start-date" v-model="startDate" />
+    <!-- Horizontal layout for Date Selection and Buttons -->
+    <div class="horizontal-container">
+      <div class="date-container">
+        <div class="date-input">
+          <label for="start-date">Startdatum:</label>
+          <input type="date" id="start-date" v-model="startDate" />
+        </div>
+        <div class="date-input">
+          <label for="end-date">Enddatum:</label>
+          <input type="date" id="end-date" v-model="endDate" />
+        </div>
+      </div>
 
-      <label for="end-date">Enddatum:</label>
-      <input type="date" id="end-date" v-model="endDate" />
-      <button @click="fetchStatistics()">Statistiken aktualisieren</button>
-      <!-- Button für den gesamten Zeitraum -->
-      <button @click="setDefaultDateRange">Zeitraum für die letzten 7 Tage</button>
+      <div class="button-container">
+        <button class="update-btn" @click="fetchStatistics()">Statistiken aktualisieren</button>
+        <button class="default-btn" @click="setDefaultDateRange">Letzte 7 Tage</button>
+      </div>
     </div>
 
-    <!-- Anzeige des Balkendiagramms -->
+    <!-- Chart display area -->
     <div v-if="newSelectedData && chartData?.labels?.length > 0" class="chart-container">
       <bar-chart :chart-data="chartData" :selectedData="newSelectedData"/>
     </div>
 
-    <!-- Meldung, wenn keine Chart-Daten vorhanden sind -->
+    <!-- No chart message -->
     <div v-else-if="chartData === null || chartData.labels.length === 0">
       <p class="no-chart-message">Keine Daten verfügbar. Bitte wählen Sie eine Statistik aus.</p>
     </div>
-
-    <!-- Fallback, wenn keine Daten für das Diagramm vorhanden sind -->
     <div v-else>
       <p class="no-chart-message">Bitte wählen Sie eine Statistik aus, um sie anzuzeigen.</p>
     </div>
   </div>
 </template>
+
 
 
 <script>
@@ -94,7 +100,9 @@ export default {
       try {
         const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
         this.$axios.defaults.headers.common["X-XSRF-TOKEN"] = csrfToken;
-
+        if (this.startDate === "" || this.endDate === "") {
+          this.setDefaultDateRange();
+        }
         const response = await this.$axios.get("/statistics", {
           params: {
             startDate: this.startDate,
@@ -108,7 +116,7 @@ export default {
       }
     },
 
-    async updateChart() {
+    updateChart() {
       this.newSelectedData = this.selectedData;
 
       let labels = [];
@@ -245,8 +253,8 @@ export default {
 
 <style scoped>
 .statistics-dashboard {
-  width: 500px;
-  height: 650px;
+  width: 600px;
+  height: auto;
   margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;
@@ -256,37 +264,86 @@ export default {
 
 h1 {
   text-align: center;
-  font-size: 26px;
+  font-size: 24px;
   color: #333;
+  margin-bottom: 15px;
 }
 
 .dropdown {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
 }
 
 label {
-  display: block;
-  margin-bottom: 5px;
   font-weight: bold;
   font-size: 14px;
   color: #333;
 }
 
-select {
-  width: 100%;
-  padding: 10px;
+select,
+input[type="date"] {
+  padding: 8px;
   font-size: 14px;
   border-radius: 5px;
   border: 1px solid #ddd;
-  background-color: #fff;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease;
 }
 
-select:focus {
+select:focus,
+input[type="date"]:focus {
   border-color: #4caf50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+/* Horizontal container for Date Selection and Buttons */
+.horizontal-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.date-container {
+  display: flex;
+  gap: 20px;
+}
+
+.date-input {
+  flex: 1;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.update-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.update-btn:hover {
+  background-color: #45a049;
+}
+
+.default-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.default-btn:hover {
+  background-color: #1e88e5;
 }
 
 .chart-container {
@@ -296,42 +353,46 @@ select:focus {
   align-items: center;
 }
 
-.ingredients-list {
-  margin-top: 20px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.ingredients-list ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.ingredients-list li {
-  margin: 5px 0;
-  font-size: 14px;
-  color: #333;
-}
-
 .no-chart-message {
   text-align: center;
   font-style: italic;
   color: #888;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 @media (max-width: 600px) {
   .statistics-dashboard {
-    padding: 15px;
+    padding: 10px;
   }
 
   h1 {
     font-size: 22px;
+    margin-bottom: 10px;
   }
 
-  select {
-    padding: 8px;
+  select,
+  input[type="date"] {
+    padding: 6px;
     font-size: 12px;
+  }
+
+  button {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .date-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .date-input {
+    width: 100%;
+  }
+
+  .horizontal-container {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

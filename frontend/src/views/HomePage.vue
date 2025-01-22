@@ -5,29 +5,16 @@
       <button v-if="isAuthenticated" @click="logout" class="logout-button">Logout</button>
     </div>
 
-    <!-- Formular für Rezepte -->
-    <div class="component">
-      <AddRecipeForm @recipe-added="addRecipe" />
-    </div>
-
     <!-- Rezeptliste -->
-    <div class="component">
-      <RecipeList :recipes="recipes" @recipe-removed="removeRecipe" ref="recipeList" />
+    <div>
+      <RecipeList :recipes="recipes" @recipe-removed="removeRecipe"  @recipe-added="addRecipe" ref="recipeList" />
     </div>
-
-    <!-- Einkaufsliste -->
-    <div class="component">
-      <ShoppingList />
-    </div>
-
-    <!-- Statistiken -->
-    <div class="component">
-      <StatisticsDashboard />
-    </div>
-
-    <!-- Kalender -->
-    <div class="component">
+    <div>
       <CalendarComponent :recipes="recipes" />
+      <div class="dashboard-list">
+        <StatisticsDashboard />
+        <ShoppingList />
+      </div>
     </div>
   </div>
 </template>
@@ -111,11 +98,20 @@ export default {
 .container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 1px;
   font-family: Arial, sans-serif;
-  padding: 20px;
+  padding: 2px;
+
 }
 
+.component {
+  background-color: #f9f9f9;
+}
+.dashboard-list {
+  display: flex;
+  max-height: 600px;
+  flex-direction: row;
+}
 .logout-container {
   position: fixed;
   top: 20px;
@@ -138,7 +134,7 @@ export default {
   background-color: #0056b3;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .component {
     flex: 1 1 100%;
   }

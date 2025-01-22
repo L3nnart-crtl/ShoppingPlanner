@@ -1,39 +1,54 @@
 <template>
   <div class="shopping-list">
-    <h1>Einkaufsliste für die nächsten Tage</h1>
+    <h1>Shopping List</h1>
 
-    <!-- Formular zur Auswahl von Start- und Enddatum -->
+    <!-- Date form with compact input fields -->
     <form @submit.prevent="generateShoppingList" class="date-form">
       <div class="form-group">
-        <label for="startDate">Startdatum:</label>
+        <label for="startDate">Start Date:</label>
         <input type="date" id="startDate" v-model="startDate" required>
       </div>
 
       <div class="form-group">
-        <label for="endDate">Enddatum:</label>
+        <label for="endDate">End Date:</label>
         <input type="date" id="endDate" v-model="endDate" required>
       </div>
 
-      <button type="submit" :disabled="loading">
-        <span v-if="loading">Generieren...</span>
-        <span v-else>Einkaufsliste generieren</span>
-      </button>
+      <!-- Buttons in a compact group -->
+      <div class="button-group">
+        <button type="submit" :disabled="loading">
+          <span v-if="loading">Generating...</span>
+          <span v-else>Generate List</span>
+        </button>
+
+        <!-- Modal Trigger Button -->
+        <button v-if="shoppingList.length > 0" @click="openModal" class="show-list-btn">
+          Show Full List
+        </button>
+      </div>
     </form>
 
+    <!-- Error message -->
     <div v-if="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>
 
-    <h2>Generierte Einkaufsliste</h2>
-    <ul v-if="shoppingList.length" class="shopping-list-items">
-      <li v-for="item in shoppingList" :key="item.ingredientName" class="shopping-list-item">
-        {{ item.ingredientName }}: {{ item.unit }}
-      </li>
-    </ul>
+    <!-- Modal for the shopping list -->
+    <div v-if="modalOpen" class="modal-overlay" @click="closeModal">
+      <div class="modal" @click.stop>
+        <h3>Shopping List</h3>
+        <ul class="shopping-list-items">
+          <li v-for="item in shoppingList" :key="item.ingredientName">
+            {{ item.ingredientName }}: {{ item.unit }}
+          </li>
+        </ul>
+        <button @click="closeModal">Close</button>
+      </div>
+    </div>
 
-    <!-- Nachricht, falls keine Zutaten gefunden wurden -->
-    <p v-else-if="isListGenerated" class="no-items">
-      Keine Zutaten für diesen Zeitraum gefunden.
+    <!-- No items message -->
+    <p v-if="!isListGenerated" class="no-items">
+      No ingredients found for this period.
     </p>
   </div>
 </template>
@@ -45,33 +60,29 @@ export default {
       startDate: '',
       endDate: '',
       shoppingList: [],
-      isListGenerated: false,
+      isListGenerated: true,
       loading: false,
       errorMessage: '',
+      modalOpen: false,
     };
   },
   methods: {
     async generateShoppingList() {
-      // Überprüfen, ob beide Daten gesetzt sind
       if (!this.startDate || !this.endDate) {
-        this.errorMessage = 'Bitte wähle sowohl ein Startdatum als auch ein Enddatum.';
+        this.errorMessage = 'Please select both a start and an end date.';
         return;
       }
 
       this.loading = true;
       this.errorMessage = '';
-      this.isListGenerated = false;
 
       try {
-        // CSRF-Token aus dem Cookie holen
         const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
-
-        // CSRF-Token in den Header setzen
         this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
 
         const response = await this.$axios.post(
             '/shopping-list/generate',
-            null, // Kein Body erforderlich in deinem Beispiel
+            null,
             {
               params: {
                 startDate: this.startDate,
@@ -84,28 +95,33 @@ export default {
         );
 
         if (!response) {
-          throw new Error('Serverfehler: Die Einkaufsliste konnte nicht generiert werden.');
+          throw new Error('Server error: Shopping list could not be generated.');
         }
 
-        this.shoppingList = response.data; // Zugriff auf response.data statt response.json()
-        this.isListGenerated = true;
+        this.shoppingList = response.data;
+        this.isListGenerated = this.shoppingList.length > 0;
       } catch (error) {
-        this.errorMessage = error.message || 'Fehler beim Abrufen der Einkaufsliste.';
+        this.errorMessage = error.message || 'Error retrieving shopping list.';
       } finally {
         this.loading = false;
       }
     },
+    openModal() {
+      this.modalOpen = true;
+    },
+    closeModal() {
+      this.modalOpen = false;
+    }
   },
 };
 </script>
 
-
 <style scoped>
 .shopping-list {
-  max-width: 400px;
-  height: 650px;
+  max-width: 350px;
+  height: auto;
   margin: 0 auto;
-  padding: 20px;
+  padding: 15px;
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -113,52 +129,53 @@ export default {
 
 h1 {
   text-align: center;
-  font-size: 26px;
+  font-size: 20px;
   color: #333;
 }
 
 .date-form {
-  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 label {
-  display: block;
-  margin-bottom: 5px;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 12px;
   color: #333;
 }
 
 input[type="date"] {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
+  width: 150px;
+  padding: 8px;
+  font-size: 12px;
   border-radius: 5px;
   border: 1px solid #ddd;
   background-color: #fff;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-input[type="date"]:focus {
-  border-color: #4caf50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+.button-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 15px;
 }
 
 button {
-  padding: 12px 20px;
-  font-size: 16px;
+  padding: 8px 15px;
+  font-size: 14px;
   color: white;
   background-color: #4caf50;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 button:disabled {
@@ -166,32 +183,12 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button:hover:not(:disabled) {
-  background-color: #388e3c;
-}
-
 .shopping-list-items {
   list-style-type: none;
   padding-left: 0;
-  margin-top: 20px;
+  margin-top: 15px;
   max-height: 300px;
   overflow-y: auto;
-}
-
-.shopping-list-item {
-  margin: 10px 0;
-  padding: 12px;
-  background-color: #fff;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  font-size: 14px;
-  display: flex;
-  justify-content: space-between;
-  transition: background-color 0.3s ease;
-}
-
-.shopping-list-item:hover {
-  background-color: #f1f1f1;
 }
 
 .error-message {
@@ -206,4 +203,42 @@ button:hover:not(:disabled) {
   margin-top: 10px;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+  text-align: center;
+  font-size: 20px;
+}
+
+.modal button {
+  background-color: #388e3c;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal button:hover {
+  background-color: #2c6e31;
+}
 </style>
