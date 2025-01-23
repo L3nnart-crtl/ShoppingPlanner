@@ -1,19 +1,18 @@
 <template>
   <div class="statistics-dashboard">
-    <h1>Statistiken</h1>
-
     <!-- Dropdown zur Auswahl der Statistik -->
-    <div class="dropdown">
-      <label for="data-select">Wählen Sie eine Statistik:</label>
-      <select id="data-select" v-model="selectedData" @change="handleOptionChange">
-        <option v-for="option in filteredOptions" :key="option" :value="option.value">
-          {{ option.label }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Horizontal layout for Date Selection and Buttons -->
     <div class="horizontal-container">
+      <h1>Statistiken</h1>
+      <div class="dropdown">
+        <label for="data-select">Wählen Sie eine Statistik:</label>
+        <select id="data-select" v-model="selectedData" @change="handleOptionChange">
+          <option v-for="option in filteredOptions" :key="option" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+      <!-- Horizontal layout for Date Selection and Buttons -->
+
       <div class="date-container">
         <div class="date-input">
           <label for="start-date">Startdatum:</label>
@@ -30,12 +29,10 @@
         <button class="default-btn" @click="setDefaultDateRange">Letzte 7 Tage</button>
       </div>
     </div>
-
     <!-- Chart display area -->
     <div v-if="newSelectedData && chartData?.labels?.length > 0" class="chart-container">
       <bar-chart :chart-data="chartData" :selectedData="newSelectedData"/>
     </div>
-
     <!-- No chart message -->
     <div v-else-if="chartData === null || chartData.labels.length === 0">
       <p class="no-chart-message">Keine Daten verfügbar. Bitte wählen Sie eine Statistik aus.</p>
@@ -252,14 +249,43 @@ export default {
 </script>
 
 <style scoped>
+
 .statistics-dashboard {
-  width: 600px;
-  height: auto;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+  margin-left: 25px;
+  height: 450px;
+  width: 1150px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
+}
+
+.dropdown, .date-container, .button-container {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.horizontal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.chart-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 800px;
+  height: 400px;
+
 }
 
 h1 {
@@ -269,11 +295,6 @@ h1 {
   margin-bottom: 15px;
 }
 
-.dropdown {
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-}
 
 label {
   font-weight: bold;
@@ -296,13 +317,6 @@ input[type="date"]:focus {
 }
 
 /* Horizontal container for Date Selection and Buttons */
-.horizontal-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 20px;
-}
 
 .date-container {
   display: flex;
@@ -312,13 +326,6 @@ input[type="date"]:focus {
 .date-input {
   flex: 1;
 }
-
-.button-container {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
 button {
   padding: 8px 16px;
   font-size: 14px;
@@ -346,12 +353,6 @@ button {
   background-color: #1e88e5;
 }
 
-.chart-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 .no-chart-message {
   text-align: center;
@@ -381,18 +382,10 @@ button {
     padding: 6px 12px;
   }
 
-  .date-container {
-    flex-direction: column;
-    gap: 10px;
-  }
 
   .date-input {
     width: 100%;
   }
 
-  .horizontal-container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 }
 </style>

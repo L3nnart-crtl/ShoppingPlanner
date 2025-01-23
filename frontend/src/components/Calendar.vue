@@ -401,6 +401,7 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
 }
 
 body {
@@ -408,14 +409,19 @@ body {
   background-color: #f4f4f4;
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
+
   transform: scale(0.2); /* Scale everything down by 80% */
   transform-origin: top left; /* Ensure scaling starts from the top-left */
 }
 /* Calendar Styles */
 .calendar-container {
   max-width: 1300px;
-  margin: 0 auto;
+  margin-bottom: 20px;
+  margin-left: 25px;
   padding: 20px;
+  background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {

@@ -66,11 +66,12 @@
   font-family: 'Roboto', sans-serif;
   color: #333;
   max-width: 700px;
-  margin: 0 auto;
   padding: 20px;
   background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  height: 805px;
 }
 
 h2 {
@@ -164,7 +165,7 @@ h2 {
 }
 
 .recipe-cards-container {
-  max-height: 400px;
+  max-height: 460px;
   overflow-y: auto;
   padding: 15px;
   background: #ffffff;

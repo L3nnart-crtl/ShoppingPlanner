@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="-Refactored RecipeList and AddRecipeForm">
+    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- Style changed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/addRecipe/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/addRecipe/AddRecipeForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/addRecipe/IngredientModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/addRecipe/IngredientModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeDetailsModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeDetailsModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/BarChart.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BarChart.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +76,9 @@
     <option name="ROOT_SYNC" value="SYNC" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.zaxxer/HikariCP/5.1.0/8c96e36c14461fc436bb02b264b96ef3ca5dca8c/HikariCP-5.1.0.jar!/com/zaxxer/hikari/HikariDataSource.class" root0="SKIP_INSPECTION" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -100,7 +103,7 @@
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.ShoppingPlannerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ShoppingPlannerApplication.executor&quot;: &quot;Debug&quot;,
     &quot;git-widget-placeholder&quot;: &quot;production__branch&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/leeis/IdeaProjects/team-6fghjdgf/backend&quot;,
@@ -296,6 +299,8 @@
       <workItem from="1737203730827" duration="89000" />
       <workItem from="1737290524117" duration="11379000" />
       <workItem from="1737361935957" duration="33896000" />
+      <workItem from="1737523954853" duration="33869000" />
+      <workItem from="1737621361941" duration="1485000" />
     </task>
     <task id="LOCAL-00001" summary="Repo structure updated">
       <option name="closed" value="true" />
@@ -417,7 +422,39 @@
       <option name="project" value="LOCAL" />
       <updated>1737370601611</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="- Nutrition calculation for recipe&#10;- RecipeDetailsModal.vue styled">
+      <option name="closed" value="true" />
+      <created>1737535956528</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1737535956528</updated>
+    </task>
+    <task id="LOCAL-00017" summary="- RecipeDetailsModal.vue style">
+      <option name="closed" value="true" />
+      <created>1737536847681</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1737536847681</updated>
+    </task>
+    <task id="LOCAL-00018" summary="- Statistics for date range">
+      <option name="closed" value="true" />
+      <created>1737544089964</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1737544089964</updated>
+    </task>
+    <task id="LOCAL-00019" summary="- Style changed">
+      <option name="closed" value="true" />
+      <created>1737562660360</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1737562660360</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -446,6 +483,20 @@
     <MESSAGE value="-MS3" />
     <MESSAGE value="nutrition info added" />
     <MESSAGE value="-Refactored RecipeList and AddRecipeForm" />
-    <option name="LAST_COMMIT_MESSAGE" value="-Refactored RecipeList and AddRecipeForm" />
+    <MESSAGE value="- Nutrition calculation for recipe&#10;- RecipeDetailsModal.vue styled" />
+    <MESSAGE value="- RecipeDetailsModal.vue style" />
+    <MESSAGE value="- Statistics for date range" />
+    <MESSAGE value="- Style changed" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Style changed" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/frontend/src/components/Calendar.vue</url>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -151,20 +151,18 @@ export default {
 <style scoped>
 .chart-container {
   width: 100%;
-  max-width: 700px;
-  margin: 20px auto;
-  padding: 40px 20px;
+  max-width: 900px;
+  padding: 5px 5px;
   background-color: #ffffff;
   border-radius: 12px;
+  margin-top: 50px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-family: 'Arial', sans-serif;
-  min-height: 400px;
+  height: 500px;
 }
 
 canvas {
   width: 100% !important;
-  height: auto;
-  max-height: 500px;
   border-radius: 8px;
 }
 

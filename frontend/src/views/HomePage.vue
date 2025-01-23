@@ -111,6 +111,7 @@ export default {
   display: flex;
   max-height: 600px;
   flex-direction: row;
+  gap: 10px;
 }
 .logout-container {
   position: fixed;
