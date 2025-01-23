@@ -125,22 +125,33 @@ export default {
       this.searchResults = [];
     },
     addManualIngredient() {
-      const { name, quantity, unit } = this.localManualIngredient;
+      const { name, quantity, unit, calories, carbohydrates, proteins, fats } = this.localManualIngredient;
 
-      if (this.localManualIngredient.calories < 0 || this.localManualIngredient.carbohydrates < 0
-      || this.localManualIngredient.proteins < 0 || this.localManualIngredient.fats < 0) {
-        this.errorMessage = 'Für die Nährwerte sind nur positive Zahlen zulässig.';
-        return;
-      }
-      if (!name || !quantity || !unit) {
+      // Überprüfung: Pflichtfelder ausfüllen
+      if (!name || !unit) {
         this.errorMessage = 'Bitte füllen Sie Name, Menge und Einheit aus.';
         return;
       }
 
+      // Überprüfung: Nährwerte müssen Zahlen und positiv sein
+      const nutrients = { quantity, calories, carbohydrates, proteins, fats };
+      for (const [key, value] of Object.entries(nutrients)) {
+        if (!this.isValidNumber(value) || parseFloat(value) < 0) {
+          this.errorMessage = `Der Wert für ${key} muss eine nicht-negative Zahl sein.`;
+          return;
+        }
+      }
+
+      // Alle Prüfungen bestanden
       this.errorMessage = '';
       this.$emit('add-ingredient', { ...this.localManualIngredient });
       this.resetLocalManualIngredient();
       this.closeModal();
+    },
+
+// Hilfsmethode zur Validierung von Zahlen
+    isValidNumber(value) {
+      return !isNaN(parseFloat(value)) && isFinite(value);
     },
     closeModal() {
       this.$emit('close-modal');

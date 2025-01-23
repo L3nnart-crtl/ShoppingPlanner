@@ -4,18 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- RecipeList.vue updated">
+    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- Bug fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BarChart.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BarChart.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/addRecipe/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/addRecipe/AddRecipeForm.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/addRecipe/IngredientModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/addRecipe/IngredientModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeDetailsModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeDetailsModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -305,7 +296,7 @@
       <workItem from="1737290524117" duration="11379000" />
       <workItem from="1737361935957" duration="33896000" />
       <workItem from="1737523954853" duration="33869000" />
-      <workItem from="1737621361941" duration="23607000" />
+      <workItem from="1737621361941" duration="25258000" />
     </task>
     <task id="LOCAL-00001" summary="Repo structure updated">
       <option name="closed" value="true" />
@@ -475,7 +466,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737630305319</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="- Bug fixes">
+      <option name="closed" value="true" />
+      <created>1737650305160</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1737650305160</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -510,7 +509,8 @@
     <MESSAGE value="- Style changed" />
     <MESSAGE value="- Homepage style finished" />
     <MESSAGE value="- RecipeList.vue updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="- RecipeList.vue updated" />
+    <MESSAGE value="- Bug fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Bug fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
