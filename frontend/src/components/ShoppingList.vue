@@ -37,21 +37,23 @@
     <div v-if="modalOpen" class="modal-overlay" @click="closeModal">
       <div class="modal" @click.stop>
         <h3>Shopping List for {{ formattedStartDate }} to {{ formattedEndDate }}</h3>
+        <div class="shopping-list-table-container">
+          <table class="shopping-list-table">
+            <thead>
+            <tr>
+              <th>Ingredient</th>
+              <th>Unit</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="item in shoppingList" :key="item.ingredientName">
+              <td>{{ item.ingredientName }}</td>
+              <td>{{ item.unit }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
 
-        <table class="shopping-list-table">
-          <thead>
-          <tr>
-            <th>Ingredient</th>
-            <th>Unit</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="item in shoppingList" :key="item.ingredientName">
-            <td>{{ item.ingredientName }}</td>
-            <td>{{ item.unit }}</td>
-          </tr>
-          </tbody>
-        </table>
 
         <div class="modal-actions">
           <button @click="downloadShoppingList">Download PDF</button>
@@ -235,23 +237,36 @@ button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
-
+.shopping-list-table-container {
+  max-height: 500px;
+  overflow-y: auto;
+}
 .shopping-list-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-}
 
-.shopping-list-table th,
-.shopping-list-table td {
+
+}
+.shopping-list-table th {
+  position: sticky;
+  top: 0;
+  background-color: white;
   padding: 8px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
+.shopping-list-table td {
+  padding: 5px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+
+}
+
 .shopping-list-table th {
   background-color: #f2f2f2;
   font-weight: bold;
+
 }
 
 .error-message {
@@ -276,6 +291,7 @@ button:disabled {
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
 
 .modal {
@@ -285,6 +301,7 @@ button:disabled {
   max-width: 500px;
   width: 100%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
 }
 
 .modal h3 {

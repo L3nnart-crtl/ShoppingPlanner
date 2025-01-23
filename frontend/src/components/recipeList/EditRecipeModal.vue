@@ -111,6 +111,7 @@
 import Multiselect from "vue-multiselect";
 import IngredientModal from "@/components/addRecipe/IngredientModal.vue";
 import { quantityUnits, tagsForList } from "@/assets/TagsAndUnits.js";
+import {EventBus} from "@/assets/event-bus.js";
 
 export default {
   emits: ['closeEditModal', 'submitEditRecipe', 'update:selectedTags'],
@@ -172,6 +173,7 @@ export default {
     submitEdit() {
       this.updateSelectedTags();
       this.$emit("submitEditRecipe", this.selectedRecipe);
+      EventBus.emit("update-chart");
     },
     updateSelectedTags() {
       this.$emit("update:selectedTags", this.newTags);

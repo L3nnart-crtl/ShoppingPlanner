@@ -21,7 +21,6 @@
         <input v-model="searchQuery.name" type="text" placeholder="Rezeptname eingeben" class="search-input" />
         <button @click="openTagSelectionModal" class="tag-selection-button">Tags auswählen</button>
       </div>
-      <!-- Button to open the tag selection modal -->
       <!-- Tag Selection Modal -->
       <div v-if="isTagModalVisible" class="modal-overlay">
         <div class="modal-content">
@@ -45,7 +44,7 @@
 
       <div class="input-group">
         <div class="cooking-time-filter">
-          <input v-model="searchQuery.cookingTime" type="number" placeholder="Kochzeit eingeben" class="search-input" />
+          <input v-model="searchQuery.cookingTime" type="number" placeholder="Kochzeit eingeben" class="search-input" min="1" />
         </div>
       </div>
 
@@ -54,6 +53,8 @@
           {{ filterFavorites ? 'Alle Rezepte anzeigen' : 'Nur Favoriten anzeigen' }}
         </button>
         <button @click="searchRecipes" class="search-button">Suchen</button>
+        <!-- Reset Filters Button -->
+        <button @click="resetFilters" class="reset-filters-button">Filter zurücksetzen</button>
       </div>
     </div>
 
@@ -174,8 +175,14 @@ h2 {
   gap: 10px;
   justify-content: center;
 }
+.reset-filters-button {
+  background: #dc3545;
+}
 
-.filter-favorites-button, .search-button {
+.reset-filters-button:hover {
+  background: #c82333;
+}
+.filter-favorites-button, .search-button, .reset-filters-button {
   padding: 10px 15px;
   font-size: 14px;
   color: #fff;
@@ -364,7 +371,11 @@ export default {
     async searchRecipes() {
       try {
         const params = {};
-
+        if (this.searchQuery.cookingTime < 0) {
+          alert("Die Kochzeit muss eine positive Zahl sein.");
+          this.isSubmitting = false;
+          return;
+        }
         // Add search filters if they exist
         if (this.searchQuery.name) {
           params.name = this.searchQuery.name;
@@ -389,6 +400,13 @@ export default {
         console.error("Fehler bei der Rezeptsuche:", error);
       }
     },
+    resetFilters() {
+      this.searchQuery.name = "";
+      this.searchQuery.tags = [];
+      this.searchQuery.cookingTime = 0;
+      this.filterFavorites = false;
+      this.searchRecipes(); // Re-fetch recipes after resetting the filters
+    },
     toggleFavoriteFilter() {
       this.filterFavorites = !this.filterFavorites;
       this.searchRecipes(); // Fetch recipes with the updated filter
@@ -404,11 +422,12 @@ export default {
         const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
         axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
 
-        await this.$axios.put(`/recipes/${this.selectedRecipe.id}`, updatedRecipe);
+        const response = await this.$axios.put(`/recipes/${this.selectedRecipe.id}`, updatedRecipe);
         this.isEditModalVisible = false;
         this.recipes = this.recipes.map(recipe =>
             recipe.id === updatedRecipe.id ? updatedRecipe : recipe
         );
+        this.selectedRecipe = response.data
         EventBus.emit('recipeUpdated'); // Emit event to notify that a recipe has been updated
       } catch (error) {
         console.error("Fehler beim Bearbeiten des Rezepts:", error);

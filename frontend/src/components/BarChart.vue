@@ -76,6 +76,7 @@ export default {
               borderWidth: 2,
               hoverBackgroundColor: "#1E88E5",
               hoverBorderColor: "#1565C0",
+              maxBarThickness: 80,
             },
           ],
         },
@@ -84,14 +85,7 @@ export default {
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              display: true,
-              position: "top",
-              labels: {
-                font: {
-                  family: "'Arial', sans-serif",
-                  size: 14,
-                },
-              },
+              display: false,
             },
             title: {
               display: true,

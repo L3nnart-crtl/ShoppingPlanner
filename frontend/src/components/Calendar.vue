@@ -122,13 +122,16 @@ import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue";
 import {tagsForList} from "@/assets/TagsAndUnits.js"; // import the event bus
 export default {
   components: {RecipeDetailsModal, EditRecipeModal, DeleteConfirmationModal},
-  props: ['recipes'],
+  props: {
+    recipes: Array,
+  },
   data() {
     return {
       mealPlans: {},
       currentDate: new Date(),
       displayedWeek: [],
       currentWeekRange: '',
+
 
       //Modals
       isModalVisible: false,
@@ -324,6 +327,17 @@ export default {
       this.isModalVisible = false;
     },
     closeMealPlanModal() {
+      this.mealPlan = {
+        breakfastId: null,
+            breakfastPortionSize: 1,
+            lunchId: null,
+            lunchPortionSize: 1,
+            dinnerId: null,
+            dinnerPortionSize: 1,
+            dinnerRecipe: null,
+            lunchRecipe: null,
+            breakfastRecipe: null,
+      };
       this.isMealPlanModalVisible = false;
     },
     openEditRecipe(recipe) {

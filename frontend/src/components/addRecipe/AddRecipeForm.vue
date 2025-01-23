@@ -24,6 +24,7 @@
           <ul>
             <li v-for="(ingredient, index) in recipe.ingredients" :key="index">
               - {{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}
+              <button @click="removeIngredient(index)" type="button" class="remove-ingredient-button">Entfernen</button>
             </li>
           </ul>
         </div>
@@ -65,6 +66,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import IngredientModal from './IngredientModal.vue';
@@ -131,10 +133,20 @@ export default {
       this.recipe.ingredients.push(ingredient);
     },
 
+    removeIngredient(index) {
+      // Entfernt die Zutat aus der Liste
+      this.recipe.ingredients.splice(index, 1);
+    },
+
     async submitRecipe() {
       if (this.isSubmitting) return;
       this.isSubmitting = true;
-
+      // Validierung der Kochzeit, dass sie positiv ist
+      if (this.recipe.cookingTime < 0) {
+        alert("Die Kochzeit muss eine positive Zahl sein.");
+        this.isSubmitting = false;
+        return;
+      }
       try {
         this.recipe.tags = this.selectedTags.map(tag => tag.value);
         const response = await this.$axios.post('/recipes', this.recipe);
@@ -277,5 +289,32 @@ textarea {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+/* Zutatenliste */
+.ingredient-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+}
+
+/* Entfernen Button */
+.remove-ingredient-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.remove-ingredient-button:hover {
+  background-color: #e53935;
 }
 </style>

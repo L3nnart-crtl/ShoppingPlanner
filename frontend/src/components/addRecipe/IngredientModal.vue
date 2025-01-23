@@ -127,6 +127,11 @@ export default {
     addManualIngredient() {
       const { name, quantity, unit } = this.localManualIngredient;
 
+      if (this.localManualIngredient.calories < 0 || this.localManualIngredient.carbohydrates < 0
+      || this.localManualIngredient.proteins < 0 || this.localManualIngredient.fats < 0) {
+        this.errorMessage = 'Für die Nährwerte sind nur positive Zahlen zulässig.';
+        return;
+      }
       if (!name || !quantity || !unit) {
         this.errorMessage = 'Bitte füllen Sie Name, Menge und Einheit aus.';
         return;

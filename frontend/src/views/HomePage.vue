@@ -7,10 +7,10 @@
 
     <!-- Rezeptliste -->
     <div>
-      <RecipeList :recipes="recipes" @recipe-removed="removeRecipe"  @recipe-added="addRecipe" ref="recipeList" />
+      <RecipeList :recipes="recipes" ref="recipeList" />
     </div>
     <div>
-      <CalendarComponent :recipes="recipes" />
+      <CalendarComponent :recipes="recipes"/>
       <div class="dashboard-list">
         <StatisticsDashboard />
         <ShoppingList />
@@ -26,6 +26,7 @@ import RecipeList from "@/components/recipeList/RecipeList.vue";
 import CalendarComponent from "@/components/Calendar.vue";
 import ShoppingList from "@/components/ShoppingList.vue";
 import StatisticsDashboard from "@/components/StatisticsDashboard.vue";
+import {EventBus} from "@/assets/event-bus.js";
 
 export default {
   components: {
@@ -49,6 +50,14 @@ export default {
     await this.checkAuthStatus();
     await this.reloadRecipes();
   },
+  mounted() {
+    this.reloadRecipes();
+
+    EventBus.on('recipeUpdated', this.reloadRecipes); // Listen for recipe updates
+  },
+  beforeDestroy() {
+    EventBus.off('recipeUpdated', this.reloadRecipes); // Clean up the event listener
+  },
   methods: {
     async reloadRecipes() {
       try {
@@ -56,19 +65,6 @@ export default {
         this.recipes = response.data;
       } catch (error) {
         console.error("Fehler beim Abrufen der Rezepte:", error);
-      }
-    },
-    async addRecipe(newRecipe) {
-      this.recipes.push(newRecipe);
-      this.updateRecipeList();
-    },
-    removeRecipe(recipeId) {
-      this.recipes = this.recipes.filter((recipe) => recipe.id !== recipeId);
-      this.updateRecipeList();
-    },
-    updateRecipeList() {
-      if (this.$refs.recipeList) {
-        this.$refs.recipeList.recipesUpdated(this.recipes);
       }
     },
     async checkAuthStatus() {
@@ -92,7 +88,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .container {

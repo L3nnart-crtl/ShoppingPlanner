@@ -31,12 +31,16 @@
     </div>
     <!-- Chart display area -->
     <div v-if="newSelectedData && chartData?.labels?.length > 0" class="chart-container">
-      <bar-chart :chart-data="chartData" :selectedData="newSelectedData"/>
+      <bar-chart :chart-data="chartData" :selectedData="getLabelByValue(newSelectedData)"/>
+    </div>
+    <div v-else-if="startDate > endDate">
+      <p class="no-chart-message">Enddatum ist vor Startdatum.</p>
     </div>
     <!-- No chart message -->
     <div v-else-if="chartData === null || chartData.labels.length === 0">
       <p class="no-chart-message">Keine Daten verfügbar. Bitte wählen Sie eine Statistik aus.</p>
     </div>
+
     <div v-else>
       <p class="no-chart-message">Bitte wählen Sie eine Statistik aus, um sie anzuzeigen.</p>
     </div>
@@ -88,6 +92,10 @@ export default {
   },
 
   methods: {
+    getLabelByValue(value) {
+      const item = this.allOptions.find(entry => entry.value === value);
+      return item ? item.label : null; // Gibt das Label zurück oder null, falls nicht gefunden
+    },
     setupEventListeners() {
       EventBus.on('mealPlanUpdated', this.fetchStatistics);
       EventBus.on('recipeUpdated', this.fetchStatistics);

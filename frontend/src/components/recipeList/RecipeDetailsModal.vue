@@ -13,19 +13,12 @@
       </div>
 
       <div class="main-content">
-        <!-- Top Section: Description, Cooking Time, Tags, Ingredients -->
         <div class="content-section">
           <div class="description-section">
             <h5>Description</h5>
             <p>{{ selectedRecipe.description || 'No description available' }}</p>
             <h5>Cooking Time</h5>
             <p>{{ selectedRecipe.cookingTime || 'No cooking time provided' }} minutes</p>
-            <h5>Tags</h5>
-            <div class="tags-container">
-              <div v-for="(tag, index) in selectedTags" :key="index" class="tag-box">
-                {{ tag.name }}
-              </div>
-            </div>
           </div>
 
           <div class="ingredients-section">
@@ -68,7 +61,8 @@
               </div>
 
               <div class="pie-chart-container">
-                <pie-chart :data="nutritionChartData" />
+                <!-- Pie chart will reload whenever chartKey changes -->
+                <pie-chart :key="chartKey" :data="nutritionChartData" />
               </div>
             </div>
           </div>
@@ -80,11 +74,11 @@
   </div>
 </template>
 
-
 <script>
-import { quantityUnits, tagsForList } from "@/assets/TagsAndUnits.js";
+import { quantityUnits } from "@/assets/TagsAndUnits.js";
 import { Pie } from "vue-chartjs";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale } from 'chart.js';
+import {EventBus} from "@/assets/event-bus.js";  // Import EventBus
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
@@ -96,6 +90,11 @@ export default {
     selectedRecipe: Object,
     selectedTags: Object,
     isVisible: Boolean,
+  },
+  data() {
+    return {
+      chartKey: 0, // Used to force re-render of PieChart
+    };
   },
   computed: {
     nutritionChartData() {

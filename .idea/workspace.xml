@@ -4,16 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- Homepage style finished">
+    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- RecipeList.vue updated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/BarChart.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BarChart.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/addRecipe/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/addRecipe/AddRecipeForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/addRecipe/IngredientModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/addRecipe/IngredientModal.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeDetailsModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeDetailsModal.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -303,7 +305,7 @@
       <workItem from="1737290524117" duration="11379000" />
       <workItem from="1737361935957" duration="33896000" />
       <workItem from="1737523954853" duration="33869000" />
-      <workItem from="1737621361941" duration="8625000" />
+      <workItem from="1737621361941" duration="23607000" />
     </task>
     <task id="LOCAL-00001" summary="Repo structure updated">
       <option name="closed" value="true" />
@@ -465,7 +467,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737623029296</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="- RecipeList.vue updated">
+      <option name="closed" value="true" />
+      <created>1737630305319</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1737630305319</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -499,7 +509,8 @@
     <MESSAGE value="- Statistics for date range" />
     <MESSAGE value="- Style changed" />
     <MESSAGE value="- Homepage style finished" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Homepage style finished" />
+    <MESSAGE value="- RecipeList.vue updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="- RecipeList.vue updated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -507,6 +518,12 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/frontend/src/components/Calendar.vue</url>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue</url>
+          <line>28</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
