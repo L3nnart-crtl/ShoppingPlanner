@@ -217,8 +217,7 @@ textarea {
 
 /* Buttons */
 .add-ingredient-button,
-.submit-button,
-.close-button {
+.submit-button {
   background-color: #4CAF50;
   color: white;
   padding: 12px 24px;
@@ -228,10 +227,22 @@ textarea {
   font-size: 16px;
   transition: background-color 0.3s ease;
 }
+.close-button {
+  background-color: #f44336;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+.close-button:hover {
+  background-color: #e53935;
+}
 
 .add-ingredient-button:hover,
-.submit-button:hover,
-.close-button:hover {
+.submit-button:hover {
   background-color: #45a049;
 }
 

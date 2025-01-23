@@ -12,6 +12,8 @@
     "axios": "^1.7.7",
     "chart.js": "^4.4.7",
     "cors": "^2.8.5",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "mitt": "^3.0.1",
     "v-calendar": "^3.1.2",
     "vue": "^3.5.12",

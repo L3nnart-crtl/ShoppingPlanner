@@ -62,34 +62,38 @@
             </div>
           </div>
         </div>
+        <div class="buttons">
+          <button
+              type="button"
+              @click="openIngredientModalAdd"
+              class="add-button"
+          >
+            Add Ingredient
+          </button>
 
-        <button
-            type="button"
-            @click="openIngredientModalAdd"
-            class="add-button"
-        >
-          Add Ingredient
-        </button>
+          <div class="tag-selection">
+            <label for="tags">Select Tags:</label>
+            <Multiselect
+                ref="multiselect"
+                v-model="newTags"
+                :options="availableTags"
+                :multiple="true"
+                :close-on-select="false"
+                placeholder="Select Tags"
+                label="name"
+                track-by="name"
+                :tag-placeholder="'Add Tag'"
+                class="tag-dropdown"
+            />
+          </div>
+          <div class="button-group">
+            <button type="submit" class="submit-button">Save Recipe</button>
+            <button @click="closeEditModal" class="close-button">Close</button>
+          </div>
 
-        <div class="tag-selection">
-          <label for="tags">Select Tags:</label>
-          <Multiselect
-              ref="multiselect"
-              v-model="newTags"
-              :options="availableTags"
-              :multiple="true"
-              :close-on-select="false"
-              placeholder="Select Tags"
-              label="name"
-              track-by="name"
-              :tag-placeholder="'Add Tag'"
-              class="tag-dropdown"
-          />
         </div>
-
-        <button type="submit" class="submit-button">Save Recipe</button>
       </form>
-      <button @click="closeEditModal" class="close-button">Close</button>
+
     </div>
   </div>
 
@@ -106,7 +110,7 @@
 <script>
 import Multiselect from "vue-multiselect";
 import IngredientModal from "@/components/addRecipe/IngredientModal.vue";
-import {quantityUnits, tagsForList} from "@/assets/TagsAndUnits.js";
+import { quantityUnits, tagsForList } from "@/assets/TagsAndUnits.js";
 
 export default {
   emits: ['closeEditModal', 'submitEditRecipe', 'update:selectedTags'],
@@ -116,7 +120,7 @@ export default {
   },
   props: {
     selectedRecipe: Object,
-    selectedTags: Object,  // Ensure selectedTags is an array
+    selectedTags: Object, // Ensure selectedTags is an array
   },
   data() {
     return {
@@ -124,11 +128,11 @@ export default {
       isIngredientModalVisible: false,
       selectedIngredient: null,
       availableTags: tagsForList,
-      quantityUnits
+      quantityUnits,
     };
   },
   methods: {
-    //Ingredient
+    // Ingredient
     addIngredient(ingredient) {
       const index = this.selectedRecipe.ingredients.findIndex(
           (ing) => ing === this.selectedIngredient
@@ -164,7 +168,7 @@ export default {
     removeIngredient(index) {
       this.selectedRecipe.ingredients.splice(index, 1);
     },
-    //Modal
+    // Modal
     submitEdit() {
       this.updateSelectedTags();
       this.$emit("submitEditRecipe", this.selectedRecipe);
@@ -176,9 +180,9 @@ export default {
     closeEditModal() {
       this.$emit("closeEditModal");
     },
-    //Helper functions
+    // Helper functions
     getUnitLabel(unit) {
-      const unitObj = quantityUnits.find(u => u.value === unit);
+      const unitObj = quantityUnits.find((u) => u.value === unit);
       return unitObj ? unitObj.label : unit;
     },
   },
@@ -192,92 +196,162 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9997;
+  z-index: 9999;
 }
 
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 600px;
   max-height: 80vh;
   overflow-y: auto;
-  margin: 0 10px;
+  margin: 0 16px;
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 600;
   text-align: center;
+  color: #333;
+  margin-top: -15px;
 }
 
 .input-group {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
-input, textarea, select {
+input,
+textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
   box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
 }
 
 textarea {
   resize: vertical;
 }
 
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* This will add space between the buttons */
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Adds space between the first set of buttons */
+}
+
+.buttons .button-group {
+  display: flex;
+  justify-content: space-between; /* Positions buttons next to each other */
+  width: 100%;
+}
+
 button {
-  padding: 10px;
-  background-color: #007BFF;
+  padding: 12px 20px;
+  background-color: #007bff;
   color: white;
-  border-radius: 4px;
+  border-radius: 6px;
   border: none;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-bottom: 8px; /* Adds space below each button */
 }
 
 button:hover {
   background-color: #0056b3;
+  transform: translateY(-2px);
 }
 
-.tag-dropdown {
-  width: 100%;
-}
-
-.ingredient-list-container {
-  max-height: 250px;
-  overflow-y: auto;
-}
-
-.ingredient-item {
-  display: flex;
-  gap: 10px;
-}
-
-.unit-selection {
-  flex-grow: 1;
+button:active {
+  transform: translateY(0);
 }
 
 .close-button {
-  padding: 10px;
-  border-radius: 4px;
   background-color: #6c757d;
-  color: white;
-  border: none;
-  cursor: pointer;
 }
 
 .close-button:hover {
   background-color: #5a6268;
 }
 
+.add-button {
+  background-color: #28a745;
+}
+
+.add-button:hover {
+  background-color: #218838;
+}
+
+.remove-button {
+  background-color: #dc3545;
+}
+
+.remove-button:hover {
+  background-color: #c82333;
+}
+
+
+.ingredient-list-container {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+}
+
+.ingredient-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+}
+
+.ingredient-item label {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.tag-dropdown {
+  width: 100%;
+}
 @media (max-width: 768px) {
   .modal-content {
     width: 90%;
+    padding: 16px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
   }
 }
 </style>
+

@@ -36,13 +36,27 @@
     <!-- Modal for the shopping list -->
     <div v-if="modalOpen" class="modal-overlay" @click="closeModal">
       <div class="modal" @click.stop>
-        <h3>Shopping List</h3>
-        <ul class="shopping-list-items">
-          <li v-for="item in shoppingList" :key="item.ingredientName">
-            {{ item.ingredientName }}: {{ item.unit }}
-          </li>
-        </ul>
-        <button @click="closeModal">Close</button>
+        <h3>Shopping List for {{ formattedStartDate }} to {{ formattedEndDate }}</h3>
+
+        <table class="shopping-list-table">
+          <thead>
+          <tr>
+            <th>Ingredient</th>
+            <th>Unit</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="item in shoppingList" :key="item.ingredientName">
+            <td>{{ item.ingredientName }}</td>
+            <td>{{ item.unit }}</td>
+          </tr>
+          </tbody>
+        </table>
+
+        <div class="modal-actions">
+          <button @click="downloadShoppingList">Download PDF</button>
+          <button @click="closeModal" class="close-btn">Close</button>
+        </div>
       </div>
     </div>
 
@@ -54,6 +68,10 @@
 </template>
 
 <script>
+import jsPDF from "jspdf";
+import "jspdf-autotable"; // Import the autoTable plugin
+
+
 export default {
   data() {
     return {
@@ -65,6 +83,14 @@ export default {
       errorMessage: '',
       modalOpen: false,
     };
+  },
+  computed: {
+    formattedStartDate() {
+      return this.startDate ? new Date(this.startDate).toLocaleDateString() : '';
+    },
+    formattedEndDate() {
+      return this.endDate ? new Date(this.endDate).toLocaleDateString() : '';
+    },
   },
   methods: {
     async generateShoppingList() {
@@ -111,17 +137,43 @@ export default {
     },
     closeModal() {
       this.modalOpen = false;
+    },
+    downloadShoppingList() {
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text("Shopping List", 14, 20);
+
+      // Add the date range at the top of the document
+      doc.setFontSize(12);
+      doc.text(`From: ${this.formattedStartDate} To: ${this.formattedEndDate}`, 14, 30);
+
+      // Add a table with headers
+      const tableHeaders = ['Ingredient', 'Unit'];
+      const tableRows = this.shoppingList.map(item => [item.ingredientName, item.unit]);
+
+      doc.autoTable({
+        head: [tableHeaders],
+        body: tableRows,
+        startY: 40, // Start after the date range
+        theme: 'grid',
+        headStyles: { fillColor: [76, 175, 80], textColor: [255, 255, 255] },
+        styles: { fontSize: 10, cellPadding: 5 },
+        margin: { left: 14, right: 14 },
+      });
+
+      doc.save('shopping-list.pdf');
     }
+
   },
 };
 </script>
 
 <style scoped>
 .shopping-list {
-  max-width: 350px;
+  width: 150px;
   height: auto;
   margin: 0 auto;
-  padding: 15px;
+  padding: 20px;
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -163,6 +215,7 @@ input[type="date"] {
 
 .button-group {
   display: flex;
+  flex-direction: column;
   gap: 8px;
   justify-content: center;
   margin-top: 15px;
@@ -183,12 +236,22 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.shopping-list-items {
-  list-style-type: none;
-  padding-left: 0;
-  margin-top: 15px;
-  max-height: 300px;
-  overflow-y: auto;
+.shopping-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.shopping-list-table th,
+.shopping-list-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.shopping-list-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
 }
 
 .error-message {
@@ -219,14 +282,21 @@ button:disabled {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
-  max-width: 450px;
+  max-width: 500px;
   width: 100%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .modal h3 {
   text-align: center;
-  font-size: 20px;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
 .modal button {
@@ -240,5 +310,13 @@ button:disabled {
 
 .modal button:hover {
   background-color: #2c6e31;
+}
+
+.close-btn {
+  background-color: #d32f2f;
+}
+
+.close-btn:hover {
+  background-color: #b71c1c;
 }
 </style>

@@ -415,9 +415,10 @@ body {
 }
 /* Calendar Styles */
 .calendar-container {
-  max-width: 1300px;
+  max-width: 1350px;
   margin-bottom: 20px;
   margin-left: 25px;
+  height: 380px;
   padding: 20px;
   background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
   border-radius: 12px;

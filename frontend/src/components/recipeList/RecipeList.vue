@@ -1,6 +1,7 @@
 <template>
   <div class="recipe-container">
     <h2>Rezeptliste und Suche</h2>
+
     <!-- Add Recipe Button -->
     <button @click="openAddRecipeModal" class="add-recipe-button">Rezept hinzufügen</button>
 
@@ -13,26 +14,37 @@
         @recipe-added="emitRecipeAdd"
         @update:recipes="recipes = $event"
     />
+
     <!-- Search fields and filters -->
     <div class="search-fields">
       <div class="input-group">
         <input v-model="searchQuery.name" type="text" placeholder="Rezeptname eingeben" class="search-input" />
-        <Multiselect
-            ref="multiselect"
-            v-model="searchQuery.tags"
-            :options="availableTags"
-            :multiple="true"
-            :close-on-select="false"
-            placeholder="Tags auswählen"
-            label="name"
-            track-by="name"
-            class="tag-dropdown"
-        />
+        <button @click="openTagSelectionModal" class="tag-selection-button">Tags auswählen</button>
+      </div>
+      <!-- Button to open the tag selection modal -->
+      <!-- Tag Selection Modal -->
+      <div v-if="isTagModalVisible" class="modal-overlay">
+        <div class="modal-content">
+          <h3>Wählen Sie Tags</h3>
+          <Multiselect
+              v-model="searchQuery.tags"
+              :options="availableTags"
+              :multiple="true"
+              :close-on-select="false"
+              placeholder="Tags auswählen"
+              label="name"
+              track-by="name"
+              class="tag-dropdown"
+          />
+          <div class="modal-actions">
+            <button @click="closeTagSelectionModal" class="cancel-button">Abbrechen</button>
+            <button @click="confirmTagSelection" class="confirm-button">Bestätigen</button>
+          </div>
+        </div>
       </div>
 
       <div class="input-group">
         <div class="cooking-time-filter">
-          <label for="cookingtime">Kochzeit (Minuten):</label>
           <input v-model="searchQuery.cookingTime" type="number" placeholder="Kochzeit eingeben" class="search-input" />
         </div>
       </div>
@@ -65,13 +77,12 @@
 .recipe-container {
   font-family: 'Roboto', sans-serif;
   color: #333;
-  max-width: 700px;
+  width: 400px;
   padding: 20px;
   background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-
-  height: 805px;
+  height: 808px;
 }
 
 h2 {
@@ -115,13 +126,38 @@ h2 {
   gap: 12px;
   margin-bottom: 20px;
 }
+/* Style the selected tags container */
+.tag-dropdown .multiselect__tags {
+  display: flex; /* Arrange tags horizontally */
+  flex-wrap: wrap; /* Allow tags to wrap if they don't fit */
+  max-height: 40px; /* Set a fixed height for the tag container */
+  overflow-x: auto; /* Allow horizontal scrolling if the tags overflow */
+  overflow-y: hidden; /* Prevent vertical overflow */
+  gap: 4px; /* Space between the tags */
+  margin-bottom: 10px; /* Add space below the tag container */
+}
+
+/* Style individual tags inside the multiselect */
+.tag-dropdown .multiselect__tag {
+  white-space: nowrap; /* Prevent tag text from wrapping */
+  margin-right: 4px; /* Space between tags */
+  background-color: #388e3c; /* Green background for tags */
+  color: white; /* White text for tags */
+  border-radius: 15px; /* Rounded corners for tags */
+  padding: 3px 10px; /* Padding inside tags */
+  font-size: 14px; /* Font size of the tags */
+  display: inline-block; /* Keep tags inline */
+}
+
+/* Style individual tags inside the multiselect */
 
 .input-group {
   display: flex;
   gap: 10px;
+  max-height: 40px;
 }
 
-.search-input, .tag-dropdown {
+.search-input {
   padding: 10px 15px;
   font-size: 14px;
   border: 1px solid #ddd;
@@ -130,6 +166,7 @@ h2 {
 
 .cooking-time-filter {
   flex-grow: 1;
+
 }
 
 .buttons {
@@ -199,53 +236,131 @@ h2 {
   background: #f9f9f9;
   border-radius: 8px;
 }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.cancel-button, .confirm-button {
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.cancel-button {
+  background-color: #ccc;
+}
+
+.confirm-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #bbb;
+}
+
+.confirm-button:hover {
+  background-color: #218838;
+}
+/* Style the tag selection button */
+/* Style the tag selection button to match the search button */
+.tag-selection-button {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #fff;
+  background: #3b4950; /* Green background, similar to the search button */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+}
+
+.tag-selection-button:hover {
+  background: #252b30; /* Darker green on hover */
+}
+
+.tag-selection-button:focus {
+  outline: none;
+}
 </style>
 
-
-
-
 <script>
-import axios from "axios";
-import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue";
-import DeleteConfirmationModal from "@/components/recipeList/DeleteConfirmationModal.vue";
-import EditRecipeModal from "@/components/recipeList/EditRecipeModal.vue";
-import Multiselect from 'vue-multiselect'; // Vergewissere dich, dass dieser Import korrekt ist
-import {quantityUnits,tagsForList} from "@/assets/TagsAndUnits.js";
-import {EventBus} from "@/assets/event-bus.js";
-import AddRecipeForm from "@/components/addRecipe/AddRecipeForm.vue"; // Import your helper data
-
+  import axios from "axios";
+  import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue";
+  import DeleteConfirmationModal from "@/components/recipeList/DeleteConfirmationModal.vue";
+  import EditRecipeModal from "@/components/recipeList/EditRecipeModal.vue";
+  import Multiselect from 'vue-multiselect'; // Vergewissere dich, dass dieser Import korrekt ist
+  import { quantityUnits, tagsForList } from "@/assets/TagsAndUnits.js";
+  import { EventBus } from "@/assets/event-bus.js";
+  import AddRecipeForm from "@/components/addRecipe/AddRecipeForm.vue"; // Import your helper data
 export default {
   components: {
-    AddRecipeForm,
-    EditRecipeModal,
-    DeleteConfirmationModal,
-    RecipeDetailsModal,
-    Multiselect  // Registering the Multiselect component
+  AddRecipeForm,
+  EditRecipeModal,
+  DeleteConfirmationModal,
+  RecipeDetailsModal,
+  Multiselect  // Registering the Multiselect component
   },
   data() {
-    return {
-      searchQuery: {
-        name: "",
-        tags: [],
-        cookingTime: "",
-      },
-      recipes: [],
-      availableTags: tagsForList, // Make sure this is populated with available tags
-      isModalVisible: false,
-      isAddModalVisible: false,
-      isDeleteModalVisible: false,
-      isEditModalVisible: false,
-      selectedRecipe: null,
-      filterFavorites: false,
-      selectedTags: []
-    };
+  return {
+  searchQuery: {
+  name: "",
+  tags: [],
+  cookingTime: "",
+  },
+  recipes: [],
+  availableTags: tagsForList, // Make sure this is populated with available tags
+  isModalVisible: false,
+  isAddModalVisible: false,
+  isDeleteModalVisible: false,
+  isEditModalVisible: false,
+  selectedRecipe: null,
+  filterFavorites: false,
+  selectedTags: [],
+  isTagModalVisible: false, // Flag to show the tag selection modal
+  };
   },
   mounted() {
-    this.searchRecipes(); // Call to fetch recipes initially
+  this.searchRecipes(); // Call to fetch recipes initially
   },
   methods: {
+    // Methods for modal visibility
+    openTagSelectionModal() {
+    this.isTagModalVisible = true;
+    },
+    closeTagSelectionModal() {
+    this.isTagModalVisible = false;
+    },
+    confirmTagSelection() {// Update search query with selected tags
+      this.closeTagSelectionModal();
+    },
 
-    //Search and Filter
     async searchRecipes() {
       try {
         const params = {};
