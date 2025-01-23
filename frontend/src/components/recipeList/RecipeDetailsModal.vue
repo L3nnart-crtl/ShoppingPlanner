@@ -19,6 +19,12 @@
             <p>{{ selectedRecipe.description || 'No description available' }}</p>
             <h5>Cooking Time</h5>
             <p>{{ selectedRecipe.cookingTime || 'No cooking time provided' }} minutes</p>
+            <h5>Tags</h5>
+            <div class="tags-container">
+              <div v-for="(tag, index) in selectedTags" :key="index" class="tag-box">
+                {{ tag.name }}
+              </div>
+            </div>
           </div>
 
           <div class="ingredients-section">
