@@ -43,15 +43,15 @@ export default {
   },
 
   mounted() {
-        this.initializeChart(this.chartData); // Initialisiere den neuen Chart
-        this.setupEventListeners();
+    this.initializeChart(this.chartData); // Initialize the new chart
+    this.setupEventListeners();
   },
   beforeDestroy() {
     EventBus.off("chartUpdated");
   },
   methods: {
     setupEventListeners() {
-      EventBus.on("chartUpdated",this.newChart);
+      EventBus.on("chartUpdated", this.newChart);
     },
     async newChart() {
       await this.destroyChart(); // Destroy the old chart
@@ -85,11 +85,11 @@ export default {
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              display: false,
+              display: false, // Hide legend
             },
             title: {
               display: true,
-              text: this.selectedData,
+              text: this.selectedData, // Set chart title to selected data
               font: {
                 family: "'Arial', sans-serif",
                 size: 18,
@@ -131,13 +131,13 @@ export default {
     },
     destroyChart() {
       if (this.chartInstance) {
-        this.chartInstance.destroy(); // Zerstört die bestehende Chart-Instanz
+        this.chartInstance.destroy(); // Destroy the existing chart instance
         this.chartInstance = null;
       }
     },
   },
   beforeUnmount() {
-    this.destroyChart(); // Bereinigt die Chart-Instanz beim Entfernen der Komponente
+    this.destroyChart(); // Clean up the chart instance when removing the component
   },
 };
 </script>
@@ -167,19 +167,6 @@ h2 {
   margin-bottom: 20px;
 }
 
-.legend {
-  font-size: 16px;
-  color: #555;
-  text-align: center;
-}
-
-.no-chart-message {
-  text-align: center;
-  font-style: italic;
-  color: #888;
-  margin-top: 20px;
-}
-
 @media (max-width: 768px) {
   .chart-container {
     padding: 15px;
@@ -189,8 +176,5 @@ h2 {
     font-size: 20px;
   }
 
-  .legend {
-    font-size: 14px;
-  }
 }
 </style>

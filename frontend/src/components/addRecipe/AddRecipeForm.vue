@@ -8,22 +8,22 @@
           <input type="text" v-model="recipe.name" placeholder="Rezeptname eingeben" required />
         </div>
 
-        <!-- Beschreibung -->
+        <!-- Description -->
         <div class="input-group">
           <textarea v-model="recipe.description" placeholder="Beschreibung eingeben" required></textarea>
         </div>
 
-        <!-- Kochzeit -->
+        <!-- Cookingtime -->
         <div class="input-group">
           <input type="number" v-model="recipe.cookingTime" placeholder="Kochzeit in Minuten" min="1" required />
         </div>
 
-        <!-- Zutaten anzeigen -->
+        <!-- Ingredients -->
         <div class="ingredient-list">
           <h3>Zutaten</h3>
           <ul>
             <li v-for="(ingredient, index) in recipe.ingredients" :key="index">
-              - {{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}
+              {{ ingredient.name }} - {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}
               <button @click="removeIngredient(index)" type="button" class="remove-ingredient-button">Entfernen</button>
             </li>
           </ul>
@@ -41,7 +41,7 @@
             @close-modal="closeIngredientModal"
         />
 
-        <!-- Tag-Auswahl -->
+        <!-- Tag-Selection -->
         <div class="tag-selection">
           <label for="tags">Wähle Tags:</label>
           <multiselect
@@ -66,7 +66,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import IngredientModal from './IngredientModal.vue';
@@ -134,14 +133,14 @@ export default {
     },
 
     removeIngredient(index) {
-      // Entfernt die Zutat aus der Liste
+      // Removes the ingredient from the list
       this.recipe.ingredients.splice(index, 1);
     },
 
     async submitRecipe() {
       if (this.isSubmitting) return;
       this.isSubmitting = true;
-      // Validierung der Kochzeit, dass sie positiv ist
+      // Validating the cooking time to ensure it is positive
       if (this.recipe.cookingTime < 0) {
         alert("Die Kochzeit muss eine positive Zahl sein.");
         this.isSubmitting = false;
@@ -168,7 +167,7 @@ export default {
 </script>
 
 <style scoped>
-/* Modal Overlay */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -182,7 +181,6 @@ export default {
   z-index: 1000;
 }
 
-/* Modal Box */
 .modal {
   width: 100%;
   max-width: 600px;
@@ -192,7 +190,7 @@ export default {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Titel des Formulars */
+
 .form-title {
   font-size: 24px;
   font-weight: bold;
@@ -201,7 +199,7 @@ export default {
   margin-bottom: 20px;
 }
 
-/* Inputgruppen */
+
 .input-group {
   display: flex;
   flex-direction: column;
@@ -227,7 +225,6 @@ textarea {
   min-height: 100px;
 }
 
-/* Buttons */
 .add-ingredient-button,
 .submit-button {
   background-color: #4CAF50;
@@ -239,6 +236,7 @@ textarea {
   font-size: 16px;
   transition: background-color 0.3s ease;
 }
+
 .close-button {
   background-color: #f44336;
   color: white;
@@ -249,6 +247,7 @@ textarea {
   font-size: 16px;
   transition: background-color 0.3s ease;
 }
+
 .close-button:hover {
   background-color: #e53935;
 }
@@ -263,7 +262,6 @@ textarea {
   cursor: not-allowed;
 }
 
-/* Zutatenliste */
 .ingredient-list {
   max-height: 300px;
   overflow-y: auto;
@@ -274,23 +272,21 @@ textarea {
   margin-bottom: 20px;
 }
 
-/* Tag-Auswahl */
 .tag-selection {
   margin-top: 20px;
 }
 
-/* Tag Dropdown */
+
 .tag-dropdown {
   width: 100%;
 }
 
-/* Button Container */
 .button-container {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
-/* Zutatenliste */
+
 .ingredient-list {
   max-height: 300px;
   overflow-y: auto;
@@ -301,7 +297,7 @@ textarea {
   margin-bottom: 20px;
 }
 
-/* Entfernen Button */
+
 .remove-ingredient-button {
   background-color: #f44336;
   color: white;

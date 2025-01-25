@@ -1,65 +1,74 @@
 <template>
   <div class="auth-container">
+    <!-- Toggle buttons for switching between login and registration forms -->
     <div class="form-toggle">
       <button
           :class="{ active: isLogin }"
-          @click="isLogin = true"
+      @click="isLogin = true"
       >
-        Login
+      Anmelden
       </button>
       <button
           :class="{ active: !isLogin }"
-          @click="isLogin = false"
+      @click="isLogin = false"
       >
-        Register
+      Registrieren
       </button>
     </div>
 
+    <!-- Login form, shown when isLogin is true -->
     <form v-if="isLogin" @submit.prevent="loginUser">
-      <h2>Login</h2>
+      <h2>Anmelden</h2>
+      <!-- Username input field for login -->
       <div class="input-group">
-        <label for="login-username">Username</label>
+        <label for="login-username">Benutzername</label>
         <input
             type="text"
             id="login-username"
             v-model="username"
-            required
+        required
         />
       </div>
+      <!-- Password input field for login -->
       <div class="input-group">
-        <label for="login-password">Password</label>
+        <label for="login-password">Passwort</label>
         <input
             type="password"
             id="login-password"
             v-model="password"
-            required
+        required
         />
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">Anmelden</button>
+      <!-- Error message displayed if login fails -->
       <div v-if="error" class="error-message">{{ error }}</div>
     </form>
 
+    <!-- Registration form, shown when isLogin is false -->
     <form v-else @submit.prevent="registerUser">
-      <h2>Register</h2>
+      <h2>Registrieren</h2>
+      <!-- Username input field for registration -->
       <div class="input-group">
-        <label for="register-username">Username</label>
+        <label for="register-username">Benutzername</label>
         <input
             type="text"
             id="register-username"
             v-model="username"
-            required
+        required
         />
       </div>
+      <!-- Password input field for registration -->
       <div class="input-group">
-        <label for="register-password">Password</label>
+        <label for="register-password">Passwort</label>
         <input
             type="password"
             id="register-password"
             v-model="password"
-            required
+        required
         />
       </div>
-      <button type="submit">Register</button>
+      <button type="submit">Registrieren</button>
+      <!-- Error message displayed if registration fails -->
       <div v-if="error" class="error-message">{{ error }}</div>
     </form>
   </div>
@@ -76,21 +85,26 @@ export default {
     };
   },
   methods: {
+    // Method for logging in the user
     async loginUser() {
       try {
         const response = await this.$axios.post('/auth/login', {
           username: this.username,
           password: this.password,
+        }, {
+          withCredentials: true,  // Ensures that cookies and session data are sent with the request
         });
         if (response.status === 200) {
-          this.$router.push('/home');
+          this.$router.push('/');  // Redirects to the home page if login is successful
         } else {
-          this.error = 'Login failed. Please check your username and password!';
+          this.error = 'Anmeldung fehlgeschlagen. Bitte überprüfe deinen Benutzernamen und dein Passwort!';
         }
-      } catch {
-        this.error = 'Login failed. Please check your username and password!';
+      } catch (error) {
+        console.error(error);
+        this.error = 'Anmeldung fehlgeschlagen. Bitte überprüfe deinen Benutzernamen und dein Passwort!';
       }
     },
+    // Method for registering a new user
     async registerUser() {
       try {
         const response = await this.$axios.post('/auth/register', {
@@ -98,15 +112,15 @@ export default {
           password: this.password,
         });
         if (response.status === 200) {
-          alert('Registration successful! You can now log in.');
+          alert('Registrierung erfolgreich! Du kannst dich nun anmelden.');
           this.isLogin = true;
           this.username = '';
           this.password = '';
         } else {
-          this.error = response.data || 'Registration failed.';
+          this.error = response.data || 'Registrierung fehlgeschlagen.';
         }
       } catch (error) {
-        this.error = error.response?.data || 'Registration failed.';
+        this.error = error.response?.data || 'Registrierung fehlgeschlagen.';
       }
     },
   },

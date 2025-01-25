@@ -71,7 +71,7 @@
 
 <script>
 import jsPDF from "jspdf";
-import "jspdf-autotable"; // Import the autoTable plugin
+import "jspdf-autotable";
 
 
 export default {
@@ -134,12 +134,6 @@ export default {
         this.loading = false;
       }
     },
-    openModal() {
-      this.modalOpen = true;
-    },
-    closeModal() {
-      this.modalOpen = false;
-    },
     downloadShoppingList() {
       const doc = new jsPDF();
       doc.setFontSize(16);
@@ -164,8 +158,13 @@ export default {
       });
 
       doc.save('shopping-list.pdf');
+    },
+    openModal() {
+      this.modalOpen = true;
+    },
+    closeModal() {
+      this.modalOpen = false;
     }
-
   },
 };
 </script>

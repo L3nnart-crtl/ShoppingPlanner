@@ -1,33 +1,33 @@
 <template>
   <div class="modal-overlay">
     <div class="modal-content">
-      <h2>Edit Recipe</h2>
+      <h2>Rezept bearbeiten</h2> <!-- Edit Recipe Title -->
       <form @submit.prevent="submitEdit">
         <div class="input-group">
-          <label for="name">Recipe Name:</label>
+          <label for="name">Rezeptname:</label> <!-- Recipe Name Label -->
           <input
               type="text"
               v-model="selectedRecipe.name"
-              placeholder="Enter Recipe Name"
+              placeholder="Geben Sie den Rezeptnamen ein"
               required
           />
         </div>
 
         <div class="input-group">
-          <label for="description">Description:</label>
+          <label for="description">Beschreibung:</label> <!-- Description Label -->
           <textarea
               v-model="selectedRecipe.description"
-              placeholder="Enter Description"
+              placeholder="Geben Sie eine Beschreibung ein"
               required
           ></textarea>
         </div>
 
         <div class="input-group">
-          <label for="cookingTime">Cooking Time (in minutes):</label>
+          <label for="cookingTime">Kochzeit (in Minuten):</label> <!-- Cooking Time Label -->
           <input
               type="number"
               v-model="selectedRecipe.cookingTime"
-              placeholder="Enter Cooking Time"
+              placeholder="Geben Sie die Kochzeit ein"
               min="1"
               required
           />
@@ -40,7 +40,7 @@
               class="ingredient-group"
           >
             <div class="ingredient-item">
-              <label>Ingredient {{ index + 1 }}:</label>
+              <label>Zutat {{ index + 1 }}:</label> <!-- Ingredient Label -->
               <label>{{ ingredient.name }}</label>
               <label>{{ ingredient.quantity }}</label>
               <label>{{ getUnitLabel(ingredient.unit) }}</label>
@@ -50,14 +50,14 @@
                   @click="openIngredientModal(ingredient)"
                   class="edit-button"
               >
-                Edit
+                Bearbeiten <!-- Edit Button -->
               </button>
               <button
                   type="button"
                   @click="removeIngredient(index)"
                   class="remove-button"
               >
-                Remove
+                Entfernen <!-- Remove Button -->
               </button>
             </div>
           </div>
@@ -68,27 +68,27 @@
               @click="openIngredientModalAdd"
               class="add-button"
           >
-            Add Ingredient
+            Zutat hinzufügen <!-- Add Ingredient Button -->
           </button>
 
           <div class="tag-selection">
-            <label for="tags">Select Tags:</label>
+            <label for="tags">Tags auswählen:</label> <!-- Select Tags Label -->
             <Multiselect
                 ref="multiselect"
                 v-model="newTags"
                 :options="availableTags"
                 :multiple="true"
                 :close-on-select="false"
-                placeholder="Select Tags"
+                placeholder="Tags auswählen"
                 label="name"
                 track-by="name"
-                :tag-placeholder="'Add Tag'"
+                :tag-placeholder="'Tag hinzufügen'"
                 class="tag-dropdown"
             />
           </div>
           <div class="button-group">
-            <button type="submit" class="submit-button">Save Recipe</button>
-            <button @click="closeEditModal" class="close-button">Close</button>
+            <button type="submit" class="submit-button">Rezept speichern</button> <!-- Save Recipe Button -->
+            <button @click="closeEditModal" class="close-button">Schließen</button> <!-- Close Button -->
           </div>
 
         </div>
@@ -110,7 +110,7 @@
 <script>
 import Multiselect from "vue-multiselect";
 import IngredientModal from "@/components/addRecipe/IngredientModal.vue";
-import { quantityUnits, tagsForList } from "@/assets/TagsAndUnits.js";
+import {quantityUnits, tagsForList} from "@/assets/TagsAndUnits.js";
 import {EventBus} from "@/assets/event-bus.js";
 
 export default {
@@ -345,6 +345,7 @@ button:active {
 .tag-dropdown {
   width: 100%;
 }
+
 @media (max-width: 768px) {
   .modal-content {
     width: 90%;
@@ -356,4 +357,3 @@ button:active {
   }
 }
 </style>
-

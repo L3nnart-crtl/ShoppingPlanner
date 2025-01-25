@@ -4,10 +4,10 @@
       <div class="header">
         <h4>{{ selectedRecipe.name }}</h4>
         <div class="button-container">
-          <button @click="editRecipe" class="modal-button edit-button">Edit Recipe</button>
-          <button @click="deleteRecipe" class="modal-button delete-button">Delete Recipe</button>
+          <button @click="editRecipe" class="modal-button edit-button">Rezept bearbeiten</button> <!-- Button to edit recipe -->
+          <button @click="deleteRecipe" class="modal-button delete-button">Rezept löschen</button> <!-- Button to delete recipe -->
           <button @click="toggleFavorite" class="modal-button favorite-button">
-            {{ selectedRecipe.favorite ? 'Remove from Favorites' : 'Mark as Favorite' }}
+            {{ selectedRecipe.favorite ? 'Aus Favoriten entfernen' : 'Als Favorit markieren' }} <!-- Toggle favorite button text -->
           </button>
         </div>
       </div>
@@ -15,11 +15,11 @@
       <div class="main-content">
         <div class="content-section">
           <div class="description-section">
-            <h5>Description</h5>
-            <p>{{ selectedRecipe.description || 'No description available' }}</p>
-            <h5>Cooking Time</h5>
-            <p>{{ selectedRecipe.cookingTime || 'No cooking time provided' }} minutes</p>
-            <h5>Tags</h5>
+            <h5>Beschreibung</h5> <!-- Description title -->
+            <p>{{ selectedRecipe.description || 'Keine Beschreibung verfügbar' }}</p> <!-- Description content -->
+            <h5>Kochzeit</h5> <!-- Cooking time title -->
+            <p>{{ selectedRecipe.cookingTime || 'Keine Kochzeit angegeben' }} Minuten</p> <!-- Cooking time content -->
+            <h5>Tags</h5> <!-- Tags title -->
             <div class="tags-container">
               <div v-for="(tag, index) in selectedTags" :key="index" class="tag-box">
                 {{ tag.name }}
@@ -28,16 +28,16 @@
           </div>
 
           <div class="ingredients-section">
-            <h5>Ingredients (per 100g)</h5>
+            <h5>Zutaten (pro 100g)</h5> <!-- Ingredients per 100g title -->
             <div class="ingredient-list-container">
               <ul class="ingredient-list">
                 <li v-for="(ingredient, index) in selectedRecipe.ingredients" :key="index" class="ingredient-item">
                   <span class="ingredient-name">{{ ingredient.name }} <br> {{ ingredient.quantity }} {{ getUnitLabel(ingredient.unit) }}</span>
                   <span class="ingredient-nutrients">
-                    Calories: {{ ingredient.calories }} kcal<br>
+                    Kalorien: {{ ingredient.calories }} kcal<br> <!-- Nutritional info labels -->
                     Protein: {{ ingredient.proteins }} g<br>
-                    Fat: {{ ingredient.fats }} g<br>
-                    Carbs: {{ ingredient.carbohydrates }} g
+                    Fett: {{ ingredient.fats }} g<br>
+                    Kohlenhydrate: {{ ingredient.carbohydrates }} g
                   </span>
                 </li>
               </ul>
@@ -45,24 +45,24 @@
           </div>
 
           <div class="nutrition-section">
-            <h5>Total Nutrition</h5>
+            <h5>Gesamt-Nährwerte</h5> <!-- Total nutrition title -->
             <div class="nutrition-content">
               <div class="nutrition-details">
                 <div class="nutrition-item">
-                  <div class="nutrition-label">Calories</div>
-                  <div class="nutrition-value">{{ selectedRecipe.totalCalories }} kcal</div>
+                  <div class="nutrition-label">Kalorien</div> <!-- Calorie label -->
+                  <div class="nutrition-value">{{ selectedRecipe.totalCalories }} kcal</div> <!-- Calorie value -->
                 </div>
                 <div class="nutrition-item">
-                  <div class="nutrition-label">Protein</div>
-                  <div class="nutrition-value">{{ selectedRecipe.totalProteins }} g</div>
+                  <div class="nutrition-label">Protein</div> <!-- Protein label -->
+                  <div class="nutrition-value">{{ selectedRecipe.totalProteins }} g</div> <!-- Protein value -->
                 </div>
                 <div class="nutrition-item">
-                  <div class="nutrition-label">Fat</div>
-                  <div class="nutrition-value">{{ selectedRecipe.totalFats }} g</div>
+                  <div class="nutrition-label">Fett</div> <!-- Fat label -->
+                  <div class="nutrition-value">{{ selectedRecipe.totalFats }} g</div> <!-- Fat value -->
                 </div>
                 <div class="nutrition-item">
-                  <div class="nutrition-label">Carbs</div>
-                  <div class="nutrition-value">{{ selectedRecipe.totalCarbohydrates }} g</div>
+                  <div class="nutrition-label">Kohlenhydrate</div> <!-- Carbohydrates label -->
+                  <div class="nutrition-value">{{ selectedRecipe.totalCarbohydrates }} g</div> <!-- Carbohydrates value -->
                 </div>
               </div>
 
@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      <button @click="closeModal" class="modal-button close-button">Close</button>
+      <button @click="closeModal" class="modal-button close-button">Schließen</button> <!-- Close button -->
     </div>
   </div>
 </template>
@@ -84,7 +84,6 @@
 import { quantityUnits } from "@/assets/TagsAndUnits.js";
 import { Pie } from "vue-chartjs";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale } from 'chart.js';
-import {EventBus} from "@/assets/event-bus.js";  // Import EventBus
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
@@ -105,7 +104,7 @@ export default {
   computed: {
     nutritionChartData() {
       return {
-        labels: ['Protein', 'Fat', 'Carbs'],
+        labels: ['Protein', 'Fett', 'Kohlenhydrate'], // Labels for the nutrition chart
         datasets: [
           {
             data: [
@@ -170,7 +169,7 @@ export default {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-  align-items: center; /* Centering the header content horizontally */
+  align-items: center;
 }
 
 .button-container {
@@ -234,10 +233,10 @@ h4 {
 }
 
 .description-section {
-  width: 500px; /* Increased width for description */
+  width: 500px;
   overflow-x: auto;
-  word-wrap: break-word;  /* Allow long words to wrap */
-  white-space: normal;    /* Ensure the text breaks naturally at spaces */
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .ingredients-section {
@@ -309,13 +308,13 @@ h5 {
   flex-direction: column;
   align-items: flex-start;
   font-size: 0.9em;
-  gap: 2px; /* Added space between items for better visual appeal */
+  gap: 2px;
 }
 
 .nutrition-item {
   display: flex;
-  justify-content: space-between; /* Ensures the label and value are spread across the container */
-  width: 100%; /* Ensures the items take up the full width */
+  justify-content: space-between;
+  width: 100%;
   margin-bottom: 3px;
 }
 
@@ -333,6 +332,7 @@ h5 {
   text-align: right; /* Align values to the right */
   padding-left: 10px; /* Added spacing for better separation */
 }
+
 .pie-chart-container {
   display: flex;
   justify-content: center;

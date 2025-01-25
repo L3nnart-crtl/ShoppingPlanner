@@ -4,7 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- Bug fixes" />
+    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- Bug fixes">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/TagsAndUnits.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/TagsAndUnits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/BarChart.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/statistics/BarChart.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Calendar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/mealPlans/Calendar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ShoppingList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/shoppingList/ShoppingList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/StatisticsDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/statistics/StatisticsDashboard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/addRecipe/AddRecipeForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/addRecipe/AddRecipeForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/addRecipe/IngredientModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/addRecipe/IngredientModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/login/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/login/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/DeleteConfirmationModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/DeleteConfirmationModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeDetailsModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeDetailsModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/recipeList/RecipeList.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/HomePage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vue.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vue.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/start.bat" beforeDir="false" afterPath="$PROJECT_DIR$/start.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/start.sh" beforeDir="false" afterPath="$PROJECT_DIR$/start.sh" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,7 +84,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="production_branch_deployment" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -81,44 +103,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.Build backend.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [:ShoppingPlannerApplication.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [bootJar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.backend [dependencies].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.backend [jar].executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.ShoppingPlannerApplication.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;production__branch&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/leeis/IdeaProjects/team-6fghjdgf/backend&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;E:\\IntelliJ IDEA 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build backend.executor": "Run",
+    "Gradle.backend [:ShoppingPlannerApplication.main()].executor": "Run",
+    "Gradle.backend [bootJar].executor": "Run",
+    "Gradle.backend [build].executor": "Run",
+    "Gradle.backend [clean].executor": "Run",
+    "Gradle.backend [dependencies].executor": "Debug",
+    "Gradle.backend [jar].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.ShoppingPlannerApplication.executor": "Debug",
+    "git-widget-placeholder": "production__branch",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/leeis/IdeaProjects/team-6fghjdgf/backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.build.executor": "Run",
+    "npm.dev.executor": "Run",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "ts.external.directory.path": "E:\\IntelliJ IDEA 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;vue.recent.templates&quot;: [
-      &quot;Vue Composition API Component&quot;
+  "keyToStringList": {
+    "vue.recent.templates": [
+      "Vue Composition API Component"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -127,11 +149,11 @@
       <recent name="C:\Users\leeis\IdeaProjects\team-6\backend\src\main\resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components\addRecipe" />
-      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components" />
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components\shoppingList" />
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components\mealPlans" />
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components\statistics" />
+      <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components\recipeList\editRecipe" />
       <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components\recipeList" />
-      <recent name="C:\Users\leeis\IdeaProjects\team-6\backend\src\main\java\backend\repository" />
-      <recent name="C:\Users\leeis\IdeaProjects\team-6\backend\src\main\java\backend\multitenant\tenantId" />
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.ShoppingPlannerApplication">
@@ -255,10 +277,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.backend [build]" />
-        <item itemvalue="Gradle.backend [clean]" />
-        <item itemvalue="Gradle.backend [dependencies]" />
         <item itemvalue="npm.build" />
+        <item itemvalue="Gradle.backend [dependencies]" />
+        <item itemvalue="Gradle.backend [clean]" />
+        <item itemvalue="Gradle.backend [build]" />
         <item itemvalue="Gradle.backend [bootJar]" />
       </list>
     </recent_temporary>
@@ -293,7 +315,9 @@
       <workItem from="1737290524117" duration="11379000" />
       <workItem from="1737361935957" duration="33896000" />
       <workItem from="1737523954853" duration="33869000" />
-      <workItem from="1737621361941" duration="25558000" />
+      <workItem from="1737621361941" duration="27158000" />
+      <workItem from="1737656593879" duration="2730000" />
+      <workItem from="1737787514129" duration="10829000" />
     </task>
     <task id="LOCAL-00001" summary="Repo structure updated">
       <option name="closed" value="true" />
@@ -479,7 +503,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737651968410</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="- Bug fixes">
+      <option name="closed" value="true" />
+      <created>1737652099642</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1737652099642</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -527,7 +559,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/frontend/src/components/recipeList/EditRecipeModal.vue</url>
           <line>28</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

@@ -3,7 +3,7 @@
     <div class="modal-content" @click.stop>
       <h2>Füge Zutat hinzu</h2>
 
-      <!-- API-Suche nach Zutaten -->
+      <!-- API search for ingredients -->
       <div class="input-group">
         <label for="ingredient-search">Zutat suchen in Openfoodfacts</label>
         <input
@@ -21,13 +21,13 @@
                 class="search-result-item"
             >
               {{ result.name }} ({{ result.calories }} kcal,
-              {{ result.carbohydrates }}g KH, {{ result.proteins }}g Proteins, {{ result.fats }}g Fats)
+              {{ result.carbohydrates }}g KH, {{ result.proteins }}g Proteins, {{ result.fats }}g Fette)
             </li>
           </ul>
         </div>
       </div>
 
-      <!-- Kompakte manuelle Eingabe von Zutaten -->
+      <!-- Compact manual ingredient entry -->
       <div class="manual-ingredient-entry">
         <h3>Manuelle Zutat</h3>
         <div class="input-group compact">
@@ -89,7 +89,7 @@ export default {
       searchResults: [],
       selectedIngredient: null,
       errorMessage: '',
-      localManualIngredient: { ...this.newManualIngredient }, // Kopie der initialen Props
+      localManualIngredient: { ...this.newManualIngredient }, // Copy of the initial props
       quantityUnits
     };
   },
@@ -109,11 +109,11 @@ export default {
       }
     },
     selectIngredient(ingredient) {
-      // Setze die Felder mit den Werten des ausgewählten Ingredients
+      // Set the fields with the values of the selected ingredient
       this.localManualIngredient = {
         name: ingredient.name,
-        quantity: this.localManualIngredient.quantity || '', // Behalte die vorhandene Menge, falls vorhanden
-        unit: this.localManualIngredient.unit || '', // Behalte die vorhandene Einheit, falls vorhanden
+        quantity: this.localManualIngredient.quantity || '', // Keep the existing quantity if present
+        unit: this.localManualIngredient.unit || '', // Keep the existing unit if present
         calories: ingredient.calories,
         carbohydrates: ingredient.carbohydrates,
         proteins: ingredient.proteins,
@@ -127,13 +127,13 @@ export default {
     addManualIngredient() {
       const { name, quantity, unit, calories, carbohydrates, proteins, fats } = this.localManualIngredient;
 
-      // Überprüfung: Pflichtfelder ausfüllen
+      // Validation: Required fields should be filled
       if (!name || !unit) {
         this.errorMessage = 'Bitte füllen Sie Name, Menge und Einheit aus.';
         return;
       }
 
-      // Überprüfung: Nährwerte müssen Zahlen und positiv sein
+      // Validation: Nutritional values must be numbers and positive
       const nutrients = { quantity, calories, carbohydrates, proteins, fats };
       for (const [key, value] of Object.entries(nutrients)) {
         if (!this.isValidNumber(value) || parseFloat(value) < 0) {
@@ -142,14 +142,14 @@ export default {
         }
       }
 
-      // Alle Prüfungen bestanden
+      // All validations passed
       this.errorMessage = '';
       this.$emit('add-ingredient', { ...this.localManualIngredient });
       this.resetLocalManualIngredient();
       this.closeModal();
     },
 
-// Hilfsmethode zur Validierung von Zahlen
+    // Helper method to validate numbers
     isValidNumber(value) {
       return !isNaN(parseFloat(value)) && isFinite(value);
     },
@@ -208,7 +208,7 @@ h2 {
 
 .input-group label {
   font-weight: bold;
-  margin-bottom: 2px; /* Minimaler Abstand zwischen Label und Eingabefeld */
+  margin-bottom: 2px; /* Minimal space between label and input field */
 }
 
 .input-group input,
@@ -217,13 +217,13 @@ h2 {
 }
 
 .input-group button {
-  margin-top: 5px; /* Abstand zum Feld davor */
+  margin-top: 5px; /* Space from the previous field */
 }
 
 .input-group.compact {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px; /* Mehr Abstand zwischen den Feldern */
+  gap: 12px; /* More space between fields */
 }
 
 .input-small {
@@ -290,4 +290,3 @@ button:hover {
   margin-top: 5px;
 }
 </style>
-

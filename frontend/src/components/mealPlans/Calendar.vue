@@ -2,14 +2,14 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <div class="calendar-container">
 
-    <!-- Navigation für die Woche -->
+    <!-- Navigation for the week -->
     <div class="week-navigation">
       <button @click="changeWeek(-1)" class="nav-button">&#8592; Vorherige Woche</button>
       <span class="month-name">{{ formatWeekRange(currentWeekRange) }}</span>
       <button @click="changeWeek(1)" class="nav-button">Nächste Woche &#8594;</button>
     </div>
 
-    <!-- Kalenderansicht für die Woche -->
+    <!-- Calendar view for the week -->
     <div class="calendar">
       <div v-for="day in displayedWeek" :key="day.date" class="calendar-day" @dragover.prevent @drop="handleDrop(day.date)">
         <div class="day-header">
@@ -17,19 +17,22 @@
           <span class="date">{{ day.date }}</span>
         </div>
         <div v-if="mealPlans[day.date]" class="meal-plan">
-          <!-- MealPlan untereinander -->
+          <!-- Display meal plans vertically -->
           <div class="meal-plans-container">
             <div class="meal-box" @click="openRecipeDetailsModal(mealPlans[day.date].breakfastRecipe)">
               <h3 class="meal-title">Frühstück</h3>
-              <p class="meal-field">{{ mealPlans[day.date].breakfastRecipeName || mealPlans[day.date].customBreakfastName }} {{ mealPlans[day.date].breakfastPortionSize }}x</p>
+              <p class="meal-field">{{ mealPlans[day.date].breakfastRecipeName || mealPlans[day.date].customBreakfastName }}</p>
+              <p>{{ mealPlans[day.date].breakfastPortionSize }}x</p>
             </div>
             <div class="meal-box" @click="openRecipeDetailsModal(mealPlans[day.date].lunchRecipe)">
               <h3 class="meal-title">Mittagessen</h3>
-              <p class="meal-field">{{ mealPlans[day.date].lunchRecipeName || mealPlans[day.date].customLunchName }} {{ mealPlans[day.date].lunchPortionSize }}x</p>
+              <p class="meal-field">{{ mealPlans[day.date].lunchRecipeName || mealPlans[day.date].customLunchName }}</p>
+              <p>{{ mealPlans[day.date].lunchPortionSize }}x</p>
             </div>
             <div class="meal-box" @click="openRecipeDetailsModal(mealPlans[day.date].dinnerRecipe)">
               <h3 class="meal-title">Abendessen</h3>
-              <p class="meal-field">{{ mealPlans[day.date].dinnerRecipeName || mealPlans[day.date].customDinnerName }} {{ mealPlans[day.date].dinnerPortionSize }}x</p>
+              <p class="meal-field">{{ mealPlans[day.date].dinnerRecipeName || mealPlans[day.date].customDinnerName }}</p>
+              <p>{{ mealPlans[day.date].dinnerPortionSize }}x</p>
             </div>
           </div>
           <div class="action-buttons">
@@ -44,7 +47,7 @@
       </div>
     </div>
 
-    <!-- Modal zum Hinzufügen oder Bearbeiten eines MealPlans -->
+    <!-- Modal for adding or editing a MealPlan -->
     <div v-if="isMealPlanModalVisible" class="modal-overlay">
       <div class="modal-content">
         <h3>{{ selectedDate }} MealPlan</h3>
@@ -116,9 +119,9 @@
 <script>
 import axios from 'axios';
 import { EventBus } from '@/assets/event-bus.js';
+import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue";
 import DeleteConfirmationModal from "@/components/recipeList/DeleteConfirmationModal.vue";
 import EditRecipeModal from "@/components/recipeList/EditRecipeModal.vue";
-import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue";
 import {tagsForList} from "@/assets/TagsAndUnits.js"; // import the event bus
 export default {
   components: {RecipeDetailsModal, EditRecipeModal, DeleteConfirmationModal},
@@ -329,14 +332,14 @@ export default {
     closeMealPlanModal() {
       this.mealPlan = {
         breakfastId: null,
-            breakfastPortionSize: 1,
-            lunchId: null,
-            lunchPortionSize: 1,
-            dinnerId: null,
-            dinnerPortionSize: 1,
-            dinnerRecipe: null,
-            lunchRecipe: null,
-            breakfastRecipe: null,
+        breakfastPortionSize: 1,
+        lunchId: null,
+        lunchPortionSize: 1,
+        dinnerId: null,
+        dinnerPortionSize: 1,
+        dinnerRecipe: null,
+        lunchRecipe: null,
+        breakfastRecipe: null,
       };
       this.isMealPlanModalVisible = false;
     },
@@ -410,7 +413,7 @@ export default {
 </script>
 
 <style scoped>
-/* General Styles */
+
 * {
   margin: 0;
   padding: 0;
@@ -421,13 +424,10 @@ export default {
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-
-  transform: scale(0.2); /* Scale everything down by 80% */
-  transform-origin: top left; /* Ensure scaling starts from the top-left */
+  transform: scale(0.2);
+  transform-origin: top left;
 }
-/* Calendar Styles */
+
 .calendar-container {
   max-width: 1350px;
   margin-bottom: 20px;
@@ -444,7 +444,6 @@ h2 {
   margin-bottom: 20px;
 }
 
-/* Week Navigation */
 .week-navigation {
   display: flex;
   justify-content: space-between;
@@ -453,7 +452,7 @@ h2 {
 }
 
 .nav-button {
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -471,7 +470,6 @@ h2 {
   font-weight: bold;
 }
 
-/* Calendar Days */
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -499,7 +497,6 @@ h2 {
   font-size: 16px;
 }
 
-/* Meal Plan Section */
 .meal-plan {
   margin-top: 10px;
 }
@@ -511,26 +508,30 @@ h2 {
 }
 
 .meal-box {
-  background-color: #e0f7fa; /* Light cyan */
+  background-color: #e0f7fa;
+  width: 160px;
   padding: 10px;
   height: 60px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .meal-box:hover {
-  background-color: #b2ebf2; /* Lighter cyan */
+  background-color: #b2ebf2;
 }
 
 .meal-title {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: bold;
 }
 
 .meal-field {
-  font-size: 14px;
-  color: #666;
+  font-size: 16px;
+
 }
 
 .action-buttons {
@@ -568,7 +569,7 @@ h2 {
   background-color: #e53935;
 }
 .add-button {
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -588,7 +589,7 @@ h2 {
 }
 
 .no-meal-plan button {
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -601,7 +602,7 @@ h2 {
   background-color: #45a049;
 }
 
-/* Modal Styles */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -686,12 +687,12 @@ h2 {
 }
 
 .save-button {
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
   color: white;
 }
 
 .cancel-button {
-  background-color: #f44336; /* Red */
+  background-color: #f44336;
   color: white;
 }
 
@@ -701,11 +702,6 @@ h2 {
 
 .cancel-button:hover {
   background-color: #e53935;
-}
-
-/* Recipe Modal Styles */
-.recipe-modal {
-  padding: 20px;
 }
 
 .recipe-modal .recipe-details {
@@ -729,7 +725,7 @@ h2 {
 }
 
 .recipe-modal .action-buttons button {
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -742,29 +738,23 @@ h2 {
   background-color: #45a049;
 }
 
-/* Add this to your CSS */
-
-
-/* For finer control, you can also scale other elements individually */
-
 h2, .week-navigation, .calendar-day, .meal-box, .meal-select {
-  font-size: 0.8rem;  /* Reduce font size */
-}
+  font-size: 0.8rem;
 
-.nav-button {
-  padding: 8px 16px;  /* Adjust button padding */
-}
+  .nav-button {
+    padding: 8px 16px;
+  }
 
-.calendar-day {
-  padding: 8px; /* Adjust calendar day padding */
-}
+  .calendar-day {
+    padding: 8px;
+  }
 
-.meal-plans-container .meal-box {
-  padding: 6px; /* Adjust meal box padding */
-}
+  .meal-plans-container .meal-box {
+    padding: 6px;
+  }
 
-.search-input, .portion-input {
-  font-size: 0.8rem; /* Adjust input sizes */
+  .search-input, .portion-input {
+    font-size: 0.8rem;
+  }
 }
-
 </style>

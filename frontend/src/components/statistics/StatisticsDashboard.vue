@@ -1,6 +1,6 @@
 <template>
   <div class="statistics-dashboard">
-    <!-- Dropdown zur Auswahl der Statistik -->
+    <!-- Dropdown for selecting the statistic -->
     <div class="horizontal-container">
       <h1>Statistiken</h1>
       <div class="dropdown">
@@ -12,7 +12,6 @@
         </select>
       </div>
       <!-- Horizontal layout for Date Selection and Buttons -->
-
       <div class="date-container">
         <div class="date-input">
           <label for="start-date">Startdatum:</label>
@@ -47,8 +46,6 @@
   </div>
 </template>
 
-
-
 <script>
 import BarChart from "./BarChart.vue";
 import {tagsForList} from "@/assets/TagsAndUnits.js";
@@ -78,7 +75,7 @@ export default {
         { value: "AverageNutrientDistributionPerRecipe", label: "Durchschnittliche Nährstoffverteilung pro Rezept" },
         { value: "AverageNutrientDistributionPerDay", label: "Durchschnittliche Nährstoffverteilung pro Tag" }
       ],
-      filteredOptions: [], // Temporäre Liste für die angezeigten Optionen
+      filteredOptions: [], // Temporary list for displayed options
     };
   },
   mounted() {
@@ -94,7 +91,7 @@ export default {
   methods: {
     getLabelByValue(value) {
       const item = this.allOptions.find(entry => entry.value === value);
-      return item ? item.label : null; // Gibt das Label zurück oder null, falls nicht gefunden
+      return item ? item.label : null; // Returns the label or null if not found
     },
     setupEventListeners() {
       EventBus.on('mealPlanUpdated', this.fetchStatistics);
@@ -228,16 +225,16 @@ export default {
     },
 
     handleOptionChange() {
-      // Temporär leere Optionen
+      // Temporarily clear options
       this.filteredOptions = [];
       this.newSelectedData = null;
 
-      // Nach 700 ms wieder alle Optionen anzeigen
+      // Show all options again after 700ms
       setTimeout(() => {
         this.filteredOptions = this.allOptions;
       }, 900);
       this.updateChart();
-      // Aktualisiere das Chart
+      // Update the chart
       EventBus.emit("chartUpdated");
     },
 

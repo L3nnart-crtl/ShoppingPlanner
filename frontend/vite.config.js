@@ -22,5 +22,6 @@ export default defineConfig({
         rewrite: (path) => path,  // Entfernt das Ersetzen des Pfads
       },
     },
+    historyApiFallback: true,
   },
 });

@@ -2,10 +2,10 @@
   <div class="container">
     <!-- Logout button -->
     <div class="logout-container">
-      <button v-if="isAuthenticated" @click="logout" class="logout-button">Logout</button>
+      <button v-if="isAuthenticated" @click="logout" class="logout-button">Abmelden</button>
     </div>
 
-    <!-- Rezeptliste -->
+    <!-- Recipe List -->
     <div>
       <RecipeList :recipes="recipes" ref="recipeList" />
     </div>
@@ -19,18 +19,15 @@
   </div>
 </template>
 
-
 <script>
-import AddRecipeForm from "@/components/addRecipe/AddRecipeForm.vue";
 import RecipeList from "@/components/recipeList/RecipeList.vue";
-import CalendarComponent from "@/components/Calendar.vue";
-import ShoppingList from "@/components/ShoppingList.vue";
-import StatisticsDashboard from "@/components/StatisticsDashboard.vue";
+import CalendarComponent from "@/components/mealPlans/Calendar.vue";
+import ShoppingList from "@/components/shoppingList/ShoppingList.vue";
+import StatisticsDashboard from "@/components/statistics/StatisticsDashboard.vue";
 import {EventBus} from "@/assets/event-bus.js";
 
 export default {
   components: {
-    AddRecipeForm,
     RecipeList,
     CalendarComponent,
     ShoppingList,
@@ -43,7 +40,7 @@ export default {
     };
   },
   async created() {
-    // CSRF-Token aus dem Cookie holen und im Header setzen
+    // Get CSRF token from the cookie and set it in the header
     const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1];
     this.$axios.defaults.headers.common['X-XSRF-TOKEN'] = csrfToken;
 
@@ -82,7 +79,7 @@ export default {
         document.cookie = "XSRF-TOKEN=; Max-Age=0"; // Clear CSRF token
         this.$router.push("/auth");
       } catch (error) {
-        console.error("Logout fehlgeschlagen:", error);
+        console.error("Abmeldung fehlgeschlagen:", error);
       }
     },
   },
@@ -96,18 +93,16 @@ export default {
   gap: 1px;
   font-family: Arial, sans-serif;
   padding: 2px;
-
+  margin-top: -5px;
 }
 
-.component {
-  background-color: #f9f9f9;
-}
 .dashboard-list {
   display: flex;
   max-height: 600px;
   flex-direction: row;
   gap: 10px;
 }
+
 .logout-container {
   position: fixed;
   top: 20px;
@@ -128,11 +123,5 @@ export default {
 
 .logout-button:hover {
   background-color: #0056b3;
-}
-
-@media (max-width: 600px) {
-  .component {
-    flex: 1 1 100%;
-  }
 }
 </style>

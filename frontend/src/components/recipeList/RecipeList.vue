@@ -2,10 +2,10 @@
   <div class="recipe-container">
     <h2>Rezeptliste und Suche</h2>
 
-    <!-- Add Recipe Button -->
+    <!-- Button to add a new recipe -->
     <button @click="openAddRecipeModal" class="add-recipe-button">Rezept hinzufügen</button>
 
-    <!-- Recipe Modal -->
+    <!-- Modal for adding a recipe -->
     <AddRecipeForm
         v-if="isAddModalVisible"
         :isAddModalVisible="isAddModalVisible"
@@ -74,295 +74,52 @@
 </template>
 
 
-<style scoped>
-.recipe-container {
-  font-family: 'Roboto', sans-serif;
-  color: #333;
-  width: 400px;
-  padding: 20px;
-  background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  height: 808px;
-}
-
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-align: center;
-  color: #444;
-  font-weight: bold;
-}
-
-/* Add Recipe Button */
-.add-recipe-button {
-  display: inline-block;
-  margin-left: 100px;
-  padding: 12px 25px;
-  background: linear-gradient(145deg, #6c63ff, #3c3d99);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.add-recipe-button:hover {
-  background: linear-gradient(145deg, #5a52e0, #2c2d7a);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-}
-
-.add-recipe-button:focus {
-  outline: none;
-}
-
-.search-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-/* Style the selected tags container */
-.tag-dropdown .multiselect__tags {
-  display: flex; /* Arrange tags horizontally */
-  flex-wrap: wrap; /* Allow tags to wrap if they don't fit */
-  max-height: 40px; /* Set a fixed height for the tag container */
-  overflow-x: auto; /* Allow horizontal scrolling if the tags overflow */
-  overflow-y: hidden; /* Prevent vertical overflow */
-  gap: 4px; /* Space between the tags */
-  margin-bottom: 10px; /* Add space below the tag container */
-}
-
-/* Style individual tags inside the multiselect */
-.tag-dropdown .multiselect__tag {
-  white-space: nowrap; /* Prevent tag text from wrapping */
-  margin-right: 4px; /* Space between tags */
-  background-color: #388e3c; /* Green background for tags */
-  color: white; /* White text for tags */
-  border-radius: 15px; /* Rounded corners for tags */
-  padding: 3px 10px; /* Padding inside tags */
-  font-size: 14px; /* Font size of the tags */
-  display: inline-block; /* Keep tags inline */
-}
-
-/* Style individual tags inside the multiselect */
-
-.input-group {
-  display: flex;
-  gap: 10px;
-  max-height: 40px;
-}
-
-.search-input {
-  padding: 10px 15px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.cooking-time-filter {
-  flex-grow: 1;
-
-}
-
-.buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-.reset-filters-button {
-  background: #dc3545;
-}
-
-.reset-filters-button:hover {
-  background: #c82333;
-}
-.filter-favorites-button, .search-button, .reset-filters-button {
-  padding: 10px 15px;
-  font-size: 14px;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.filter-favorites-button {
-  background: #007bff;
-}
-
-.filter-favorites-button:hover {
-  background: #0056b3;
-}
-
-.search-button {
-  background: #28a745;
-}
-
-.search-button:hover {
-  background: #218838;
-}
-
-.recipe-cards-container {
-  max-height: 460px;
-  overflow-y: auto;
-  padding: 15px;
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-.recipe-card {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  margin-bottom: 10px;
-  background: linear-gradient(to right, #f9f9f9, #ffffff);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-}
-
-.recipe-name {
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-}
-
-.no-recipes {
-  text-align: center;
-  font-size: 16px;
-  color: #888;
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 8px;
-}
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 400px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-.cancel-button, .confirm-button {
-  padding: 10px 15px;
-  font-size: 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-}
-
-.cancel-button {
-  background-color: #ccc;
-}
-
-.confirm-button {
-  background-color: #28a745;
-  color: white;
-}
-
-.cancel-button:hover {
-  background-color: #bbb;
-}
-
-.confirm-button:hover {
-  background-color: #218838;
-}
-/* Style the tag selection button */
-/* Style the tag selection button to match the search button */
-.tag-selection-button {
-  padding: 10px 15px;
-  font-size: 14px;
-  color: #fff;
-  background: #3b4950; /* Green background, similar to the search button */
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-}
-
-.tag-selection-button:hover {
-  background: #252b30; /* Darker green on hover */
-}
-
-.tag-selection-button:focus {
-  outline: none;
-}
-</style>
-
 <script>
-  import axios from "axios";
-  import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue";
-  import DeleteConfirmationModal from "@/components/recipeList/DeleteConfirmationModal.vue";
-  import EditRecipeModal from "@/components/recipeList/EditRecipeModal.vue";
-  import Multiselect from 'vue-multiselect'; // Vergewissere dich, dass dieser Import korrekt ist
-  import { quantityUnits, tagsForList } from "@/assets/TagsAndUnits.js";
-  import { EventBus } from "@/assets/event-bus.js";
-  import AddRecipeForm from "@/components/addRecipe/AddRecipeForm.vue"; // Import your helper data
+import axios from "axios";
+import RecipeDetailsModal from "@/components/recipeList/RecipeDetailsModal.vue";
+import DeleteConfirmationModal from "@/components/recipeList/DeleteConfirmationModal.vue";
+import EditRecipeModal from "@/components/recipeList/EditRecipeModal.vue";
+import Multiselect from 'vue-multiselect'; // Vergewissere dich, dass dieser Import korrekt ist
+import { quantityUnits, tagsForList } from "@/assets/TagsAndUnits.js";
+import { EventBus } from "@/assets/event-bus.js";
+import AddRecipeForm from "@/components/addRecipe/AddRecipeForm.vue"; // Import your helper data
 export default {
   components: {
-  AddRecipeForm,
-  EditRecipeModal,
-  DeleteConfirmationModal,
-  RecipeDetailsModal,
-  Multiselect  // Registering the Multiselect component
+    AddRecipeForm,
+    EditRecipeModal,
+    DeleteConfirmationModal,
+    RecipeDetailsModal,
+    Multiselect  // Registering the Multiselect component
   },
   data() {
-  return {
-  searchQuery: {
-  name: "",
-  tags: [],
-  cookingTime: "",
-  },
-  recipes: [],
-  availableTags: tagsForList, // Make sure this is populated with available tags
-  isModalVisible: false,
-  isAddModalVisible: false,
-  isDeleteModalVisible: false,
-  isEditModalVisible: false,
-  selectedRecipe: null,
-  filterFavorites: false,
-  selectedTags: [],
-  isTagModalVisible: false, // Flag to show the tag selection modal
-  };
+    return {
+      searchQuery: {
+        name: "",
+        tags: [],
+        cookingTime: "",
+      },
+      recipes: [],
+      availableTags: tagsForList, // Make sure this is populated with available tags
+      isModalVisible: false,
+      isAddModalVisible: false,
+      isDeleteModalVisible: false,
+      isEditModalVisible: false,
+      selectedRecipe: null,
+      filterFavorites: false,
+      selectedTags: [],
+      isTagModalVisible: false, // Flag to show the tag selection modal
+    };
   },
   mounted() {
-  this.searchRecipes(); // Call to fetch recipes initially
+    this.searchRecipes(); // Call to fetch recipes initially
   },
   methods: {
     // Methods for modal visibility
     openTagSelectionModal() {
-    this.isTagModalVisible = true;
+      this.isTagModalVisible = true;
     },
     closeTagSelectionModal() {
-    this.isTagModalVisible = false;
+      this.isTagModalVisible = false;
     },
     confirmTagSelection() {// Update search query with selected tags
       this.closeTagSelectionModal();
@@ -510,11 +267,258 @@ export default {
     //Helper functions
     translateTags(tags) {
       return tags.map(tag => {
-      const tagEntry = tagsForList.find(entry => entry.value === tag);
-      return tagEntry ? { name: tagEntry.name, value: tagEntry.value } : { name: tag, value: tag }; // Falls der Tag nicht gefunden wird, wird der Enum-Wert selbst zurückgegeben
+        const tagEntry = tagsForList.find(entry => entry.value === tag);
+        return tagEntry ? { name: tagEntry.name, value: tagEntry.value } : { name: tag, value: tag }; // Falls der Tag nicht gefunden wird, wird der Enum-Wert selbst zurückgegeben
       });
     },
   }
 };
 </script>
 
+
+<style scoped>
+/* Styling for the recipe container */
+.recipe-container {
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  width: 400px;
+  padding: 20px;
+  background: linear-gradient(to bottom right, #ffffff, #f7f7f7);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  height: 808px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #444;
+  font-weight: bold;
+}
+
+/* Button for adding a recipe */
+.add-recipe-button {
+  display: inline-block;
+  margin-left: 100px;
+  padding: 12px 25px;
+  background: linear-gradient(145deg, #6c63ff, #3c3d99);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.add-recipe-button:hover {
+  background: linear-gradient(145deg, #5a52e0, #2c2d7a);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.add-recipe-button:focus {
+  outline: none;
+}
+
+/* Styling for search fields and filters */
+.search-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Styling for the tag selection */
+.tag-dropdown .multiselect__tags {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 40px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.tag-dropdown .multiselect__tag {
+  white-space: nowrap;
+  margin-right: 4px;
+  background-color: #388e3c;
+  color: white;
+  border-radius: 15px;
+  padding: 3px 10px;
+  font-size: 14px;
+  display: inline-block;
+}
+
+/* Styling for input fields */
+.input-group {
+  display: flex;
+  gap: 10px;
+  max-height: 40px;
+}
+
+.search-input {
+  padding: 10px 15px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.cooking-time-filter {
+  flex-grow: 1;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Styling for filter and search buttons */
+.reset-filters-button {
+  background: #dc3545;
+}
+
+.reset-filters-button:hover {
+  background: #c82333;
+}
+
+.filter-favorites-button, .search-button, .reset-filters-button {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filter-favorites-button {
+  background: #007bff;
+}
+
+.filter-favorites-button:hover {
+  background: #0056b3;
+}
+
+.search-button {
+  background: #28a745;
+}
+
+.search-button:hover {
+  background: #218838;
+}
+
+.recipe-cards-container {
+  max-height: 460px;
+  overflow-y: auto;
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.recipe-card {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  margin-bottom: 10px;
+  background: linear-gradient(to right, #f9f9f9, #ffffff);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.recipe-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.no-recipes {
+  text-align: center;
+  font-size: 16px;
+  color: #888;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+/* Modal overlay and content */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.cancel-button, .confirm-button {
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.cancel-button {
+  background-color: #ccc;
+}
+
+.confirm-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #bbb;
+}
+
+.confirm-button:hover {
+  background-color: #218838;
+}
+
+/* Tag selection button */
+.tag-selection-button {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #fff;
+  background: #3b4950;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tag-selection-button:hover {
+  background: #252b30;
+}
+
+.tag-selection-button:focus {
+  outline: none;
+}
+</style>
