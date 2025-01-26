@@ -1,29 +1,29 @@
 <template>
   <div class="shopping-list">
-    <h1>Shopping List</h1>
+    <h1>Einkaufsliste</h1>
 
     <!-- Date form with compact input fields -->
     <form @submit.prevent="generateShoppingList" class="date-form">
       <div class="form-group">
-        <label for="startDate">Start Date:</label>
+        <label for="startDate">Startdatum:</label>
         <input type="date" id="startDate" v-model="startDate" required>
       </div>
 
       <div class="form-group">
-        <label for="endDate">End Date:</label>
+        <label for="endDate">Enddatum:</label>
         <input type="date" id="endDate" v-model="endDate" required>
       </div>
 
       <!-- Buttons in a compact group -->
       <div class="button-group">
         <button type="submit" :disabled="loading">
-          <span v-if="loading">Generating...</span>
-          <span v-else>Generate List</span>
+          <span v-if="loading">Wird generiert...</span>
+          <span v-else>Liste generieren</span>
         </button>
 
         <!-- Modal Trigger Button -->
         <button v-if="shoppingList.length > 0" @click="openModal" class="show-list-btn">
-          Show Full List
+          Ganze Liste anzeigen
         </button>
       </div>
     </form>
@@ -36,13 +36,13 @@
     <!-- Modal for the shopping list -->
     <div v-if="modalOpen" class="modal-overlay" @click="closeModal">
       <div class="modal" @click.stop>
-        <h3>Shopping List for {{ formattedStartDate }} to {{ formattedEndDate }}</h3>
+        <h3>Einkaufsliste für {{ formattedStartDate }} bis {{ formattedEndDate }}</h3>
         <div class="shopping-list-table-container">
           <table class="shopping-list-table">
             <thead>
             <tr>
-              <th>Ingredient</th>
-              <th>Unit</th>
+              <th>Zutat</th>
+              <th>Einheit</th>
             </tr>
             </thead>
             <tbody>
@@ -54,17 +54,16 @@
           </table>
         </div>
 
-
         <div class="modal-actions">
-          <button @click="downloadShoppingList">Download PDF</button>
-          <button @click="closeModal" class="close-btn">Close</button>
+          <button @click="downloadShoppingList">PDF herunterladen</button>
+          <button @click="closeModal" class="close-btn">Schließen</button>
         </div>
       </div>
     </div>
 
     <!-- No items message -->
     <p v-if="!isListGenerated" class="no-items">
-      No ingredients found for this period.
+      Keine Zutaten für diesen Zeitraum gefunden.
     </p>
   </div>
 </template>
@@ -72,7 +71,6 @@
 <script>
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
 
 export default {
   data() {
@@ -97,7 +95,7 @@ export default {
   methods: {
     async generateShoppingList() {
       if (!this.startDate || !this.endDate) {
-        this.errorMessage = 'Please select both a start and an end date.';
+        this.errorMessage = 'Bitte wählen Sie sowohl ein Start- als auch ein Enddatum aus.';
         return;
       }
 
@@ -123,13 +121,13 @@ export default {
         );
 
         if (!response) {
-          throw new Error('Server error: Shopping list could not be generated.');
+          throw new Error('Serverfehler: Einkaufsliste konnte nicht generiert werden.');
         }
 
         this.shoppingList = response.data;
         this.isListGenerated = this.shoppingList.length > 0;
       } catch (error) {
-        this.errorMessage = error.message || 'Error retrieving shopping list.';
+        this.errorMessage = error.message || 'Fehler beim Abrufen der Einkaufsliste.';
       } finally {
         this.loading = false;
       }
@@ -137,14 +135,14 @@ export default {
     downloadShoppingList() {
       const doc = new jsPDF();
       doc.setFontSize(16);
-      doc.text("Shopping List", 14, 20);
+      doc.text("Einkaufsliste", 14, 20);
 
       // Add the date range at the top of the document
       doc.setFontSize(12);
-      doc.text(`From: ${this.formattedStartDate} To: ${this.formattedEndDate}`, 14, 30);
+      doc.text(`Von: ${this.formattedStartDate} Bis: ${this.formattedEndDate}`, 14, 30);
 
       // Add a table with headers
-      const tableHeaders = ['Ingredient', 'Unit'];
+      const tableHeaders = ['Zutat', 'Einheit'];
       const tableRows = this.shoppingList.map(item => [item.ingredientName, item.unit]);
 
       doc.autoTable({
@@ -157,7 +155,7 @@ export default {
         margin: { left: 14, right: 14 },
       });
 
-      doc.save('shopping-list.pdf');
+      doc.save('einkaufsliste.pdf');
     },
     openModal() {
       this.modalOpen = true;
@@ -243,8 +241,6 @@ button:disabled {
 .shopping-list-table {
   width: 100%;
   border-collapse: collapse;
-
-
 }
 .shopping-list-table th {
   position: sticky;
@@ -259,13 +255,11 @@ button:disabled {
   padding: 5px;
   text-align: left;
   border-bottom: 1px solid #ddd;
-
 }
 
 .shopping-list-table th {
   background-color: #f2f2f2;
   font-weight: bold;
-
 }
 
 .error-message {
@@ -290,7 +284,6 @@ button:disabled {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .modal {
@@ -300,7 +293,6 @@ button:disabled {
   max-width: 500px;
   width: 100%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-
 }
 
 .modal h3 {
