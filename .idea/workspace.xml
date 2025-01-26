@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- Final Version">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vue.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vue.config.js" afterDir="false" />
-    </list>
+    <list default="true" id="3c8a14d4-eadb-4f35-b233-24d16a8059ed" name="Changes" comment="- Final Version" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -139,7 +134,7 @@
       <recent name="C:\Users\leeis\IdeaProjects\team-6\frontend\src\components\recipeList" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.backend [clean]">
+  <component name="RunManager" selected="Spring Boot.ShoppingPlannerApplication">
     <configuration name="backend [bootJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -502,7 +497,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737882988049</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="- Final Version">
+      <option name="closed" value="true" />
+      <created>1737883913910</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1737883913910</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
