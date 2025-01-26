@@ -1,5 +1,7 @@
 package backend.model.MealPlan;
 
+import backend.model.Recipe.Recipe;
+
 public class MealPlanDTO {
 
     private String date;
@@ -9,7 +11,9 @@ public class MealPlanDTO {
     private int lunchPortionSize;
     private Long dinnerRecipeId;
     private int dinnerPortionSize;
-
+    private Recipe breakfastRecipe;
+    private Recipe lunchRecipe;
+    private Recipe dinnerRecipe;
     // Zusätzliche Felder, die nur für die Antwort benötigt werden
     private String breakfastRecipeName;
     private String lunchRecipeName;
@@ -32,7 +36,9 @@ public class MealPlanDTO {
         this.breakfastRecipeId = mealPlan.getBreakfastRecipe() != null ? mealPlan.getBreakfastRecipe().getId() : null;
         this.lunchRecipeId = mealPlan.getLunchRecipe() != null ? mealPlan.getLunchRecipe().getId() : null;
         this.dinnerRecipeId = mealPlan.getDinnerRecipe() != null ? mealPlan.getDinnerRecipe().getId() : null;
-
+        this.breakfastRecipe = mealPlan.getBreakfastRecipe();
+        this.lunchRecipe = mealPlan.getLunchRecipe();
+        this.dinnerRecipe = mealPlan.getDinnerRecipe();
         // tenantId setzen
         this.tenantId = mealPlan.getTenantId();
     }
@@ -125,5 +131,29 @@ public class MealPlanDTO {
 
     public void setDinnerRecipeName(String dinnerRecipeName) {
         this.dinnerRecipeName = dinnerRecipeName;
+    }
+
+    public Recipe getLunchRecipe() {
+        return lunchRecipe;
+    }
+
+    public Recipe getBreakfastRecipe() {
+        return breakfastRecipe;
+    }
+
+    public Recipe getDinnerRecipe() {
+        return dinnerRecipe;
+    }
+
+    public void setBreakfastRecipe(final Recipe breakfastRecipe) {
+        this.breakfastRecipe = breakfastRecipe;
+    }
+
+    public void setLunchRecipe(final Recipe lunchRecipe) {
+        this.lunchRecipe = lunchRecipe;
+    }
+
+    public void setDinnerRecipe(final Recipe dinnerRecipe) {
+        this.dinnerRecipe = dinnerRecipe;
     }
 }

@@ -13,20 +13,39 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Security configuration class for setting up Spring Security.
+ * <p>
+ * This class configures security settings such as CSRF protection, session management,
+ * authentication mechanisms, and password encoding. It also defines a security filter chain
+ * and an authentication manager for the application.
+ * </p>
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Constructs a {@code SecurityConfig} instance with the specified {@link UserDetailsService}.
+     *
+     * @param userDetailsService the service for loading user-specific data
+     */
     public SecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Configures the security filter chain for HTTP requests.
+     * @param http the {@link HttpSecurity} to configure
+     * @return the configured {@link SecurityFilterChain}
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection globally
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()  // Allow public access to auth endpoints
                         .anyRequest().permitAll()  // Allow all HTTP methods for all endpoints
@@ -39,6 +58,17 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configures and provides the {@link AuthenticationManager}.
+     * <p>
+     * The authentication manager uses the provided {@link UserDetailsService} and a
+     * {@link PasswordEncoder} for authenticating users.
+     * </p>
+     *
+     * @param http the {@link HttpSecurity} to configure
+     * @return the configured {@link AuthenticationManager}
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -46,8 +76,17 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 
+    /**
+     * Provides a {@link PasswordEncoder} bean for encoding passwords.
+     * <p>
+     * This method returns a {@link BCryptPasswordEncoder}, which is a secure and widely used
+     * algorithm for password hashing.
+     * </p>
+     *
+     * @return a {@link BCryptPasswordEncoder} instance
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // Password encoder for password hashing
+        return new BCryptPasswordEncoder();
     }
 }

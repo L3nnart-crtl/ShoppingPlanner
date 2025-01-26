@@ -4,40 +4,51 @@ import backend.model.MealPlan.MealPlan;
 import backend.model.ShoppingList.ShoppingItem;
 import backend.model.ShoppingList.ShoppingList;
 import backend.repository.MealPlanRepository;
-import backend.multitenant.tenantId.TenantContext; // Importiere TenantContext
+import backend.multitenant.tenantId.TenantContext;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Controller for managing the shopping list. Provides an endpoint to generate a shopping list
+ * based on MealPlans for a specific tenant.
+ */
 @RestController
 @RequestMapping("/api/shopping-list")
 public class ShoppingListController {
 
     @Autowired
-    private MealPlanRepository mealPlanRepository;  // Repository für MealPlans
+    private MealPlanRepository mealPlanRepository;  // Repository for MealPlans
 
-    // Endpoint, um eine Einkaufsliste zu erstellen
+    /**
+     * Generates a shopping list for a given date range based on the tenant's meal plans.
+     *
+     * @param startDate The start date for the shopping list.
+     * @param endDate The end date for the shopping list.
+     * @return A list of shopping items required for the specified date range.
+     * @throws IllegalStateException if the tenant ID is not set in the context.
+     */
     @PostMapping("/generate")
     public List<ShoppingItem> generateShoppingList(@RequestParam("startDate") LocalDate startDate,
                                                    @RequestParam("endDate") LocalDate endDate) {
-        // Hole die Tenant-ID aus dem aktuellen Kontext
+        // Retrieve the Tenant ID from the current context
         String tenantId = TenantContext.getCurrentTenant();
 
-        // Prüfen, ob die Tenant-ID gesetzt ist, falls nicht, gebe einen Fehler zurück
+        // Check if the Tenant ID is set, if not, return an error
         if (tenantId == null) {
             throw new IllegalStateException("Tenant ID is not set in the context.");
         }
 
-        // Finde alle MealPlans für den aktuellen Tenant
+        // Find all meal plans for the current tenant
         List<MealPlan> allMealPlans = mealPlanRepository.findByTenantId(tenantId);
 
-        // Erstelle eine neue ShoppingList und führe die Methode zur Generierung aus
-        ShoppingList shoppingList = new ShoppingList(startDate, endDate);  // Konstruktor mit Start- und Enddatum
-        shoppingList.generateShoppingList(allMealPlans); // Diese Methode wird die Einkaufsliste generieren
+        // Create a new shopping list and generate the items
+        ShoppingList shoppingList = new ShoppingList(startDate, endDate);  // Constructor with start and end date
+        shoppingList.generateShoppingList(allMealPlans); // Generate the shopping list based on meal plans
 
-        // Rückgabe der generierten Einkaufsliste (Items)
+        // Return the generated shopping list items
         return shoppingList.getItems();
     }
 }

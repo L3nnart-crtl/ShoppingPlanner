@@ -1,5 +1,7 @@
 package backend.model.ShoppingList;
-
+/**
+ * Represents an item in a shopping list, which consists of an ingredient, its amount, and its unit.
+ */
 public class ShoppingItem {
 
     private String ingredientName;

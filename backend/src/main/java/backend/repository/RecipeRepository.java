@@ -11,13 +11,6 @@ import java.util.Optional;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
-    // Rezepte basierend auf dem TenantId und Name suchen
-    List<Recipe> findByTenantIdAndNameContainingIgnoreCase(String tenantId, String name);
-
-    // Rezepte basierend auf dem TenantId und maximaler Kochzeit suchen
-    List<Recipe> findByTenantIdAndCookingTimeLessThanEqual(String tenantId, Integer maxCookingTime);
-
-    // Neue Abfrage für Rezepte basierend auf Tags und TenantId
     @Query("""
         SELECT r 
         FROM Recipe r 
@@ -29,7 +22,16 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     boolean existsByTenantIdAndName(String tenantId, String recipeName);
 
-    // Suche nach Name und Tags basierend auf TenantId
+    List<Recipe> findByTenantId(String tenantId);
+
+    @Query("""
+        SELECT r 
+        FROM Recipe r
+        WHERE r.id = :id 
+        AND r.tenantId = :tenantId
+    """)
+    Optional<Recipe> findByTenantIdAndId(@Param("tenantId") String tenantId, @Param("id") Long id);
+
     @Query("""
     SELECT r 
     FROM Recipe r
@@ -38,19 +40,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     AND t IN :tags
     AND r.tenantId = :tenantId
     """)
-    List<Recipe> findByTenantIdAndNameContainingIgnoreCaseAndTagsIn(@Param("tenantId") String tenantId,
-                                                                    @Param("name") String name,
-                                                                    @Param("tags") List<Tag> tags);
+    List<Recipe> findByTenantIdAndNameStartingWithIgnoreCaseAndTagsIn(@Param("tenantId") final String tenantId,@Param("name") final String name,@Param("tags") final List<Tag> tags);
 
-    // Finde Rezepte anhand des TenantId
-    List<Recipe> findByTenantId(String tenantId);
-
-    // Finde Rezept anhand des TenantId und der Rezept-ID
-    @Query("""
-        SELECT r 
-        FROM Recipe r
-        WHERE r.id = :id 
-        AND r.tenantId = :tenantId
-    """)
-    Optional<Recipe> findByTenantIdAndId(@Param("tenantId") String tenantId, @Param("id") Long id);
+    List<Recipe> findByTenantIdAndNameStartingWithIgnoreCase(String tenantId, String name);
 }

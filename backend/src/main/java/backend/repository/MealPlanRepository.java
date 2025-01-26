@@ -9,12 +9,11 @@ import java.util.Optional;
 
 public interface MealPlanRepository extends JpaRepository<MealPlan, Long> {
 
-    // Suche nach MealPlan für ein bestimmtes Datum und tenantId
     Optional<MealPlan> findByTenantIdAndDate(String tenantId, LocalDate date);
 
-    // Überprüfen, ob ein MealPlan für ein bestimmtes Datum und tenantId existiert
     boolean existsByTenantIdAndDate(String tenantId, LocalDate date);
 
-    // Alle MealPlans für einen bestimmten tenantId
     List<MealPlan> findByTenantId(String tenantId);
+
+    List<MealPlan> findByTenantIdAndDateBetween(String tenantId, LocalDate startDate, LocalDate endDate);
 }

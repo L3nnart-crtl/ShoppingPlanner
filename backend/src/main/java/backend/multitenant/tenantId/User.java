@@ -4,7 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+/**
+ * Represents a User entity in a multi-tenant application.
+ * The User is associated with a tenant ID, which allows the system to differentiate
+ * between different tenants in a multi-tenant environment.
+ */
 @Entity
 public class User {
 

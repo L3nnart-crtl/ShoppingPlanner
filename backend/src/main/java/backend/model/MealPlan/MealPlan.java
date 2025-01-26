@@ -3,7 +3,10 @@ package backend.model.MealPlan;
 import backend.model.Recipe.Recipe;
 import jakarta.persistence.*;
 import java.time.LocalDate;
-
+/**
+ * Entity class representing a meal plan for a specific day. It contains information about the
+ * recipes for breakfast, lunch, and dinner, as well as the portion sizes for each meal.
+ */
 @Entity
 @Table(name = "MealPlan")
 public class MealPlan {

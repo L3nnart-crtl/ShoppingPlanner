@@ -22,7 +22,20 @@ public class MealPlanService {
         this.recipeRepository = recipeRepository;
     }
 
-    // Method to save a new meal plan for a specific date
+    /**
+     * Saves a new meal plan for a specific tenant and date.
+     *
+     * @param tenantId the tenant's ID
+     * @param date the date for the meal plan
+     * @param breakfastRecipeId the ID of the breakfast recipe
+     * @param breakfastPortionSize the portion size for breakfast
+     * @param lunchRecipeId the ID of the lunch recipe
+     * @param lunchPortionSize the portion size for lunch
+     * @param dinnerRecipeId the ID of the dinner recipe
+     * @param dinnerPortionSize the portion size for dinner
+     * @return the saved MealPlan object
+     * @throws IllegalArgumentException if a meal plan already exists for the given date and tenantId
+     */
     public MealPlan saveMealPlan(String tenantId, LocalDate date, Long breakfastRecipeId, int breakfastPortionSize,
                                  Long lunchRecipeId, int lunchPortionSize,
                                  Long dinnerRecipeId, int dinnerPortionSize) {
@@ -53,7 +66,20 @@ public class MealPlanService {
         return mealPlanRepository.save(mealPlan);
     }
 
-    // Method to update an existing meal plan for a specific date and tenantId
+    /**
+     * Updates an existing meal plan for a specific tenant and date.
+     *
+     * @param tenantId the tenant's ID
+     * @param date the date for the meal plan
+     * @param breakfastRecipeId the ID of the breakfast recipe
+     * @param breakfastPortionSize the portion size for breakfast
+     * @param lunchRecipeId the ID of the lunch recipe
+     * @param lunchPortionSize the portion size for lunch
+     * @param dinnerRecipeId the ID of the dinner recipe
+     * @param dinnerPortionSize the portion size for dinner
+     * @return the updated MealPlan object
+     * @throws IllegalArgumentException if no meal plan exists for the given date and tenantId
+     */
     public MealPlan updateMealPlan(String tenantId, LocalDate date, Long breakfastRecipeId, int breakfastPortionSize,
                                    Long lunchRecipeId, int lunchPortionSize,
                                    Long dinnerRecipeId, int dinnerPortionSize) {
@@ -87,17 +113,34 @@ public class MealPlanService {
         return mealPlanRepository.save(existingMealPlan);
     }
 
-    // Method to retrieve a meal plan by its date and tenantId
+    /**
+     * Retrieves a meal plan by its date and tenantId.
+     *
+     * @param tenantId the tenant's ID
+     * @param date the date for the meal plan
+     * @return the MealPlan object, or null if no meal plan exists for the given date and tenantId
+     */
     public MealPlan getMealPlanByDate(String tenantId, LocalDate date) {
         return mealPlanRepository.findByTenantIdAndDate(tenantId, date).orElse(null);
     }
 
-    // Method to retrieve all meal plans for a specific tenantId
+    /**
+     * Retrieves all meal plans for a specific tenantId.
+     *
+     * @param tenantId the tenant's ID
+     * @return a list of MealPlan objects for the given tenantId
+     */
     public List<MealPlan> getAllMealPlans(String tenantId) {
         return mealPlanRepository.findByTenantId(tenantId);
     }
 
-    // Method to delete a meal plan by its date and tenantId
+    /**
+     * Deletes a meal plan by its date and tenantId.
+     *
+     * @param tenantId the tenant's ID
+     * @param date the date for the meal plan
+     * @return true if the meal plan was deleted, false otherwise
+     */
     public boolean deleteMealPlanByDate(String tenantId, String date) {
         try {
             // Attempt to find the meal plan for the specified date and tenantId

@@ -52,5 +52,4 @@ public enum Tag {
     LOW_CALORIE,
     ANTI_AGEING,
     DETOX,
-
 }
