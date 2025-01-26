@@ -10,5 +10,8 @@
         <module name="ShoppingPlanner.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="org.sopra.ShoppingPlanner" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
