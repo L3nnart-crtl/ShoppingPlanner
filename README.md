@@ -20,8 +20,7 @@ A full-stack Meal & Shopping Planner application built with **Vue.js** for the f
 - **Database**: H2 / MySQL (can be configured)  
 - **Build Tools**: Maven, Node.js/NPM  
 
-## Project Structure
-
+## Screenshots
 
 <img width="1854" height="925" alt="grafik" src="https://github.com/user-attachments/assets/4d93fcf3-416a-448e-859a-47556651e926" />
 <img width="1898" height="928" alt="grafik" src="https://github.com/user-attachments/assets/cfaedd13-4e0b-495d-a478-d70d522c90f9" />
