@@ -1,4 +1,27 @@
-# Shopping Planner
+# Meal & Shopping Planner
+
+A full-stack Meal & Shopping Planner application built with **Vue.js** for the frontend and **Spring Boot** for the backend. The application helps users efficiently plan meals, manage recipes, generate shopping lists, and track nutrition. It also supports **multi-tenant functionality** for separate user groups or households.
+
+## Features
+
+- **Recipe Management**: Create, update, and delete recipes with ingredients, tags, and detailed nutritional information.  
+- **Weekly Meal Planning**: Assign recipes to specific days of the week to plan meals in advance.  
+- **Search & Filter**: Quickly find recipes based on title, ingredients, favourites or tags.  
+- **Statistics & Reports**: View nutrition and recipe statistics for selected time periods.  
+- **Shopping List Generation**: Automatically generate shopping lists for a given time range based on planned recipes.  
+- **Multi-Tenant Support**: Separate data and plans for multiple users or households within the same application.  
+- **Responsive UI**: User-friendly interface built with Vue.js.  
+- **RESTful API**: Backend services implemented with Spring Boot for secure, scalable data management.  
+
+## Technologies
+
+- **Frontend**: Vue.js, Vuex, Vue Router, Axios  
+- **Backend**: Spring Boot, Spring Data JPA, Hibernate  
+- **Database**: H2 / MySQL (can be configured)  
+- **Build Tools**: Maven, Node.js/NPM  
+
+## Project Structure
+
 
 <img width="1854" height="925" alt="grafik" src="https://github.com/user-attachments/assets/4d93fcf3-416a-448e-859a-47556651e926" />
 <img width="1898" height="928" alt="grafik" src="https://github.com/user-attachments/assets/cfaedd13-4e0b-495d-a478-d70d522c90f9" />
