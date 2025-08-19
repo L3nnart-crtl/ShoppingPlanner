@@ -1,5 +1,12 @@
 # Shopping Planner
 
+<img width="1854" height="925" alt="grafik" src="https://github.com/user-attachments/assets/4d93fcf3-416a-448e-859a-47556651e926" />
+<img width="1898" height="928" alt="grafik" src="https://github.com/user-attachments/assets/cfaedd13-4e0b-495d-a478-d70d522c90f9" />
+<img width="1885" height="923" alt="grafik" src="https://github.com/user-attachments/assets/57d73580-e455-40df-9af4-399d698dce87" />
+<img width="1825" height="949" alt="grafik" src="https://github.com/user-attachments/assets/6e246cce-cef6-4546-8bbb-8f642ff560b7" />
+<img width="1745" height="894" alt="grafik" src="https://github.com/user-attachments/assets/ce6f5719-f6bb-45f0-83ab-ced597fd46fa" />
+<img width="1766" height="865" alt="grafik" src="https://github.com/user-attachments/assets/6bd98e09-6fb0-4e6f-b223-944435725414" />
+
 ## Installation and Execution
 
 # Local Project Setup and Start Guide
