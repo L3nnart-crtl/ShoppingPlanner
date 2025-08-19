@@ -2,32 +2,6 @@
 
 ## Installation and Execution
 
-### 1. Website on Virtual Machine (VM)
-
-The website should run on the VM as long as it is not restarted. The URL is:
-
-http://[2001:7c0:2320:1:f816:3eff:fe50:6f6d]:80
-
-There are two test user with testdata:
-1. username: user1
-   password: user1
-2. username: user2
-   password: user2
-
-#### Starting on the VM:
-
-- **Start Backend:**
-
-  Change to the directory `/shoppingPlanner/Backend` and start the backend with the following command:
-
-  nohup sudo java -jar ShoppingPlanner-0.0.1-SNAPSHOT.jar &
-
-- **Start Frontend:**
-
-  Change to the directory `/shoppingPlanner/Frontend/dist` and start the frontend with the following command:
-
-  sudo nohup python3 -m http.server 80 --bind 2001:7c0:2320:1:f816:3eff:fe50:6f6d &> /dev/null &
-
 # Local Project Setup and Start Guide
 
 Prerequisites
